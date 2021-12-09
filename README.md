@@ -15,8 +15,3 @@
 
 # Setup PATH
 - python local pip executable
-
-# Files to touch
-- ~/.vim/backup
-- ~/.zshrc.local
-- ~/.gitconfig_local
