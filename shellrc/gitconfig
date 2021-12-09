@@ -1,0 +1,62 @@
+[user]
+  name = James Zhao
+[push]
+  config = default
+  default = current
+[diff]
+  renames = true
+  compactionHeuristic = true
+[status]
+  showUntrackedFiles = all
+[alias]
+  files = !git diff --name-only $(git merge-base HEAD \"${REVIEW_BASE:-master}\")
+  stat = !git diff --stat $(git merge-base HEAD \"${REVIEW_BASE:-master}\")
+  # NOTE: These aliases depend on the `git files` alias from
+  # a few sections ago!
+
+[branch]
+  autosetupmerge = true
+[merge]
+  summary = true
+  conflictstyle = diff3
+[rebase]
+  autosquash = true
+[color]
+  diff = auto
+  status = auto
+  branch = auto
+  interactive = auto
+  ui = true
+[core]
+  excludesfile = ~/.gitignore
+  editor = nvim
+  pager = diff-highlight | less --tabs=4 -RFX
+[rerere]
+  enabled = 1
+[pull]
+  rebase = true
+[include]
+  path = ~/.gitconfig_local
+[filter "lfs"]
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+  required = true
+  process = git-lfs filter-process
+[pager]
+  log = diff-highlight | less
+  show = diff-highlight | less
+  diff = diff-highlight | less
+[interactive]
+  diffFilter = diff-highlight
+[color "diff-highlight"]
+  oldNormal = red bold
+  oldHighlight = red bold 52
+  newNormal = green bold
+  newHighlight = green bold 22
+[color "diff"]
+  meta = yellow
+  frag = magenta bold
+  commit = yellow bold
+  old = red bold
+  new = green bold
+  whitespace = red reverse

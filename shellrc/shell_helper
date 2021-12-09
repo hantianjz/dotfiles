@@ -1,0 +1,20 @@
+exist() {
+    type $1 2> /dev/null > /dev/null
+    return $?
+}
+
+get_os_release_field() {
+    FIELD=$1
+
+    awk "\$1~/^${FIELD}\$/ {print \$2}" FS='=' /etc/os-release
+}
+
+is_os() {
+    if [ -e /etc/os-release ]; then
+        if [ "$1" = `get_os_release_field ID` ]; then
+            return 0
+        fi
+    fi
+    return 1
+}
+

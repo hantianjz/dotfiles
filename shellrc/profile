@@ -1,0 +1,11 @@
+#*****************CURR_FILE_DIR*****************
+# Get directory of current script file, follow symlink if needed.
+CURR_FILE="${BASH_SOURCE[0]}"
+if [ -L ${CURR_FILE} ]; then
+	CURR_FILE=`readlink ${CURR_FILE}`
+fi
+CURR_FILE_DIR="$(cd "$(dirname "${CURR_FILE}" )" && pwd )"
+#*****************CURR_FILE_DIR*****************
+
+unset CURR_FILE_DIR
+. "$HOME/.cargo/env"

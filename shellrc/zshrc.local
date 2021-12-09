@@ -1,0 +1,11 @@
+function patch_append () {
+  NEW_PATH=$1
+  if [[ "${PATH}" != *"${NEW_PATH}"* ]]; then
+    PATH="${PATH}:${NEW_PATH}"
+  fi
+  export PATH
+}
+
+patch_append "/Users/hantian/.cargo/bin/"
+
+alias jsformat="python -mjson.tool"

@@ -1,0 +1,48 @@
+if [ -z "$CURR_FILE_DIR" ]; then
+    echo "Error: expected CURR_FILE_DIR to be set"
+    exit 1
+fi
+
+source ${CURR_FILE_DIR}/shell_helper
+
+export PATH=$PATH:~/bin
+
+if [ `uname` = "Darwin" ]; then
+    export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
+fi
+
+if [ `uname` = "Linux" ]; then
+    export PATH=$PATH:/usr/games
+fi
+
+source ${CURR_FILE_DIR}/default.alias
+
+if exist tmux; then
+    tmux-from-session-name () {
+        tmux -2 new-session -As ${1}
+    }
+
+    new-tmux-from-dir-name () {
+        tmux-from-session-name $(basename $PWD)
+    }
+
+    alias tmn="new-tmux-from-dir-name"
+    alias tma='tmux-from-session-name'
+    alias tml='tmux list-sessions'
+fi
+
+if exist git; then
+    source ${CURR_FILE_DIR}/git.alias
+fi
+
+if exist nvim; then
+    alias vim=nvim
+    alias v=nvim
+fi
+
+export EDITOR='nvim'
+export VISUAL='nvim'
+
+export FZF_TMUX_HEIGHT=15
+
+export REVIEW_BASE=master

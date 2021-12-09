@@ -1,0 +1,14 @@
+ghpr () {
+        gh pr create --reviewer verily-src/tpatch-fw --fill --label autosubmit
+        if [ $? -ne 0 ]
+        then
+                echo "\nSomething went wrong. Not copied to clipboard."
+                return
+        fi
+        STATUS=$(gh pr view)
+        URL=$(echo ${STATUS} | grep 'url:' | cut -f2)
+        TITLE=$(echo ${STATUS} | grep 'title:' | cut -f2)
+        OUTPUT="${URL} | ${TITLE}"
+        echo "Success. Copied to clipboard:"
+        echo ${OUTPUT}
+}

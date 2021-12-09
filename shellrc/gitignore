@@ -1,0 +1,16 @@
+tags
+tags.lock
+tags.temp
+.ycm_extra_conf.py
+.gdbinit
+.gdb_history
+application_default_credentials.json
+.venv
+compile_commands.json
+.style.yapf
+GPATH
+GRTAGS
+GTAGS
+.ccls-cache
+.ccls
+.cache
