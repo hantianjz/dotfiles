@@ -30,6 +30,28 @@
     ~/.tmux.conf: tmux.conf
     ~/.tmux: tmux
 
+    # X
+    ~/.Xresources: Xresources
+    ~/.xsessionrc: xsessionrc
+
+    # Config
+    ~/.config/autorandr: config/autorandr
+    ~/.config/i3/config:
+        create: true
+        path: config/i3/config
+    ~/.config/kitty/kitty.conf:
+        create: true
+        path: config/kitty/kitty.conf
+    ~/.config/polybar/config:
+        create: true
+        path: config/polybar/config
+    ~/.config/polybar/launch.sh:
+        create: true
+        path: config/polybar/launch.sh
+    ~/.config/rofi/config.rasi:
+        create: true
+        path: config/rofi/config.rasi
+
 - shell:
   - [git submodule update --init --recursive, Installing submodules]
   - [~/.tmux/plugins/tpm/scripts/install_plugins.sh >/dev/null 2>&1, Installing tmux plugins]
