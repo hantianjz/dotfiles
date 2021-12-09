@@ -1,1 +1,0 @@
-/home/hjz/Development/dotfiles/vimrc

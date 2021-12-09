@@ -11,4 +11,23 @@ CURR_FILE_DIR="$(cd "$(dirname "${CURR_FILE}" )" && pwd )"
 source ${CURR_FILE_DIR}/shellrc.zsh
 unset CURR_FILE_DIR
 
+zstyle ':completion:*' accept-exact '*(N)'
+
+__git_files () {
+    _wanted files expl 'local files' _files
+}
+
+unsetopt CORRECT                      # Disable autocorrect guesses. Happens when typing a wrong
+                                      # command that may look like an existing one.
+
+expand-or-complete-with-dots() {      # This bunch of code displays red dots when autocompleting
+  echo -n "\e[31m......\e[0m"         # a command with the tab key, "Oh-my-zsh"-style.
+  zle expand-or-complete
+  zle redisplay
+}
+zle -N expand-or-complete-with-dots
+bindkey "^I" expand-or-complete-with-dots
+
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+source ~/.zshrc.local

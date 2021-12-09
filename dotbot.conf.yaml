@@ -9,10 +9,8 @@
     ~/.profile: shellrc/profile
 
     # VIM
-    ~/.vimrc: vimrc
-    ~/.vim: vim
-    ~/.config/nvim: vim
-    ~/.config/nvim/init.vim: vimrc
+    ~/.vim: nvim
+    ~/.config/nvim: nvim
 
     # GIT
     ~/.gitconfig: shellrc/gitconfig
