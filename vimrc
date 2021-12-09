@@ -7,17 +7,54 @@ syntax enable
 " configure Vundle
 filetype on " without this vim emits a zero exit status, later, because of :ft off
 filetype off
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
 
-" install Vundle bundles
-if filereadable(expand("~/.vimrc.bundles"))
-    source ~/.vimrc.bundles
+let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
+if empty(glob(data_dir . '/autoload/plug.vim'))
+  silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
-call vundle#end()
+call plug#begin()
 
-call glaive#Install()
+Plug 'L3MON4D3/LuaSnip'
+Plug 'VundleVim/Vundle.vim'
+Plug 'Yggdroot/duoduo'
+Plug 'airblade/vim-gitgutter'
+Plug 'austintaylor/vim-indentobject'
+Plug 'christoomey/vim-tmux-navigator'
+Plug 'google/vim-codefmt'
+Plug 'google/vim-glaive'
+Plug 'google/vim-maktaba'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/nvim-cmp'
+Plug 'jaxbot/semantic-highlight.vim'
+Plug 'kalcutter/vim-gn'
+Plug 'ludovicchabant/vim-gutentags'
+Plug 'moll/vim-bbye'
+Plug 'neovim/nvim-lspconfig'
+Plug 'nvie/vim-flake8'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'rust-lang/rust.vim'
+Plug 'saadparwaiz1/cmp_luasnip'
+Plug 'skywind3000/gutentags_plus'
+Plug 'svermeulen/vim-easyclip'
+Plug 'tpope/vim-bundler'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-endwise'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-vinegar'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'ziglang/zig.vim'
+Plug 'pappasam/jedi-language-server'
+Plug 'kyazdani42/nvim-web-devicons'
+
+call plug#end()
 
 filetype on
 " ensure ftdetect et al work by including this after the Vundle stuff
