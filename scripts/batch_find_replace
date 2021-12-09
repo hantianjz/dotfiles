@@ -1,0 +1,11 @@
+#!/bin/bash
+BATCH_FILE=$1
+while read -r f_str r_str
+do
+  echo ${f_str}
+  while read -r LINE
+  do
+    echo $LINE
+    sed -i -e "s/${f_str}/${r_str}/g" ${LINE}
+  done < <(grep -I -l -r -e ${f_str} *)
+done < "${BATCH_FILE}"

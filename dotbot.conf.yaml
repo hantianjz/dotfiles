@@ -59,6 +59,12 @@
     # Fzf
     ~/.fzf: fzf
 
+    # Local Scripts
+    ~/bin/batch_find_replace: scripts/batch_find_replace
+    ~/bin/find_replace: scripts/find_replace
+    ~/bin/grb: scripts/grb
+    ~/bin/shfmt: scripts/shfmt
+
 - shell:
   - [~/.tmux/plugins/tpm/scripts/install_plugins.sh >/dev/null 2>&1, Installing tmux plugins]
   - ["nvim +PlugUpdate +PlugClean! +qa", Installing and updating plugins]
