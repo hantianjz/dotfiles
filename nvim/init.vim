@@ -50,8 +50,6 @@ set noswapfile
 syntax enable
 
 filetype on
-" ensure ftdetect et al work by including this after the Vundle stuff
-filetype plugin indent on
 
 "--------------------------------------------------------------------------
 " Key maps
@@ -93,19 +91,20 @@ source ~/.config/nvim/plugs/gutentags.vim
 source ~/.config/nvim/plugs/lsp_cmp.vim
 source ~/.config/nvim/plugs/rust.vim
 source ~/.config/nvim/plugs/semantic_highlight.vim
-source ~/.config/nvim/plugs/tmux.vim
 source ~/.config/nvim/plugs/telescope.vim
+source ~/.config/nvim/plugs/tmux.vim
 source ~/.config/nvim/plugs/tpope.vim
 source ~/.config/nvim/plugs/whitespace.vim
 source ~/.config/nvim/plugs/zig.vim
 
 call plug#end()
 doautocmd User PlugLoaded
+doautocmd User PlugLoadedLast
 
 "--------------------------------------------------------------------------
 " Miscellaneous
 "--------------------------------------------------------------------------
-
+"
 " Flash highlight yanked text
 au TextYankPost * lua vim.highlight.on_yank {higroup="IncSearch", timeout=150, on_visual=true}
 
