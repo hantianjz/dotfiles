@@ -1,0 +1,1 @@
+Plug 'kalcutter/vim-gn'

@@ -1,0 +1,1 @@
+Plug 'ziglang/zig.vim'
