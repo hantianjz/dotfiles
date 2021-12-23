@@ -65,6 +65,8 @@
     ~/bin/grb: scripts/grb
     ~/bin/shfmt: scripts/shfmt
 
+    ~/.gdbinit: gdbinit
+
 - shell:
   - [~/.tmux/plugins/tpm/scripts/install_plugins.sh >/dev/null 2>&1, Installing tmux plugins]
   - ["nvim +PlugUpdate +PlugClean! +qa", Installing and updating plugins]
