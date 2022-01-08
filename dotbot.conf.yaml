@@ -74,3 +74,4 @@
   - [touch ~/.zshrc.local, Touch local zshrc file]
   - [touch ~/.gitconfig_local, Touch local gitconfig file]
   - [~/.fzf/install --key-bindings --completion, Install FZF]
+  - [curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin launch=n]
