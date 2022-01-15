@@ -5,6 +5,7 @@
 - clean: ['~']
 
 - shell:
+  - [mkdir -p ~/bin/, make local bin folder]
   - [git submodule update --init --recursive, Installing submodules]
 
 - link:
@@ -13,6 +14,7 @@
 
     # VIM
     ~/.vim: nvim
+    ~/.init.vim: nvim/init.vim
     ~/.config/nvim: nvim
 
     # GIT
@@ -32,26 +34,38 @@
     ~/.tmux: tmux
 
     # X
-    ~/.Xresources: Xresources
-    ~/.xsessionrc: xsessionrc
+    ~/.Xresources: 
+        if: '[ `uname` = Linux ]'
+        path: Xresources
+    ~/.xsessionrc:
+        if: '[ `uname` = Linux ]'
+        path: xsessionrc
 
-    # Config
-    ~/.config/autorandr: config/autorandr
+    # Config - Linux
+    ~/.config/autorandr: 
+        if: '[ `uname` = Linux ]'
+        path: config/autorandr
     ~/.config/i3/config:
+        if: '[ `uname` = Linux ]'
         create: true
         path: config/i3/config
-    ~/.config/kitty/kitty.conf:
-        create: true
-        path: config/kitty/kitty.conf
     ~/.config/polybar/config:
+        if: '[ `uname` = Linux ]'
         create: true
         path: config/polybar/config
     ~/.config/polybar/launch.sh:
+        if: '[ `uname` = Linux ]'
         create: true
         path: config/polybar/launch.sh
     ~/.config/rofi/config.rasi:
+        if: '[ `uname` = Linux ]'
         create: true
         path: config/rofi/config.rasi
+
+    # Config - Other
+    ~/.config/kitty/kitty.conf:
+        create: true
+        path: config/kitty/kitty.conf
 
     # Prezto
     ~/.zprezto: prezto
@@ -60,7 +74,9 @@
     ~/.fzf: fzf
 
     # Local Scripts
-    ~/bin/batch_find_replace: scripts/batch_find_replace
+    ~/bin/batch_find_replace: 
+        create: true
+        path: scripts/batch_find_replace
     ~/bin/find_replace: scripts/find_replace
     ~/bin/grb: scripts/grb
     ~/bin/shfmt: scripts/shfmt
