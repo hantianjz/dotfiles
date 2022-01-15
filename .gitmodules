@@ -3,12 +3,12 @@
 	url = https://github.com/anishathalye/dotbot
 [submodule "dotbot"]
 	ignore = dirty
-[submodule "tmux/plugins/tpm"]
-	path = tmux/plugins/tpm
-	url = https://github.com/tmux-plugins/tpm
 [submodule "prezto"]
 	path = prezto
 	url = git@github.com:hantianjz/prezto.git
 [submodule "fzf"]
 	path = fzf
 	url = https://github.com/junegunn/fzf.git
+[submodule "tmux/plugins/tpm"]
+	path = tmux/plugins/tpm
+	url = https://github.com/tmux-plugins/tpm
