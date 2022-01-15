@@ -19,7 +19,6 @@ EOF
 nnoremap <leader>t <cmd>lua require('telescope.builtin').find_files()<cr>
 nnoremap <leader>s <cmd>lua require('telescope.builtin').live_grep()<cr>
 nnoremap <leader>b <cmd>lua require('telescope.builtin').buffers()<cr>
-nnoremap <leader>e <cmd>lua require('telescope.builtin').file_browser()<cr>
 nnoremap <leader>lf <cmd>lua require('telescope.builtin').lsp_references()<cr>
 nnoremap <leader>ld <cmd>lua require('telescope.builtin').lsp_definitions()<cr>
 nnoremap <leader>lt <cmd>lua require('telescope.builtin').lsp_type_definitions()<cr>
