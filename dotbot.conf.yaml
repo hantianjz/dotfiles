@@ -64,8 +64,14 @@
 
     # Config - Other
     ~/.config/kitty/kitty.conf:
+        if: '[ `uname` = Linux ]'
         create: true
-        path: config/kitty/kitty.conf
+        path: config/kitty/kitty_linux.conf
+
+    ~/.config/kitty/kitty.conf:
+        if: '[ `uname` = Darwin ]'
+        create: true
+        path: config/kitty/kitty_darwin.conf
 
     # Prezto
     ~/.zprezto: prezto
