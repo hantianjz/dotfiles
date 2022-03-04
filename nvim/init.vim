@@ -116,5 +116,6 @@ autocmd BufRead,BufNewFile *.def set filetype=c
 autocmd BufRead,BufNewFile *.ino set filetype=c
 autocmd BufRead,BufNewFile *.i set filetype=c
 autocmd BufRead,BufNewFile *.groovy set filetype=java
+autocmd BufRead,BufNewFile *.py set filetype=python nospell
 
 autocmd BufRead,BufNewFile *.md set filetype=markdown spell

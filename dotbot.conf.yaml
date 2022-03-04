@@ -62,7 +62,7 @@
         create: true
         path: config/rofi/config.rasi
 
-    # Config - Other
+    # Config - kitty
     ~/.config/kitty/kitty.conf:
         if: '[ `uname` = Linux ]'
         create: true
