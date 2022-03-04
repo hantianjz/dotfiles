@@ -1,4 +1,5 @@
 source ${ZDOTDIR:-$HOME}/.zprezto/runcoms/zshrc
+source ~/.zshrc.local
 
 #*****************CURR_FILE_DIR*****************
 # Get directory of current script file, follow symlink if needed.
@@ -30,4 +31,3 @@ bindkey "^I" expand-or-complete-with-dots
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-source ~/.zshrc.local
