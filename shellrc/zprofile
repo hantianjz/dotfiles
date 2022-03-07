@@ -11,3 +11,4 @@ source ${ZDOTDIR:-$HOME}/.zprezto/runcoms/zprofile
 
 unset CURR_FILE_DIR
 
+source ${HOME}/.zprofile.local
