@@ -14,3 +14,5 @@ GTAGS
 .ccls-cache
 .ccls
 .cache
+
+.fdignore

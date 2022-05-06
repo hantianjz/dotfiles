@@ -21,8 +21,6 @@ nnoremap <leader>s <cmd>lua require('telescope.builtin').live_grep()<cr>
 nnoremap <leader>b <cmd>lua require('telescope.builtin').buffers()<cr>
 nnoremap <leader>lf <cmd>lua require('telescope.builtin').lsp_references()<cr>
 nnoremap <leader>ld <cmd>lua require('telescope.builtin').lsp_definitions()<cr>
-nnoremap <leader>lt <cmd>lua require('telescope.builtin').lsp_type_definitions()<cr>
-nnoremap <leader>li <cmd>lua require('telescope.builtin').lsp_implementations()<cr>
 endfunction
 
 augroup TelescopeSetup

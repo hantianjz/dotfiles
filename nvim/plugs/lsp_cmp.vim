@@ -80,8 +80,8 @@ nvim_lsp.ccls.setup{
     };
   },
   cmd = { "ccls" },
-  filetypes = {"c", "cc", "cpp", "h"},
-  root_dir = nvim_lsp.util.root_pattern("compile_commands.json"),
+  filetypes = {"cc", "c", "cpp", "h"},
+  root_dir = nvim_lsp.util.root_pattern("compile_commands.json", ".ccls", ".git", ".gn"),
   capabilities = capabilities
 }
 

@@ -87,7 +87,7 @@ source ~/.config/nvim/plugs/duoduo.vim
 source ~/.config/nvim/plugs/easyclip.vim
 source ~/.config/nvim/plugs/gitgutter.vim
 source ~/.config/nvim/plugs/gn.vim
-source ~/.config/nvim/plugs/gutentags.vim
+" source ~/.config/nvim/plugs/gutentags.vim
 source ~/.config/nvim/plugs/lsp_cmp.vim
 source ~/.config/nvim/plugs/rust.vim
 source ~/.config/nvim/plugs/semantic_highlight.vim
@@ -116,6 +116,4 @@ autocmd BufRead,BufNewFile *.def set filetype=c
 autocmd BufRead,BufNewFile *.ino set filetype=c
 autocmd BufRead,BufNewFile *.i set filetype=c
 autocmd BufRead,BufNewFile *.groovy set filetype=java
-autocmd BufRead,BufNewFile *.py set filetype=python nospell
-
-autocmd BufRead,BufNewFile *.md set filetype=markdown spell
+autocmd FileType help setlocal nospell
