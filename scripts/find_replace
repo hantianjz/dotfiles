@@ -5,6 +5,5 @@ echo "Seeking $FIND_STR Replacing $REPLACE_STR"
 while IFS= read -r line
 do
   echo $line
-  # sed -e "s/${FIND_STR}/${REPLACE_STR}/g" -i"" ${line}
-  sed -i '' -e "s/${FIND_STR}/${REPLACE_STR}/g" ${line}
+  sed -i '' -e "s/${FIND_STR}/${REPLACE_STR}/g" "${line}"
 done < <(rg -l "${FIND_STR}")
