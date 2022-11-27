@@ -34,7 +34,7 @@
     ~/.tmux: tmux
 
     # X
-    ~/.Xresources: 
+    ~/.Xresources:
         if: '[ `uname` = Linux ]'
         path: Xresources
     ~/.xsessionrc:
@@ -42,7 +42,7 @@
         path: xsessionrc
 
     # Config - Linux
-    ~/.config/autorandr: 
+    ~/.config/autorandr:
         if: '[ `uname` = Linux ]'
         path: config/autorandr
     ~/.config/i3/config:
@@ -76,11 +76,16 @@
     # Prezto
     ~/.zprezto: prezto
 
+    # Zsh Shell completion
+    ~/.local/share/zsh/site-functions:
+        create: true
+        path: share/zsh/site-functions
+
     # Fzf
     ~/.fzf: fzf
 
     # Local Scripts
-    ~/bin/batch_find_replace: 
+    ~/bin/batch_find_replace:
         create: true
         path: scripts/batch_find_replace
     ~/bin/find_replace: scripts/find_replace
