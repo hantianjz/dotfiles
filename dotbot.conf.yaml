@@ -3,7 +3,6 @@
       relink: true
 
 - clean: ['~']
-
 - shell:
   - [mkdir -p ~/bin/, make local bin folder]
   - [git submodule update --init --recursive, Installing submodules]
@@ -95,6 +94,7 @@
     ~/.gdbinit: gdbinit
 
 - shell:
+  - [cp fonts/*.ttf ~/Library/Fonts ]
   - [~/.tmux/plugins/tpm/scripts/install_plugins.sh >/dev/null 2>&1, Installing tmux plugins]
   - ["nvim +PlugUpdate +PlugClean! +qa", Installing and updating plugins]
   - [mkdir -p ~/.vim/backup, Create vim backup folder]
