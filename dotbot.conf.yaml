@@ -72,6 +72,16 @@
         create: true
         path: config/kitty/kitty_darwin.conf
 
+    ~/.skhdrc:
+        if: '[ `uname` = Darwin ]'
+        create: true
+        path: config/skhd/skhdrc
+
+    ~/.yabairc:
+        if: '[ `uname` = Darwin ]'
+        create: true
+        path: config/yabai/yabairc
+
     # Prezto
     ~/.zprezto: prezto
 
