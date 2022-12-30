@@ -8,10 +8,17 @@
 - rofi
 - polybar
 - nnn
-- fd-find
-- ripgrep
 - fzf
 - git
 
 # Setup PATH
 - python local pip executable
+
+# Rust Cargo installs
+bat
+cargo-update
+diskus
+fd-find
+gping
+hexyl
+ripgrep
