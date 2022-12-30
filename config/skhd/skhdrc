@@ -23,18 +23,18 @@ cmd + shift - 0 : yabai -m space --balance
 # alt - n : yabai -m window --focus stack.prev || yabai -m window --focus north
 
 # forwards
-cmd + shift - n : yabai -m query --spaces --space \
-            | jq -re ".index" \
-            | xargs -I{} yabai -m query --windows --space {} \
-            | jq -sre "add | map(select(.minimized != 1)) | sort_by(.display, .frame.y, .frame.x, .id) | reverse | nth(index(map(select(.focused == 1))) - 1).id" \
+# cmd + shift - n : yabai -m query --spaces --space \
+#             | jq -re ".index" \
+#             | xargs -I{} yabai -m query --windows --space {} \
+#             | jq -sre "add | map(select(.minimized != 1)) | sort_by(.display, .frame.y, .frame.x, .id) | reverse | nth(index(map(select(.focused == 1))) - 1).id" \
             | xargs -I{} yabai -m window --focus {}
 
 # backwards
-cmd + shift - m : yabai -m query --spaces --space \
-            | jq -re ".index" \
-            | xargs -I{} yabai -m query --windows --space {} \
-            | jq -sre "add | map(select(.minimized != 1)) | sort_by(.display, .frame.y, .frame.y, .id) | nth(index(map(select(.focused == 1))) - 1).id" \
-            | xargs -I{} yabai -m window --focus {}
+# cmd + shift - m : yabai -m query --spaces --space \
+#             | jq -re ".index" \
+#             | xargs -I{} yabai -m query --windows --space {} \
+#             | jq -sre "add | map(select(.minimized != 1)) | sort_by(.display, .frame.y, .frame.y, .id) | nth(index(map(select(.focused == 1))) - 1).id" \
+#             | xargs -I{} yabai -m window --focus {}
 
 # go back to previous workspace (kind of like back_and_forth in i3)
 cmd - b : yabai -m space --focus recent
