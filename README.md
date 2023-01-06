@@ -1,4 +1,6 @@
 # Program to install
+- brew (macos)
+- rust-cargo
 - kitty
 - tmux
 - zsh
