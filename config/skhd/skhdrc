@@ -27,7 +27,7 @@ cmd + shift - 0 : yabai -m space --balance
 #             | jq -re ".index" \
 #             | xargs -I{} yabai -m query --windows --space {} \
 #             | jq -sre "add | map(select(.minimized != 1)) | sort_by(.display, .frame.y, .frame.x, .id) | reverse | nth(index(map(select(.focused == 1))) - 1).id" \
-            | xargs -I{} yabai -m window --focus {}
+#             | xargs -I{} yabai -m window --focus {}
 
 # backwards
 # cmd + shift - m : yabai -m query --spaces --space \
