@@ -24,3 +24,8 @@ fd-find
 gping
 hexyl
 ripgrep
+
+# Brew install (macos)
+`brew install koekeishiya/formulae/yabai`
+- https://github.com/koekeishiya/yabai/wiki/Installing-yabai-(latest-release)
+`brew install koekeishiya/formulae/skhd`
