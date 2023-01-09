@@ -1,8 +1,8 @@
 # change focus
-cmd - h : yabai -m window --focus west
-cmd - j : yabai -m window --focus south
-cmd - k : yabai -m window --focus north
-cmd - l : yabai -m window --focus east
+cmd + shift - h : yabai -m window --focus west
+cmd + shift - j : yabai -m window --focus south
+cmd + shift - k : yabai -m window --focus north
+cmd + shift - l : yabai -m window --focus east
 
 # # mirror tree y-axis
 cmd + shift - s : yabai -m space --mirror y-axis
@@ -17,31 +17,6 @@ cmd + shift - 0 : yabai -m space --balance
 # cmd - e : yabai -m space --layout bsp
 # cmd - l : yabai -m space --layout float
 # cmd - s : yabai -m space --layout stack
-
-# cycle through stack windows
-# alt - p : yabai -m window --focus stack.next || yabai -m window --focus south
-# alt - n : yabai -m window --focus stack.prev || yabai -m window --focus north
-
-# forwards
-# cmd + shift - n : yabai -m query --spaces --space \
-#             | jq -re ".index" \
-#             | xargs -I{} yabai -m query --windows --space {} \
-#             | jq -sre "add | map(select(.minimized != 1)) | sort_by(.display, .frame.y, .frame.x, .id) | reverse | nth(index(map(select(.focused == 1))) - 1).id" \
-#             | xargs -I{} yabai -m window --focus {}
-
-# backwards
-# cmd + shift - m : yabai -m query --spaces --space \
-#             | jq -re ".index" \
-#             | xargs -I{} yabai -m query --windows --space {} \
-#             | jq -sre "add | map(select(.minimized != 1)) | sort_by(.display, .frame.y, .frame.y, .id) | nth(index(map(select(.focused == 1))) - 1).id" \
-#             | xargs -I{} yabai -m window --focus {}
-
-# go back to previous workspace (kind of like back_and_forth in i3)
-cmd - b : yabai -m space --focus recent
-
-# move focused window to previous workspace
-cmd + shift - b : yabai -m window --space recent; \
-                  yabai -m space --focus recent
 
 # move focused window to next/prev workspace
 cmd + shift - 1 : yabai -m window --space 1
