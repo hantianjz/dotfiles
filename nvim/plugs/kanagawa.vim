@@ -1,11 +1,11 @@
 Plug 'rebelot/kanagawa.nvim'
 
 
-function kanagawaSetup()
+function KanagawaSetup()
 colorscheme kanagawa
 endfunction
 
-augroup DuoduoSetup
+augroup KanagawaSetup
     autocmd!
-    autocmd User PlugLoaded call kanagawaSetup()
+    autocmd User PlugLoaded call KanagawaSetup()
 augroup END
