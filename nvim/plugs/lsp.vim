@@ -1,15 +1,19 @@
 Plug 'L3MON4D3/LuaSnip'
 Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-calc'
+Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/nvim-cmp'
+Plug 'hrsh7th/vim-vsnip'
+Plug 'hrsh7th/vim-vsnip-integ'
 Plug 'neovim/nvim-lspconfig'
+Plug 'onsails/lspkind.nvim'
+Plug 'p00f/clangd_extensions.nvim'
 Plug 'pappasam/jedi-language-server'
 Plug 'saadparwaiz1/cmp_luasnip'
-Plug 'p00f/clangd_extensions.nvim'
-Plug 'williamboman/mason.nvim'
 Plug 'williamboman/mason-lspconfig.nvim'
-Plug 'onsails/lspkind.nvim'
+Plug 'williamboman/mason.nvim'
 
 
 function LspCmpSetup()
