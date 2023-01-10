@@ -1,1 +1,1 @@
-Plug 'kalcutter/vim-gn'
+Plug 'https://gn.googlesource.com/gn', { 'rtp': 'misc/vim' }

@@ -79,15 +79,14 @@ endif
 
 call plug#begin(data_dir . '/plugins')
 
-" source ~/.config/nvim/plugs/duoduo.vim
-source ~/.config/nvim/plugs/airline.vim
+source ~/.config/nvim/plugs/kanagawa.vim
+source ~/.config/nvim/plugs/lualine.vim
 source ~/.config/nvim/plugs/buffer_bye.vim
 source ~/.config/nvim/plugs/codefmt.vim
 source ~/.config/nvim/plugs/devicons.vim
 source ~/.config/nvim/plugs/easyclip.vim
 source ~/.config/nvim/plugs/gitgutter.vim
 source ~/.config/nvim/plugs/gn.vim
-source ~/.config/nvim/plugs/kanagawa.vim
 source ~/.config/nvim/plugs/lsp.vim
 source ~/.config/nvim/plugs/rust.vim
 source ~/.config/nvim/plugs/semantic_highlight.vim

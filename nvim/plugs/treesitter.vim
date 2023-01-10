@@ -1,5 +1,4 @@
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-Plug 'kyazdani42/nvim-tree.lua'
 Plug 'ray-x/cmp-treesitter'
 
 
@@ -7,7 +6,7 @@ function TreesitterSetup()
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
   highlight = {
-    enable = true,
+    enable = false,
     disable = {},
   },
 
@@ -26,13 +25,6 @@ require'nvim-treesitter.configs'.setup {
   },
 
   auto_install = true,
-}
-
-require'nvim-tree'.setup{
-  view = {
-    width = 40,
-    preserve_window_proportions = true
-  },
 }
 
 EOF

@@ -103,6 +103,7 @@ require('mason-lspconfig').setup{
 }
 
 local caps = require('cmp_nvim_lsp').default_capabilities()
+local util = require("lspconfig/util")
 
 require'mason-lspconfig'.setup_handlers{
     function (server_name) -- default handler (optional)
@@ -134,8 +135,10 @@ require'mason-lspconfig'.setup_handlers{
       end
 }
 
---require'lspconfig'.jedi_language_server.setup{}
 EOF
+
+nmap <leader>h :ClangdSwitchSourceHeader<CR>
+
 endfunction
 
 augroup LspCmpSetup
