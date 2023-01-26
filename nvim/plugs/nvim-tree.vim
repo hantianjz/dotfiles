@@ -2,10 +2,10 @@ Plug 'kyazdani42/nvim-tree.lua'
 
 function NvimTreeSetup()
 lua <<EOF
+
 require'nvim-tree'.setup{
-  view = {
-    width = 40,
-    preserve_window_proportions = true
+  filters = {
+    dotfiles = true,
   },
 }
 

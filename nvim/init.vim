@@ -66,6 +66,9 @@ cnoremap w!! %!sudo tee > /dev/null %
 " xxd
 noremap <leader>x :%! xxd<cr>
 noremap <leader>X :%! xxd -r<cr>
+
+" Go back to previous file
+nnoremap <Leader><Leader> <C-^>
 "--------------------------------------------------------------------------
 " Plugins
 "--------------------------------------------------------------------------
@@ -79,15 +82,15 @@ endif
 
 call plug#begin(data_dir . '/plugins')
 
-source ~/.config/nvim/plugs/kanagawa.vim
-source ~/.config/nvim/plugs/lualine.vim
 source ~/.config/nvim/plugs/buffer_bye.vim
 source ~/.config/nvim/plugs/codefmt.vim
 source ~/.config/nvim/plugs/devicons.vim
 source ~/.config/nvim/plugs/easyclip.vim
 source ~/.config/nvim/plugs/gitgutter.vim
 source ~/.config/nvim/plugs/gn.vim
+source ~/.config/nvim/plugs/kanagawa.vim
 source ~/.config/nvim/plugs/lsp.vim
+source ~/.config/nvim/plugs/lualine.vim
 source ~/.config/nvim/plugs/rust.vim
 source ~/.config/nvim/plugs/semantic_highlight.vim
 source ~/.config/nvim/plugs/telescope.vim

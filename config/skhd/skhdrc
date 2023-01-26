@@ -14,9 +14,9 @@ cmd + shift - x : yabai -m space --mirror x-axis
 cmd + shift - 0 : yabai -m space --balance
 
 # change layout of desktop
-# cmd - e : yabai -m space --layout bsp
-# cmd - l : yabai -m space --layout float
-# cmd - s : yabai -m space --layout stack
+cmd + shift + ctrl - e : yabai -m space --layout bsp
+cmd + shift + ctrl - f : yabai -m space --layout float
+cmd + shift + ctrl - s : yabai -m space --layout stack
 
 # move focused window to next/prev workspace
 cmd + shift - 1 : yabai -m window --space 1

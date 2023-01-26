@@ -116,7 +116,7 @@ require'mason-lspconfig'.setup_handlers{
           handlers = {
             ['textDocument/publishDiagnostics'] = vim.lsp.with(
               vim.lsp.diagnostic.on_publish_diagnostics, {
-                signs = true,
+                signs = false,
                 underline = true,
                 update_in_insert = false,
                 virtual_text = true,
