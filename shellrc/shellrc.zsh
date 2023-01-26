@@ -15,3 +15,7 @@ if exist tmuxinator; then
 fi
 
 unset CURR_FILE_DIR
+
+if exist direnv; then
+  eval "$(direnv hook zsh)"
+fi
