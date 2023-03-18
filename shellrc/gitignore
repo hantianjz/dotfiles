@@ -17,3 +17,4 @@ GTAGS
 
 .fdignore
 *.jlink
+.envrc

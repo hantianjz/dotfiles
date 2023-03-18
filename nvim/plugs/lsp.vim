@@ -96,6 +96,7 @@ require('mason-lspconfig').setup{
     'bashls',
     'clangd',
     'jsonls',
+    'tsserver',
     'sumneko_lua',
     'pyright',
     'vimls',
@@ -113,6 +114,8 @@ require'mason-lspconfig'.setup_handlers{
     ['clangd'] = function()
         require'lspconfig'.clangd.setup{
           capabilities = caps,
+          cmd = {"clangd"},
+          single_file_support = false,
           handlers = {
             ['textDocument/publishDiagnostics'] = vim.lsp.with(
               vim.lsp.diagnostic.on_publish_diagnostics, {
