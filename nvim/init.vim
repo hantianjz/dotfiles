@@ -120,3 +120,10 @@ autocmd BufRead,BufNewFile *.ino set filetype=c
 autocmd BufRead,BufNewFile *.i set filetype=c
 autocmd BufRead,BufNewFile *.groovy set filetype=java
 autocmd FileType help setlocal nospell
+
+lua <<EOF
+  -- Hide all semantic highlights
+  for _, group in ipairs(vim.fn.getcompletion("@lsp", "highlight")) do
+    vim.api.nvim_set_hl(0, group, {})
+  end
+EOF
