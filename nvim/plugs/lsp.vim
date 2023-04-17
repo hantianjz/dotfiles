@@ -13,7 +13,7 @@ Plug 'p00f/clangd_extensions.nvim'
 Plug 'pappasam/jedi-language-server'
 Plug 'saadparwaiz1/cmp_luasnip'
 Plug 'williamboman/mason-lspconfig.nvim'
-Plug 'williamboman/mason.nvim'
+Plug 'williamboman/mason.nvim', { 'do': ':MasonUpdate' }
 
 
 function LspCmpSetup()
@@ -97,9 +97,9 @@ require('mason-lspconfig').setup{
     'clangd',
     'jsonls',
     'tsserver',
-    'sumneko_lua',
     'pyright',
     'vimls',
+    "lua_ls"
   }
 }
 
