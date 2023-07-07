@@ -29,3 +29,5 @@ ripgrep
 - `brew install koekeishiya/formulae/yabai`
 - https://github.com/koekeishiya/yabai/wiki/Installing-yabai-(latest-release)
 - `brew install koekeishiya/formulae/skhd`
+- `brew install wader/tap/fq`
+- `brew install jq`

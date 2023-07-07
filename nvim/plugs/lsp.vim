@@ -119,7 +119,7 @@ require'mason-lspconfig'.setup_handlers{
           handlers = {
             ['textDocument/publishDiagnostics'] = vim.lsp.with(
               vim.lsp.diagnostic.on_publish_diagnostics, {
-                signs = false,
+                signs = true,
                 underline = true,
                 update_in_insert = false,
                 virtual_text = true,
@@ -137,6 +137,8 @@ require'mason-lspconfig'.setup_handlers{
         }
       end
 }
+
+vim.lsp.set_log_level("off") -- "debug" or "trace"
 
 EOF
 
