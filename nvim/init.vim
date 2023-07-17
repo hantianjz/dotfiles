@@ -84,7 +84,7 @@ endif
 call plug#begin(data_dir . '/plugins')
 
 source ~/.config/nvim/plugs/buffer_bye.vim
-source ~/.config/nvim/plugs/codefmt.vim
+" source ~/.config/nvim/plugs/codefmt.vim
 source ~/.config/nvim/plugs/devicons.vim
 source ~/.config/nvim/plugs/easyclip.vim
 source ~/.config/nvim/plugs/gitgutter.vim

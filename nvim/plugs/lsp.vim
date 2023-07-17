@@ -143,6 +143,8 @@ vim.lsp.set_log_level("off") -- "debug" or "trace"
 EOF
 
 nmap <leader>h :ClangdSwitchSourceHeader<CR>
+nmap <leader>f :lua vim.lsp.buf.format()<CR>
+nmap <leader>R :lua vim.lsp.buf.rename()<CR>
 
 endfunction
 
