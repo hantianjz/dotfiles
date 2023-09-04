@@ -27,6 +27,7 @@
     ~/.zprofile: shellrc/zprofile
     ~/.zshenv: shellrc/zshenv
     ~/.zshrc: shellrc/zshrc
+    ~/.zsh-completions: shellrc/zsh-completions
 
     # TMUX
     ~/.tmux.conf: tmux.conf

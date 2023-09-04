@@ -1,0 +1,7 @@
+#compdef tmux-from-session-name
+
+_tmux_session() {
+  _alternative "sessions:Current tmux sessions:($(tmux list-sessions -F '#{session_name}'))"
+}
+
+_tmux_session

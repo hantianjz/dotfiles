@@ -29,3 +29,7 @@ zle -N expand-or-complete-with-dots
 bindkey "^I" expand-or-complete-with-dots
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# enable autocomplete function
+autoload -U compinit
+compinit
