@@ -133,7 +133,21 @@ require'mason-lspconfig'.setup_handlers{
         require'lspconfig'.pyright.setup{
           root_dir = function(...)
               return util.root_pattern('pyrightconfig.json')(...)
-          end
+          end,
+          on_attach = on_attach,
+          settings = {
+              pyright = {
+                autoImportCompletion = true,
+              },
+              python = {
+                analysis = {
+                autoSearchPaths = true,
+                diagnosticMode = 'openFilesOnly',
+                useLibraryCodeForTypes = true,
+                typeCheckingMode = 'off'
+              }
+            }
+          }
         }
       end
 }
