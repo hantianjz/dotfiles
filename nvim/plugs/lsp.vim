@@ -132,8 +132,8 @@ require'mason-lspconfig'.setup_handlers{
     ['pyright'] = function()
         require'lspconfig'.pyright.setup{
           root_dir = function(...)
-              return util.root_pattern('pyrightconfig.json')(...)
-          end,
+              return util.root_pattern('.git')(...)
+          end
           on_attach = on_attach,
           settings = {
               pyright = {
@@ -149,7 +149,32 @@ require'mason-lspconfig'.setup_handlers{
             }
           }
         }
-      end
+      end,
+
+    ["vimls"] = function ()
+             local lspconfig = require("lspconfig")
+             lspconfig.vimls.setup {}
+      end,
+
+    ["lua_ls"] = function ()
+             local lspconfig = require("lspconfig")
+             lspconfig.lua_ls.setup {
+                settings = {
+                    Lua = {
+                        format = {
+                          enable = true,
+                          defaultConfig = {
+              indent_style = "space",
+        indent_size = "2",
+      },
+                        },
+                        diagnostics = {
+                            globals = { "vim" }
+                        }
+                    }
+                }
+             }
+         end
 }
 
 vim.lsp.set_log_level("off") -- "debug" or "trace"
