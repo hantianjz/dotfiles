@@ -83,7 +83,6 @@ endif
 
 call plug#begin(data_dir . '/plugins')
 
-source ~/.config/nvim/plugs/semantic_highlight.vim
 source ~/.config/nvim/plugs/buffer_bye.vim
 source ~/.config/nvim/plugs/codefmt.vim
 source ~/.config/nvim/plugs/colorizer.vim
@@ -95,13 +94,13 @@ source ~/.config/nvim/plugs/kanagawa.vim
 source ~/.config/nvim/plugs/lsp.vim
 source ~/.config/nvim/plugs/lualine.vim
 source ~/.config/nvim/plugs/rust.vim
+source ~/.config/nvim/plugs/semhl.vim
 source ~/.config/nvim/plugs/telescope.vim
 source ~/.config/nvim/plugs/tmux.vim
 source ~/.config/nvim/plugs/tpope.vim
 source ~/.config/nvim/plugs/treesitter.vim
 source ~/.config/nvim/plugs/whitespace.vim
 source ~/.config/nvim/plugs/zig.vim
-Plug '~/Development/semantic-highlight.vim'
 
 call plug#end()
 doautocmd User PlugLoaded
@@ -124,8 +123,7 @@ autocmd BufRead,BufNewFile *.i set filetype=c
 autocmd BufRead,BufNewFile *.groovy set filetype=java
 autocmd FileType help setlocal nospell
 
-" noremap <leader>r :source %<cr>
-noremap <leader>in :Inspect<cr>
+source ~/.config/nvim/globals.lua
 
 lua <<EOF
   -- Hide all semantic highlights
@@ -133,12 +131,3 @@ lua <<EOF
     vim.api.nvim_set_hl(0, group, {})
   end
 EOF
-
-lua <<EOF
-  -- Development helper
-  P = function(v)
-    print(vim.inspect(v))
-    return v
-  end
-EOF
-
