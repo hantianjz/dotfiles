@@ -2,7 +2,7 @@ Plug 'hantianjz/semhl.nvim'
 
 function SemhlSetup()
 lua << EOF
-require("semhl").setup({ "c", "h", "python", "lua" })
+require("semhl").setup({ "c", "cpp", "h", "python", "lua" })
 EOF
 endfunction
 
