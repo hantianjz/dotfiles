@@ -133,7 +133,7 @@ require'mason-lspconfig'.setup_handlers{
         require'lspconfig'.pyright.setup{
           root_dir = function(...)
               return util.root_pattern('.git')(...)
-          end
+          end,
           on_attach = on_attach,
           settings = {
               pyright = {
@@ -160,13 +160,13 @@ require'mason-lspconfig'.setup_handlers{
              local lspconfig = require("lspconfig")
              lspconfig.lua_ls.setup {
                 settings = {
-                    Lua = {
+                    lua = {
                         format = {
                           enable = true,
                           defaultConfig = {
-              indent_style = "space",
-        indent_size = "2",
-      },
+                            indent_style = "space",
+                            indent_size = "2",
+                          },
                         },
                         diagnostics = {
                             globals = { "vim" }
