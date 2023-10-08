@@ -160,7 +160,7 @@ require'mason-lspconfig'.setup_handlers{
              local lspconfig = require("lspconfig")
              lspconfig.lua_ls.setup {
                 settings = {
-                    lua = {
+                    Lua = {
                         format = {
                           enable = true,
                           defaultConfig = {
