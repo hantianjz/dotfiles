@@ -31,3 +31,22 @@ ripgrep
 - `brew install koekeishiya/formulae/skhd`
 - `brew install wader/tap/fq`
 - `brew install jq`
+
+# TODO
+- [ ] Update vimrc allow temp disable linting $dotfile
+    - By repo
+    - or by nearby config file
+- [ ] Setup tmux layout configurations $dotfile
+    - For split view with 2 pane
+    - for half view with 3 pane + more
+    - for focus on vim, detect pane type and place in correct layout
+- [ ] Fix python3 paths $dotfile
+    - also `python` alias 
+- [ ] build a pip install list $dotfile
+- [ ] need a refresh checklist, and maybe script $dotfile
+    - Update vim plugins
+    - `cargo install-update -a`
+    - brew upgrade
+    - update kitty
+    - update prezeto
+
