@@ -24,10 +24,6 @@ local nvim_lsp = require('lspconfig')
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
 
--- lsp
-vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-  vim.lsp.diagnostic.on_publish_diagnostics, { update_in_insert = false }
-)
 
 -- luasnip setup
 local luasnip = require 'luasnip'
@@ -122,7 +118,7 @@ require'mason-lspconfig'.setup_handlers{
                 signs = true,
                 underline = true,
                 update_in_insert = false,
-                virtual_text = true,
+                virtual_text = false,
               }
             ),
           }
@@ -179,10 +175,30 @@ require'mason-lspconfig'.setup_handlers{
 
 vim.lsp.set_log_level("off") -- "debug" or "trace"
 
+local diag_float_config = {
+  scope = "cursor",
+  header = false,
+  border = 'rounded',
+  focusable = false,
+}
+
+-- lsp
+vim.diagnostic.config({
+virtual_text = false,
+float = diag_float_config
+})
+
+vim.api.nvim_create_autocmd({'CursorHold', 'CursorHoldI'}, {
+  pattern = '*',
+  callback = function()
+    vim.diagnostic.open_float(nil, diag_float_config)
+  end
+})
+
+
 EOF
 
 nmap <leader>h :ClangdSwitchSourceHeader<CR>
-nmap <leader>f :lua vim.lsp.buf.format()<CR>
 nmap <leader>R :lua vim.lsp.buf.rename()<CR>
 
 endfunction
