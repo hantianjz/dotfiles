@@ -191,13 +191,21 @@ float = diag_float_config
 vim.api.nvim_create_autocmd({'CursorHold', 'CursorHoldI'}, {
   pattern = '*',
   callback = function()
-    vim.diagnostic.open_float(nil, diag_float_config)
+    vim.diagnostic.open_float()
+  end
+})
+
+vim.api.nvim_create_autocmd({'CursorHoldI'}, {
+  pattern = '*',
+  callback = function()
+    vim.lsp.buf.signature_help()
   end
 })
 
 
 EOF
 
+nmap <leader>f :lua vim.diagnostic.open_float()<CR>
 nmap <leader>h :ClangdSwitchSourceHeader<CR>
 nmap <leader>R :lua vim.lsp.buf.rename()<CR>
 
