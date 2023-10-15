@@ -46,7 +46,7 @@ set backupdir=~/.vim/backup/
 set backupcopy=auto                                          " see :help crontab
 set noswapfile
 set spell
-set updatetime=1000
+set updatetime=500
 
 " enable syntax highlighting
 syntax enable
