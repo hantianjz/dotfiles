@@ -14,8 +14,8 @@ GTAGS
 .ccls-cache
 .ccls
 .cache
-
 .fdignore
+.rgignore
 *.jlink
 .envrc
 b

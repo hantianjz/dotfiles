@@ -28,7 +28,11 @@ expand-or-complete-with-dots() {      # This bunch of code displays red dots whe
 zle -N expand-or-complete-with-dots
 bindkey "^I" expand-or-complete-with-dots
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+if [ -f ~/.fzf.zsh ]; then
+  export FZF_DEFAULT_COMMAND='fd --type file'
+  export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+  source ~/.fzf.zsh
+fi
 
 # enable autocomplete function
 autoload -U compinit

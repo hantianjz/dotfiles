@@ -205,7 +205,7 @@ vim.api.nvim_create_autocmd({'CursorHoldI'}, {
 
 EOF
 
-nmap <leader>f :lua vim.diagnostic.open_float()<CR>
+nmap <leader>e :lua vim.diagnostic.open_float()<CR>
 nmap <leader>h :ClangdSwitchSourceHeader<CR>
 nmap <leader>R :lua vim.lsp.buf.rename()<CR>
 
