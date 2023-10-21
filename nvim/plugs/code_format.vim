@@ -5,19 +5,20 @@ lua << EOF
 require("conform").setup({
     formatters_by_ft = {
         python = { "black" },
+        sh = { "shfmt" },
     }
 })
 
 vim.api.nvim_create_autocmd("BufWritePre", {
     pattern = "*",
     callback = function(args)
-        require("conform").format({ bufnr = args.buf })
+        require("conform").format({ bufnr = args.buf, lsp_fallback = true})
     end,
 })
 EOF
 endfunction
 
-nmap <leader>f :lua require("conform").format()<CR>
+nmap <leader>f :lua require("conform").format({lsp_fallback = true})<CR>
 
 augroup ConformSetup
     autocmd!
