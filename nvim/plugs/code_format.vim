@@ -1,4 +1,4 @@
-Plug 'stevearc/conform.nvim'
+Plug 'hantianjz/conform.nvim'
 
 function ConformSetup()
 lua << EOF
