@@ -109,9 +109,12 @@ require'mason-lspconfig'.setup_handlers{
 
     ['clangd'] = function()
         require'lspconfig'.clangd.setup{
+          root_dir = function(...)
+              return util.root_pattern('.git')(...)
+          end,
           capabilities = caps,
           cmd = {"clangd"},
-          single_file_support = false,
+          single_file_support = true,
           handlers = {
             ['textDocument/publishDiagnostics'] = vim.lsp.with(
               vim.lsp.diagnostic.on_publish_diagnostics, {
