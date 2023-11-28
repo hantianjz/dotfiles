@@ -33,6 +33,7 @@ ripgrep
 - `brew install jq`
 - `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
 - `curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin`
+- `brew install git-lfs && git lfs install`
 
 # TODO
 - [ ] Update vimrc allow temp disable linting $dotfile
