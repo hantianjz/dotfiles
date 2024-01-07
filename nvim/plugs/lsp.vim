@@ -167,9 +167,15 @@ require'mason-lspconfig'.setup_handlers{
                             indent_size = "2",
                           },
                         },
-                        diagnostics = {
-                            globals = { "vim" }
-                        }
+                        runtime = {
+                          version = 'LuaJIT'
+                        },
+                        workspace = {
+                          checkThirdParty = false,
+                          library = {
+                            vim.env.VIMRUNTIME
+                          }
+                        },
                     }
                 }
              }
