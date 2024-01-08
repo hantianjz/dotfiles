@@ -4,6 +4,7 @@ function ConformSetup()
 lua << EOF
 require("conform").setup({
     formatters_by_ft = {
+        c = { "clang-format" },
         python = { "black" },
         sh = { "shfmt" },
         gn = { "gn" },
