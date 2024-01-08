@@ -1,4 +1,4 @@
-Plug 'kyazdani42/nvim-web-devicons'
+Plug 'nvim-tree/nvim-web-devicons'
 
 function WebDeviconsSetup()
 lua << EOF
