@@ -1,7 +1,7 @@
 Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
 
 function CatppuccinSetup()
-colorscheme catppuccin " catppuccin-latte, catppuccin-frappe, catppuccin-macchiato, catppuccin-mocha
+colorscheme catppuccin-mocha " catppuccin-latte, catppuccin-frappe, catppuccin-macchiato, catppuccin-mocha
 lua << EOF
 EOF
 endfunction

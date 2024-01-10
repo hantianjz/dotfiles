@@ -91,11 +91,10 @@ source ~/.config/nvim/plugs/devicons.vim
 source ~/.config/nvim/plugs/easyclip.vim
 source ~/.config/nvim/plugs/gitgutter.vim
 source ~/.config/nvim/plugs/gn.vim
-" source ~/.config/nvim/plugs/kanagawa.vim
 source ~/.config/nvim/plugs/lsp.vim
 source ~/.config/nvim/plugs/lualine.vim
 source ~/.config/nvim/plugs/rust.vim
-source ~/.config/nvim/plugs/semhl.vim
+" source ~/.config/nvim/plugs/semhl.vim
 source ~/.config/nvim/plugs/telescope.vim
 source ~/.config/nvim/plugs/tmux.vim
 source ~/.config/nvim/plugs/tpope.vim
@@ -127,9 +126,9 @@ autocmd FileType help setlocal nospell
 
 source ~/.config/nvim/globals.lua
 
-lua <<EOF
-  -- Hide all semantic highlights
-  for _, group in ipairs(vim.fn.getcompletion("@lsp", "highlight")) do
-    vim.api.nvim_set_hl(0, group, {})
-  end
-EOF
+" lua <<EOF
+"   -- Hide all semantic highlights
+"   for _, group in ipairs(vim.fn.getcompletion("@lsp", "highlight")) do
+"     vim.api.nvim_set_hl(0, group, {})
+"   end
+" EOF
