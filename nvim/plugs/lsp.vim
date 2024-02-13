@@ -207,7 +207,9 @@ vim.api.nvim_create_autocmd({'CursorHold', 'CursorHoldI'}, {
 vim.api.nvim_create_autocmd({'CursorHoldI'}, {
   pattern = '*',
   callback = function()
-    vim.lsp.buf.signature_help()
+    if vim.bo.filetype ~= 'TelescopePrompt' and vim.bo.filetype ~= 'gitcommit' then
+      vim.lsp.buf.signature_help()
+    end
   end
 })
 

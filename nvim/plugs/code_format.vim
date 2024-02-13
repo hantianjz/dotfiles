@@ -10,6 +10,7 @@ require("conform").setup({
         gn = { "gn" },
         zig = { "zigfmt" },
         rust = { "rustfmt" },
+        typescript = { "prettier" },
     }
 })
 
