@@ -89,7 +89,6 @@
         path: scripts/batch_find_replace
     ~/bin/find_replace: scripts/find_replace
     ~/bin/grb: scripts/grb
-    ~/bin/shfmt: scripts/shfmt
 
     ~/.gdbinit: gdbinit
 
