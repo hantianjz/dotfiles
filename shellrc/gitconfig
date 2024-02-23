@@ -6,33 +6,45 @@
 [diff]
   renames = true
   compactionHeuristic = true
+  colorMoved = default
+  algorithm = histogram
 [status]
   showUntrackedFiles = all
+  submoduleSummary = true
+[init]
+  defaultBranch = main
+[commit]
+  verbose = true
+[help]
+  autocorrect = prompt
 [alias]
   files = !git diff --name-only $(git merge-base HEAD \"${REVIEW_BASE:-master}\")
   stat = !git diff --stat $(git merge-base HEAD \"${REVIEW_BASE:-master}\")
   # NOTE: These aliases depend on the `git files` alias from
   # a few sections ago!
-
 [branch]
   autosetupmerge = true
 [merge]
   summary = true
-  conflictstyle = diff3
+  conflictstyle = zdiff3
 [rebase]
   autosquash = true
+  autostash = true
 [color]
   diff = auto
   status = auto
   branch = auto
   interactive = auto
   ui = true
+  submodule = log
+[submodule]
+  recurse = true
 [core]
   excludesfile = ~/.gitignore
   editor = nvim
   pager = diff-highlight | less --tabs=4 -RFX
 [rerere]
-  enabled = 1
+  enabled = true
 [pull]
   rebase = true
 [include]
