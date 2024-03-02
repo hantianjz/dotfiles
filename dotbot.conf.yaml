@@ -89,6 +89,9 @@
         path: scripts/batch_find_replace
     ~/bin/find_replace: scripts/find_replace
     ~/bin/grb: scripts/grb
+    ~/bin/display_cycle.sh: scripts/display_cycle.sh
+
+        
 
     ~/.gdbinit: gdbinit
 
