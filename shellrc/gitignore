@@ -19,3 +19,4 @@ GTAGS
 *.jlink
 .envrc
 b
+.DS_Store
