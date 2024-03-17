@@ -37,8 +37,6 @@
   interactive = auto
   ui = true
   submodule = log
-[submodule]
-  recurse = true
 [core]
   excludesfile = ~/.gitignore
   editor = nvim
