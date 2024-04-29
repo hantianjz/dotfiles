@@ -56,6 +56,7 @@ alias gfr='git pull --rebase'
 
 # Index (i)
 alias gia='git add'
+alias gai='git add'
 alias gap='git add --patch'
 
 # Log (l)
