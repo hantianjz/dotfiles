@@ -44,4 +44,4 @@ cmd + shift - 9 : yabai -m window --space 9
 cmd + shift - 0 : yabai -m window --space 10
 
 # open terminal
-cmd - return : open -a iTerm
+cmd - return : /Applications/kitty.app/Contents/MacOS/kitty --single-instance -d ~
