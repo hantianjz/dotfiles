@@ -7,7 +7,7 @@ local filepath = vim.fn.expand('%:p:h')
 
 require('lualine').setup {
   options = {
-    theme = 'auto'
+    theme = 'catppuccin'
   },
   sections = {
     lualine_c = {
