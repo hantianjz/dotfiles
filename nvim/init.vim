@@ -101,7 +101,6 @@ source ~/.config/nvim/plugs/tpope.vim
 source ~/.config/nvim/plugs/treesitter.vim
 source ~/.config/nvim/plugs/whitespace.vim
 source ~/.config/nvim/plugs/zig.vim
-source ~/.config/nvim/plugs/obsidian.vim
 
 call plug#end()
 doautocmd User PlugLoaded
