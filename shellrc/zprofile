@@ -7,12 +7,24 @@ fi
 CURR_FILE_DIR="$(cd "$(dirname "${CURR_FILE}" )" && pwd )"
 #*****************CURR_FILE_DIR*****************
 
+function path_append () {
+  NEW_PATH=$1
+  if [[ "${PATH}" != *"${NEW_PATH}"* ]]; then
+    PATH="${PATH}:${NEW_PATH}"
+  fi
+  export PATH
+}
+
 export fpath=(~/.zsh-completions $fpath)
 
 source ${HOME}/.zprofile.local
 
 if [ -f "$HOME/.cargo/env" ]; then
 . "$HOME/.cargo/env"
+fi
+
+if [ -e "$HOME/go/bin" ]; then
+path_append "$HOME/go/bin"
 fi
 
 if (( ${+commands[bat]} )); then
