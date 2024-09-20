@@ -51,3 +51,5 @@ fi
 source ${ZDOTDIR:-$HOME}/.zprezto/runcoms/zprofile
 
 unset CURR_FILE_DIR
+
+path_append "/Users/james/.local/bin"
