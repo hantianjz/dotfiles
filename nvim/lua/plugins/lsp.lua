@@ -15,5 +15,5 @@ return {
   { 'pappasam/jedi-language-server' },
   { 'saadparwaiz1/cmp_luasnip' },
   { 'williamboman/mason-lspconfig.nvim' },
-  { 'williamboman/mason.nvim',          cmd = "MasonUpdate" },
+  { 'williamboman/mason.nvim',          build = ":MasonUpdate" },
 }
