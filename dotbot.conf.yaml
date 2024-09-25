@@ -13,7 +13,6 @@
 
     # VIM
     ~/.vim: nvim
-    ~/.init.vim: nvim/init.vim
     ~/.config/nvim: nvim
 
     # GIT
