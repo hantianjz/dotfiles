@@ -27,6 +27,19 @@ return {
       local caps = require('cmp_nvim_lsp').default_capabilities()
       local util = require("lspconfig/util")
 
+      local on_attach = function(_, bufnr)
+        local function buf_set_option(...)
+          vim.api.nvim_buf_set_option(bufnr, ...)
+        end
+
+        buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+        -- Mappings.
+        vim.keymap.set('n', 'lh', vim.lsp.buf.hover, {})
+        vim.keymap.set('n', 'lR', vim.lsp.buf.rename, {})
+        vim.keymap.set('n', 'le', vim.diagnostic.open_float, {})
+      end
+
       require 'mason-lspconfig'.setup_handlers {
         function(server_name) -- default handler (optional)
           require 'lspconfig'[server_name].setup { capabilities = caps }
@@ -39,6 +52,7 @@ return {
             end,
             capabilities = caps,
             cmd = { "clangd" },
+            on_attach = on_attach,
             single_file_support = true,
             handlers = {
               ['textDocument/publishDiagnostics'] = vim.lsp.with(
@@ -77,12 +91,22 @@ return {
 
         ["vimls"] = function()
           local lspconfig = require("lspconfig")
-          lspconfig.vimls.setup {}
+          lspconfig.vimls.setup {
+            on_attach = on_attach,
+          }
+        end,
+
+        ["ts_ls"] = function()
+          local lspconfig = require("lspconfig")
+          lspconfig.ts_ls.setup {
+            on_attach = on_attach,
+          }
         end,
 
         ["lua_ls"] = function()
           local lspconfig = require("lspconfig")
           lspconfig.lua_ls.setup {
+            on_attach = on_attach,
             settings = {
               Lua = {
                 format = {

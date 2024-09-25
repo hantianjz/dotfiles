@@ -12,7 +12,7 @@ return {
     { '<leader>ld', function() require('telescope.builtin').lsp_definitions() end },
     { '<leader>fh', function() require('telescope.builtin').help_tags() end },
   },
-  opts = function()
+  configs = function()
     local actions = require("telescope.actions")
 
     require("telescope").setup({

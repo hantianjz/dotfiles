@@ -3,8 +3,8 @@ return {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
     lazy = false,
-    opts = function()
-      return {
+    config = function()
+      require 'nvim-treesitter.configs'.setup {
         highlight = {
           enable = false,
           disable = {},
@@ -22,10 +22,11 @@ return {
           "lua",
           "python",
           "yaml",
+          "typescript"
         },
 
         auto_install = true,
-        sync_install = false,
+        sync_install = true,
       }
     end
   }

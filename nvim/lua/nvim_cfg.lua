@@ -52,8 +52,8 @@ vim.g.syntax_on = true
 
 local utils = require('utils')
 
-utils.map('n', '<leader><x>', [[:%! xxd<cr>]], { noremap = true })
-utils.map('n', '<leader><X>', [[:%! xxd -r<cr>]], { noremap = true })
+utils.map('n', '<leader>x', [[:%! xxd<cr>]], { noremap = true })
+utils.map('n', '<leader>X', [[:%! xxd -r<cr>]], { noremap = true })
 utils.map('n', '<leader><leader>', [[<C-^>]], { noremap = true })
 
 utils.create_augroup({
