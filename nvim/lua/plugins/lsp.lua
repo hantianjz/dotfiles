@@ -35,9 +35,10 @@ return {
         buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
 
         -- Mappings.
-        vim.keymap.set('n', 'lh', vim.lsp.buf.hover, {})
-        vim.keymap.set('n', 'lR', vim.lsp.buf.rename, {})
-        vim.keymap.set('n', 'le', vim.diagnostic.open_float, {})
+        local opts = { buffer = bufnr, noremap = true, silent = true }
+        vim.keymap.set('n', 'lh', vim.lsp.buf.hover, opts)
+        vim.keymap.set('n', 'lR', vim.lsp.buf.rename, opts)
+        vim.keymap.set('n', 'le', vim.diagnostic.open_float, opts)
       end
 
       require 'mason-lspconfig'.setup_handlers {
