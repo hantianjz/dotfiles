@@ -39,6 +39,7 @@ return {
         vim.keymap.set('n', 'lh', vim.lsp.buf.hover, opts)
         vim.keymap.set('n', 'lR', vim.lsp.buf.rename, opts)
         vim.keymap.set('n', 'le', vim.diagnostic.open_float, opts)
+        vim.keymap.set('n', 'la', vim.lsp.buf.code_action, opts)
       end
 
       require 'mason-lspconfig'.setup_handlers {
