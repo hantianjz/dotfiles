@@ -21,18 +21,15 @@ return {
           'pyright',
           'vimls',
           'lua_ls',
-          'ts_ls'
+          'ts_ls',
+          'ocamllsp'
         }
       }
       local caps = require('cmp_nvim_lsp').default_capabilities()
       local util = require("lspconfig/util")
 
       local on_attach = function(_, bufnr)
-        local function buf_set_option(...)
-          vim.api.nvim_buf_set_option(bufnr, ...)
-        end
-
-        buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+        vim.api.nvim_set_option_value('omnifunc', 'v:lua.vim.lsp.omnifunc', { buf = bufnr })
 
         -- Mappings.
         local opts = { buffer = bufnr, noremap = true, silent = true }
@@ -101,6 +98,13 @@ return {
         ["ts_ls"] = function()
           local lspconfig = require("lspconfig")
           lspconfig.ts_ls.setup {
+            on_attach = on_attach,
+          }
+        end,
+
+        ["ocamllsp"] = function()
+          local lspconfig = require("lspconfig")
+          lspconfig.ocamllsp.setup {
             on_attach = on_attach,
           }
         end,
