@@ -102,3 +102,4 @@
   - [touch ~/.zprofile.local, Touch local zshrc file]
   - [touch ~/.gitconfig_local, Touch local gitconfig file]
   - [~/.fzf/install --key-bindings --completion, Install FZF]
+  - [brew bundle install, Install brew files]
