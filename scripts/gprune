@@ -1,0 +1,2 @@
+#!/bin/bash
+git fetch -p && git branch -r | cut -d" " -f 3 | egrep -v -f /dev/fd/0 <(git branch -vv | grep origin) | cut -d" " -f 3 | xargs git branch -D

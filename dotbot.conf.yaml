@@ -28,6 +28,9 @@
     ~/.zshrc: shellrc/zshrc
     ~/.zsh-completions: shellrc/zsh-completions
 
+    # FISH
+    ~/.config/fish: fish
+
     # TMUX
     ~/.tmux.conf: tmux.conf
     ~/.tmux: tmux
@@ -66,11 +69,6 @@
         create: true
         path: config/skhd/skhdrc
 
-    ~/.yabairc:
-        if: '[ `uname` = Darwin ]'
-        create: true
-        path: config/yabai/yabairc
-
     # Prezto
     ~/.zprezto: prezto
 
@@ -88,9 +86,7 @@
         path: scripts/batch_find_replace
     ~/bin/find_replace: scripts/find_replace
     ~/bin/grb: scripts/grb
-    ~/bin/display_cycle.sh: scripts/display_cycle.sh
-
-        
+    ~/bin/gprune: scripts/gprune
 
     ~/.gdbinit: gdbinit
 
