@@ -26,3 +26,6 @@ alias o 'open'
 alias pbc pbcopy
 alias pbp pbpaste
 alias pg 'ps ax | grep -v grep | grep -i '
+
+alias po 'prevd'
+alias popd 'prevd'
