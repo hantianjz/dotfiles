@@ -22,7 +22,8 @@ return {
           "lua",
           "python",
           "yaml",
-          "typescript"
+          "typescript",
+          "java"
         },
 
         auto_install = true,
