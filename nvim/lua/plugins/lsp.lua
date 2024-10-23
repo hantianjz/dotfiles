@@ -50,7 +50,19 @@ return {
               return util.root_pattern('.git')(...)
             end,
             capabilities = caps,
-            cmd = { "clangd" },
+            cmd = { "clangd",
+              "--background-index",
+              "--clang-tidy",
+              "--header-insertion=iwyu",
+              "--completion-style=detailed",
+              "--function-arg-placeholders",
+              "--fallback-style=llvm",
+            },
+            init_options = {
+              usePlaceholders = true,
+              completeUnimported = true,
+              clangdFileStatus = true,
+            },
             on_attach = on_attach,
             single_file_support = true,
             handlers = {
