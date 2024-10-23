@@ -100,14 +100,14 @@ cmd-k = 'focus up'
 cmd-l = 'focus right'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move
-cmd-shift-h = 'move left'
-cmd-shift-j = 'move down'
-cmd-shift-k = 'move up'
-cmd-shift-l = 'move right'
+cmd-ctrl-h = 'move left'
+cmd-ctrl-j = 'move down'
+cmd-ctrl-k = 'move up'
+cmd-ctrl-l = 'move right'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#resize
-cmd-shift-up = 'resize smart -50'
-cmd-shift-down = 'resize smart +50'
+cmd-ctrl-up = 'resize smart -50'
+cmd-ctrl-down = 'resize smart +50'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#workspace
 cmd-1 = 'workspace 1'
@@ -117,19 +117,19 @@ cmd-4 = 'workspace 4'
 cmd-5 = 'workspace 5'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
-cmd-shift-1 = ['move-node-to-workspace 1', 'workspace 1']
-cmd-shift-2 = ['move-node-to-workspace 2', 'workspace 2']
-cmd-shift-3 = ['move-node-to-workspace 3', 'workspace 3']
-cmd-shift-4 = ['move-node-to-workspace 4', 'workspace 4']
-cmd-shift-5 = ['move-node-to-workspace 5', 'workspace 5']
+cmd-ctrl-1 = ['move-node-to-workspace 1', 'workspace 1']
+cmd-ctrl-2 = ['move-node-to-workspace 2', 'workspace 2']
+cmd-ctrl-3 = ['move-node-to-workspace 3', 'workspace 3']
+cmd-ctrl-4 = ['move-node-to-workspace 4', 'workspace 4']
+cmd-ctrl-5 = ['move-node-to-workspace 5', 'workspace 5']
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
 alt-tab = 'workspace-back-and-forth'
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-workspace-to-monitor
-alt-shift-tab = 'move-workspace-to-monitor --wrap-around next'
+cmd-ctrl-tab = 'move-workspace-to-monitor --wrap-around next'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#mode
-cmd-shift-semicolon = 'mode service'
+cmd-ctrl-semicolon = 'mode service'
 
 # 'service' binding mode declaration.
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
@@ -142,7 +142,7 @@ backspace = ['close-all-windows-but-current', 'mode main']
 # sticky is not yet supported https://github.com/nikitabobko/AeroSpace/issues/2
 #s = ['layout sticky tiling', 'mode main']
 
-cmd-shift-h = ['join-with left', 'mode main']
-cmd-shift-j = ['join-with down', 'mode main']
-cmd-shift-k = ['join-with up', 'mode main']
-cmd-shift-l = ['join-with right', 'mode main']
+cmd-ctrl-h = ['join-with left', 'mode main']
+cmd-ctrl-j = ['join-with down', 'mode main']
+cmd-ctrl-k = ['join-with up', 'mode main']
+cmd-ctrl-l = ['join-with right', 'mode main']
