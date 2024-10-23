@@ -83,12 +83,7 @@ outer.right =      0
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#exec-and-forget
 # You can uncomment the following lines to open up terminal with alt + enter shortcut (like in i3)
-cmd-enter = '''exec-and-forget osascript -e '
-tell application "kitty"
-    do script
-    activate
-end tell'
-'''
+cmd-enter = '''exec-and-forget open -n /Applications/kitty.app'''
 
 # Disable certain default MacOS keys
 cmd-alt-h = []
