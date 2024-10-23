@@ -64,10 +64,8 @@
         create: true
         path: config/rofi/config.rasi
 
-    ~/.skhdrc:
-        if: '[ `uname` = Darwin ]'
-        create: true
-        path: config/skhd/skhdrc
+    ~/.aerospace.toml:
+        path: config/aerospace.toml
 
     # Prezto
     ~/.zprezto: prezto
