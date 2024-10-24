@@ -7,7 +7,8 @@ o.autoread = true -- reload files when changed on disk, i.e. via `git checkout`
 o.encoding = "UTF-8"
 o.laststatus = 2  -- always show statusline
 o.list = true
-o.listchars = [[tab:▸ ,extends:❯,precedes:❮,nbsp:±,trail:▫]]
+-- o.listchars = [[tab:▸ ,extends:❯,precedes:❮,nbsp:±,trail:▫]]
+o.listchars = [[tab:▸ ,extends:❯,precedes:❮,nbsp:±]]
 
 o.clipboard = [[unnamed,unnamedplus]] -- yank and paste with the system clipboard
 
