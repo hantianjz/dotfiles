@@ -1,6 +1,7 @@
 return {
   "johnfrankmorgan/whitespace.nvim",
   name = "whitespace",
+  keys = { { "<Leader>w", function() require('whitespace-nvim').trim() end, desc = "Trim trailing whitespace" } },
   config = function()
     require('whitespace-nvim').setup({
       -- configuration options and their defaults
@@ -20,8 +21,5 @@ return {
       -- position after trimming whitespace
       return_cursor = true,
     })
-
-    -- remove trailing whitespace with a keybinding
-    vim.keymap.set('n', '<Leader>w', require('whitespace-nvim').trim)
-  end
+  end,
 }

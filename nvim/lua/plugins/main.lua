@@ -1,13 +1,15 @@
 return {
   { 'nvim-tree/nvim-web-devicons', opt = { default = true } },
+  { 'echasnovski/mini.nvim',       version = '*' },
   { 'svermeulen/vim-easyclip' },
   { 'airblade/vim-gitgutter' },
   { 'tpope/vim-bundler' },
   { 'tpope/vim-commentary' },
+  { 'tpope/vim-sensible' },
   { 'tpope/vim-endwise' },
   { 'tpope/vim-repeat' },
-  { 'tpope/vim-surround' },
   { 'tpope/vim-vinegar' },
+  { 'tpope/vim-speeddating' },
   -- Language plugins
   { 'ziglang/zig.vim' },
   { 'rust-lang/rust.vim' },

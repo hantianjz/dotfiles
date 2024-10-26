@@ -6,12 +6,12 @@ return {
       'nvim-lua/plenary.nvim'
     },
     keys = {
-      { '<leader>t',  function() require('telescope.builtin').find_files() end },
-      { '<leader>s',  function() require('telescope.builtin').live_grep() end },
-      { '<leader>b',  function() require('telescope.builtin').buffers() end },
-      { '<leader>lf', function() require('telescope.builtin').lsp_references() end },
-      { '<leader>ld', function() require('telescope.builtin').lsp_definitions() end },
-      { '<leader>fh', function() require('telescope.builtin').help_tags() end },
+      { '<leader>t',  function() require('telescope.builtin').find_files() end,       desc = "Find files" },
+      { '<leader>s',  function() require('telescope.builtin').live_grep() end,        desc = "Grep for string" },
+      { '<leader>b',  function() require('telescope.builtin').buffers() end,          desc = "Current buffers" },
+      { '<leader>lf', function() require('telescope.builtin').lsp_references() end,   desc = "Show symbol references" },
+      { '<leader>ld', function() require('telescope.builtin').lsp_definitions() end,  desc = "Show symbol definition" },
+      { '<leader>fh', function() require('telescope.builtin').help_tags() end,        desc = "Vim help tag" },
     },
     config = function()
       local actions = require("telescope.actions")
