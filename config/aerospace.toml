@@ -83,7 +83,7 @@ outer.right =      0
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#exec-and-forget
 # You can uncomment the following lines to open up terminal with alt + enter shortcut (like in i3)
-cmd-enter = '''exec-and-forget open -n /Applications/kitty.app'''
+cmd-enter = '''exec-and-forget /Applications/kitty.app/Contents/MacOS/kitty -1 -d ~'''
 
 # Disable certain default MacOS keys
 cmd-alt-h = []
@@ -146,3 +146,5 @@ cmd-ctrl-h = ['join-with left', 'mode main']
 cmd-ctrl-j = ['join-with down', 'mode main']
 cmd-ctrl-k = ['join-with up', 'mode main']
 cmd-ctrl-l = ['join-with right', 'mode main']
+
+cmd-ctrl-n = ['''exec-and-forget ~/bin/new_safari_window''', 'mode main']

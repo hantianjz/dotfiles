@@ -2,7 +2,6 @@ return {
   { 'nvim-tree/nvim-web-devicons', opt = { default = true } },
   { 'echasnovski/mini.nvim',       version = '*' },
   { 'svermeulen/vim-easyclip' },
-  { 'tpope/vim-commentary' },
   { 'tpope/vim-sensible' },
   { 'tpope/vim-endwise' },
   { 'tpope/vim-repeat' },

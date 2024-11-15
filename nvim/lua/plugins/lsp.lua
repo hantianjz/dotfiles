@@ -22,7 +22,8 @@ return {
           'vimls',
           'lua_ls',
           'ts_ls',
-          'ocamllsp'
+          'ocamllsp',
+          "jdtls"
         }
       }
       local caps = require('cmp_nvim_lsp').default_capabilities()
@@ -42,6 +43,12 @@ return {
       require 'mason-lspconfig'.setup_handlers {
         function(server_name) -- default handler (optional)
           require 'lspconfig'[server_name].setup { capabilities = caps }
+        end,
+
+        ['jdtls'] = function()
+          require 'lspconfig'.jdtls.setup {
+            on_attach = on_attach,
+          }
         end,
 
         ['clangd'] = function()
