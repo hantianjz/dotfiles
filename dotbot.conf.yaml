@@ -85,6 +85,7 @@
     ~/bin/find_replace: scripts/find_replace
     ~/bin/grb: scripts/grb
     ~/bin/gprune: scripts/gprune
+    ~/bin/new_safari_window: scripts/new_safari_window
 
     ~/.gdbinit: gdbinit
 
