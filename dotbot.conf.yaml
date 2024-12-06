@@ -6,8 +6,12 @@
 - shell:
   - [mkdir -p ~/bin/, make local bin folder]
   - [git submodule update --init --recursive, Installing submodules]
+  - [rm -rf ~/.config/fish]
 
 - link:
+    # FISH
+    ~/.config/fish: fish
+
     ~/.bashrc: shellrc/bashrc
     ~/.profile: shellrc/profile
 
@@ -18,44 +22,12 @@
     ~/.gitconfig: shellrc/gitconfig
     ~/.gitignore: shellrc/gitignore
 
-    # FISH
-    ~/.config/fish: fish
-
     # Kitty
     ~/.config/kitty: config/kitty
 
     # TMUX
     ~/.tmux.conf: tmux.conf
     ~/.tmux: tmux
-
-    # X
-    ~/.Xresources:
-        if: '[ `uname` = Linux ]'
-        path: Xresources
-    ~/.xsessionrc:
-        if: '[ `uname` = Linux ]'
-        path: xsessionrc
-
-    # Config - Linux
-    ~/.config/autorandr:
-        if: '[ `uname` = Linux ]'
-        path: config/autorandr
-    ~/.config/i3/config:
-        if: '[ `uname` = Linux ]'
-        create: true
-        path: config/i3/config
-    ~/.config/polybar/config:
-        if: '[ `uname` = Linux ]'
-        create: true
-        path: config/polybar/config
-    ~/.config/polybar/launch.sh:
-        if: '[ `uname` = Linux ]'
-        create: true
-        path: config/polybar/launch.sh
-    ~/.config/rofi/config.rasi:
-        if: '[ `uname` = Linux ]'
-        create: true
-        path: config/rofi/config.rasi
 
     ~/.aerospace.toml:
         path: config/aerospace.toml
@@ -64,9 +36,6 @@
     ~/.local/share/zsh/site-functions:
         create: true
         path: share/zsh/site-functions
-
-    # Fzf
-    ~/.fzf: fzf
 
     # Local Scripts
     ~/bin/batch_find_replace:
