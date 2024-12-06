@@ -12,24 +12,17 @@
     ~/.profile: shellrc/profile
 
     # VIM
-    ~/.vim: nvim
     ~/.config/nvim: nvim
 
     # GIT
     ~/.gitconfig: shellrc/gitconfig
     ~/.gitignore: shellrc/gitignore
 
-    # ZSH
-    ~/.zlogin: shellrc/zlogin
-    ~/.zlogout: shellrc/zlogout
-    ~/.zpreztorc: shellrc/zpreztorc
-    ~/.zprofile: shellrc/zprofile
-    ~/.zshenv: shellrc/zshenv
-    ~/.zshrc: shellrc/zshrc
-    ~/.zsh-completions: shellrc/zsh-completions
-
     # FISH
     ~/.config/fish: fish
+
+    # Kitty
+    ~/.config/kitty: config/kitty
 
     # TMUX
     ~/.tmux.conf: tmux.conf
@@ -66,9 +59,6 @@
 
     ~/.aerospace.toml:
         path: config/aerospace.toml
-
-    # Prezto
-    ~/.zprezto: prezto
 
     # Zsh Shell completion
     ~/.local/share/zsh/site-functions:
