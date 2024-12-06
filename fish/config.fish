@@ -5,6 +5,7 @@ end
 
 set -gx EDITOR 'nvim'
 set -gx VISUAL 'nvim'
+set -gx XDG_CONFIG_HOME ~/.config/
 
 set LOCAL_FISH_CONFIG ~/.config/local_config.fish
 if test -f $LOCAL_FISH_CONFIG

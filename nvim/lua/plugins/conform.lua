@@ -23,6 +23,11 @@ return {
       zig = { "zigfmt" },
       rust = { "rustfmt" },
       typescript = { "prettier" },
-    }
+    },
+    formatters = {
+      black = {
+        prepend_args = { '--fast' },
+      },
+    },
   }
 }
