@@ -53,7 +53,5 @@
   - [~/.tmux/plugins/tpm/scripts/install_plugins.sh >/dev/null 2>&1, Installing tmux plugins]
   - ["nvim +PlugUpdate +PlugClean! +qa", Installing and updating plugins]
   - [mkdir -p ~/.vim/backup, Create vim backup folder]
-  - [touch ~/.zprofile.local, Touch local zshrc file]
   - [touch ~/.gitconfig_local, Touch local gitconfig file]
-  - [~/.fzf/install --key-bindings --completion, Install FZF]
   - [brew bundle install, Install brew files]
