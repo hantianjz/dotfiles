@@ -7,15 +7,14 @@ return {
     {
       "<leader>f",
       function()
-        require("conform").format({ formatters = { "injected" }, lsp_fallback = true, timeout_ms = 3000 })
+        require("conform").format({ formatters = { "injected" }, lsp_fallback = true, timeout_ms = 1000, })
       end,
       mode = { "n", "v" },
       desc = "Format Injected Langs",
     },
   },
-  opt = {
+  opts = {
     formatters_by_ft = {
-      lua = { "stylua" },
       c = { "clang-format" },
       python = { "isort", "black" },
       sh = { "shfmt" },
@@ -27,8 +26,12 @@ return {
     },
     formatters = {
       black = {
-        prepend_args = { '--fast' },
+        prepend_args = { "--fast" },
       },
     },
-  }
+    format_on_save = {
+      timeout_ms = 1000,
+      lsp_format = "fallback",
+    },
+  },
 }
