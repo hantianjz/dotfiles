@@ -19,7 +19,6 @@ return {
           'clangd',
           'jsonls',
           'pyright',
-          'vimls',
           'lua_ls',
           'ts_ls',
           'ocamllsp',
@@ -34,10 +33,8 @@ return {
 
         -- Mappings.
         local opts = { buffer = bufnr, noremap = true, silent = true }
-        vim.keymap.set('n', 'lh', vim.lsp.buf.hover, opts)
-        vim.keymap.set('n', 'lR', vim.lsp.buf.rename, opts)
-        vim.keymap.set('n', 'le', vim.diagnostic.open_float, opts)
-        vim.keymap.set('n', 'la', vim.lsp.buf.code_action, opts)
+        vim.keymap.set('n', '<leader>lR', vim.lsp.buf.rename, opts)
+        vim.keymap.set('n', '<leader>a', vim.lsp.buf.code_action, opts)
       end
 
       require 'mason-lspconfig'.setup_handlers {
@@ -104,13 +101,6 @@ return {
                 }
               }
             }
-          }
-        end,
-
-        ["vimls"] = function()
-          local lspconfig = require("lspconfig")
-          lspconfig.vimls.setup {
-            on_attach = on_attach,
           }
         end,
 
