@@ -17,12 +17,13 @@ return {
     formatters_by_ft = {
       lua = { "stylua" },
       c = { "clang-format" },
-      python = { "black" },
+      python = { "isort", "black" },
       sh = { "shfmt" },
       gn = { "gn" },
       zig = { "zigfmt" },
       rust = { "rustfmt" },
       typescript = { "prettier" },
+      ["*"] = { "codespell", "trim_whitespace" },
     },
     formatters = {
       black = {

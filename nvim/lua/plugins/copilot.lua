@@ -1,1 +1,1 @@
-return { "github/copilot.vim", enabled = false }
+return { "github/copilot.vim" }
