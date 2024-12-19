@@ -12,6 +12,9 @@ return {
   },
   {
     'williamboman/mason-lspconfig.nvim',
+    dependencies = {
+      "Saghen/blink.cmp",
+    },
     config = function()
       require('mason-lspconfig').setup {
         ensure_installed = {
@@ -25,7 +28,8 @@ return {
           "jdtls"
         }
       }
-      local caps = require('cmp_nvim_lsp').default_capabilities()
+      -- local caps = require('cmp_nvim_lsp').default_capabilities()
+      local caps = require('blink.cmp').get_lsp_capabilities()
       local util = require("lspconfig/util")
 
       local on_attach = function(_, bufnr)
