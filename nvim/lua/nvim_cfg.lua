@@ -91,3 +91,14 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     vim.highlight.on_yank()
   end,
 })
+
+vim.keymap.set('n', '<leader>w', vim.diagnostic.open_float)
+
+vim.api.nvim_create_autocmd({ 'CursorHoldI' }, {
+  pattern = '*',
+  callback = function()
+    if vim.bo.filetype ~= 'TelescopePrompt' and vim.bo.filetype ~= 'gitcommit' then
+      vim.lsp.buf.signature_help()
+    end
+  end
+})

@@ -1,0 +1,6 @@
+{
+    "diagnostics.disable": [
+        "inject-field",
+        "duplicate-set-field"
+    ]
+}
