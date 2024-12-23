@@ -51,17 +51,19 @@ o.updatetime = 500
 
 vim.g.syntax_on = true
 
-vim.keymap.set('n', '<leader>x', [[:%! xxd<cr>]], { noremap = true })
-vim.keymap.set('n', '<leader>X', [[:%! xxd -r<cr>]], { noremap = true })
+-- Setup mapping to source local file
+vim.keymap.set("n", '<Leader><Leader>r', [[:source %<cr>]])
+vim.keymap.set("n", '<Leader><Leader>t', [[<Plug>PlenaryTestFile]])
+vim.keymap.set("n", '<Leader>h', [[:ClangdSwitchSourceHeader<cr>]])
+vim.keymap.set("n", "<Leader>x", ":.lua<CR>")
+vim.keymap.set("v", "<Leader>x", ":lua<CR>")
+vim.keymap.set("n", "<Leader>lt", ":Inspect<CR>")
+vim.keymap.set("n", '<Leader><Leader>i', [[:Inspect!<cr>]])
 vim.keymap.set('n', '<leader><leader>', [[<C-^>]], { noremap = true })
 vim.keymap.set('n', '<leader>w', vim.diagnostic.open_float)
 
-
--- Setup mapping to source local file
-vim.keymap.set("n", '<Leader><Leader>r', [[:source %<cr>]])
-vim.keymap.set("n", '<Leader><Leader>i', [[:Inspect!<cr>]])
-vim.keymap.set("n", '<Leader><Leader>t', [[<Plug>PlenaryTestFile]])
-vim.keymap.set("n", '<Leader>h', [[:ClangdSwitchSourceHeader<cr>]])
+-- vim.keymap.set('n', '<leader>x', [[:%! xxd<cr>]], { noremap = true })
+-- vim.keymap.set('n', '<leader>X', [[:%! xxd -r<cr>]], { noremap = true })
 
 -- Inspect a lua object
 P = function(v)
