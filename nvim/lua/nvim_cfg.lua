@@ -51,29 +51,17 @@ o.updatetime = 500
 
 vim.g.syntax_on = true
 
-local utils = require('utils')
+vim.keymap.set('n', '<leader>x', [[:%! xxd<cr>]], { noremap = true })
+vim.keymap.set('n', '<leader>X', [[:%! xxd -r<cr>]], { noremap = true })
+vim.keymap.set('n', '<leader><leader>', [[<C-^>]], { noremap = true })
+vim.keymap.set('n', '<leader>w', vim.diagnostic.open_float)
 
-utils.map('n', '<leader>x', [[:%! xxd<cr>]], { noremap = true })
-utils.map('n', '<leader>X', [[:%! xxd -r<cr>]], { noremap = true })
-utils.map('n', '<leader><leader>', [[<C-^>]], { noremap = true })
-
-utils.create_augroup({
-  { 'VimResized', '*', [[:wincmd =]] },
-}, 'WinResize')
-
-utils.create_augroup({
-  { 'BufRead,BufNewFile', '*.def',    'set',      'filetype=c' },
-  { 'BufRead,BufNewFile', '*.ino',    'set',      'filetype=c' },
-  { 'BufRead,BufNewFile', '*.i',      'set',      'filetype=c' },
-  { 'BufRead,BufNewFile', '*.groovy', 'set',      'filetype=java' },
-  { 'FileType',           'help',     'setlocal', 'nospell' },
-}, 'FileTypes')
 
 -- Setup mapping to source local file
-utils.map("n", '<Leader><Leader>r', [[:source %<cr>]])
-utils.map("n", '<Leader><Leader>i', [[:Inspect!<cr>]])
-utils.map("n", '<Leader><Leader>t', [[<Plug>PlenaryTestFile]])
-utils.map("n", '<Leader>h', [[:ClangdSwitchSourceHeader<cr>]])
+vim.keymap.set("n", '<Leader><Leader>r', [[:source %<cr>]])
+vim.keymap.set("n", '<Leader><Leader>i', [[:Inspect!<cr>]])
+vim.keymap.set("n", '<Leader><Leader>t', [[<Plug>PlenaryTestFile]])
+vim.keymap.set("n", '<Leader>h', [[:ClangdSwitchSourceHeader<cr>]])
 
 -- Inspect a lua object
 P = function(v)
@@ -92,7 +80,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
-vim.keymap.set('n', '<leader>w', vim.diagnostic.open_float)
 
 vim.api.nvim_create_autocmd({ 'CursorHoldI' }, {
   pattern = '*',
