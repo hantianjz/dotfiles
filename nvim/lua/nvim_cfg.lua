@@ -48,6 +48,7 @@ o.backupdir = vim.env.HOME .. "/.vim/backup/"
 o.backupcopy = "auto" -- see :help crontab
 w.spell = true
 o.updatetime = 500
+o.swapfile = false
 
 vim.g.syntax_on = true
 
