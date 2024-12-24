@@ -47,7 +47,7 @@
     ~/bin/new_safari_window: scripts/new_safari_window
 
     ~/bin/gn:
-     if: '[ `uname` = Darwin ]'
+     create: true
      path: scripts/gn/macos/gn
 
     ~/.gdbinit: gdbinit
