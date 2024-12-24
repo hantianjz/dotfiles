@@ -46,6 +46,10 @@
     ~/bin/gprune: scripts/gprune
     ~/bin/new_safari_window: scripts/new_safari_window
 
+    ~/bin/gn:
+     if: '[ `uname` = Darwin ]'
+     path: scripts/gn/macos/gn
+
     ~/.gdbinit: gdbinit
 
 - shell_install:
