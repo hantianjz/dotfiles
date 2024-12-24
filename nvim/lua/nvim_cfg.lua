@@ -53,15 +53,21 @@ o.swapfile = false
 vim.g.syntax_on = true
 
 -- Setup mapping to source local file
-vim.keymap.set("n", '<Leader><Leader>r', [[:source %<cr>]])
+vim.keymap.set("n", '<Leader><Leader>r', [[:source %<CR>]])
 vim.keymap.set("n", '<Leader><Leader>t', [[<Plug>PlenaryTestFile]])
-vim.keymap.set("n", '<Leader>h', [[:ClangdSwitchSourceHeader<cr>]])
-vim.keymap.set("n", "<Leader>x", ":.lua<CR>")
-vim.keymap.set("v", "<Leader>x", ":lua<CR>")
-vim.keymap.set("n", "<Leader>lt", ":Inspect<CR>")
-vim.keymap.set("n", '<Leader><Leader>i', [[:Inspect!<cr>]])
+vim.keymap.set("n", '<Leader>h', [[:ClangdSwitchSourceHeader<CR>]])
+vim.keymap.set("n", "<Leader>x", [[:.lua<CR>]])
+vim.keymap.set("v", "<Leader>x", [[:lua<CR>]])
+vim.keymap.set("n", "<Leader>lt", [[:Inspect<CR>]])
+vim.keymap.set("n", '<Leader><Leader>i', [[:Inspect!<CR>]])
 vim.keymap.set('n', '<leader><leader>', [[<C-^>]], { noremap = true })
 vim.keymap.set('n', '<leader>w', vim.diagnostic.open_float)
+
+vim.keymap.set('n', 'ø', [[:copen<CR>]]) -- ALT-O on macos
+vim.keymap.set('n', '≈', [[:cclose<CR>]]) -- ALT-x
+vim.keymap.set('n', '∆', [[:cnext<CR>]]) -- ALT-j
+vim.keymap.set('n', '˚', [[:cprev<CR>]]) -- ALT-k
+
 
 -- vim.keymap.set('n', '<leader>x', [[:%! xxd<cr>]], { noremap = true })
 -- vim.keymap.set('n', '<leader>X', [[:%! xxd -r<cr>]], { noremap = true })
@@ -81,14 +87,4 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   callback = function()
     vim.highlight.on_yank()
   end,
-})
-
-
-vim.api.nvim_create_autocmd({ 'CursorHoldI' }, {
-  pattern = '*',
-  callback = function()
-    if vim.bo.filetype ~= 'TelescopePrompt' and vim.bo.filetype ~= 'gitcommit' then
-      vim.lsp.buf.signature_help()
-    end
-  end
 })
