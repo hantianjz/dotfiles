@@ -52,6 +52,10 @@ o.swapfile = false
 
 vim.g.syntax_on = true
 
+local function reset_edit_setting()
+  vim.cmd("nohlsearch")
+end
+
 -- Setup mapping to source local file
 vim.keymap.set("n", '<Leader><Leader>r', [[:source %<CR>]])
 vim.keymap.set("n", '<Leader><Leader>t', [[<Plug>PlenaryTestFile]])
@@ -62,11 +66,12 @@ vim.keymap.set("n", "<Leader>lt", [[:Inspect<CR>]])
 vim.keymap.set("n", '<Leader><Leader>i', [[:Inspect!<CR>]])
 vim.keymap.set('n', '<leader><leader>', [[<C-^>]], { noremap = true })
 vim.keymap.set('n', '<leader>w', vim.diagnostic.open_float)
+vim.keymap.set('n', '<leader>esc', reset_edit_setting)
 
-vim.keymap.set('n', 'ø', [[:copen<CR>]]) -- ALT-O on macos
-vim.keymap.set('n', '≈', [[:cclose<CR>]]) -- ALT-x
-vim.keymap.set('n', '∆', [[:cnext<CR>]]) -- ALT-j
-vim.keymap.set('n', '˚', [[:cprev<CR>]]) -- ALT-k
+vim.keymap.set('n', 'ø', function() vim.cmd("copen") end) -- ALT-O on macos
+vim.keymap.set('n', '≈', function() vim.cmd("cclose") end) -- ALT-x
+vim.keymap.set('n', '∆', function() vim.cmd("cnext") end) -- ALT-j
+vim.keymap.set('n', '˚', function() vim.cmd("cprev") end) -- ALT-k
 
 
 -- vim.keymap.set('n', '<leader>x', [[:%! xxd<cr>]], { noremap = true })
