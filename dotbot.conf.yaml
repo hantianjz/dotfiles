@@ -58,3 +58,4 @@
   - [mkdir -p ~/.vim/backup, Create vim backup folder]
   - [touch ~/.gitconfig_local, Touch local gitconfig file]
   - [brew bundle install, Install brew files]
+  - [pipx install black bpython codespell diff-highlight glasgow isort pyright pyserial argcomplete, Install pipx packages]
