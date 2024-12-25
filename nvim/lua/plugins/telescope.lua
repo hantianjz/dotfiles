@@ -13,7 +13,7 @@ return {
       { '<leader>b',  function() require('telescope.builtin').buffers() end,         desc = "Current buffers" },
       { '<leader>lf', function() require('telescope.builtin').lsp_references() end,  desc = "Show symbol references" },
       { '<leader>ld', function() require('telescope.builtin').lsp_definitions() end, desc = "Show symbol definition" },
-      { '<leader>v',  function() require('telescope.builtin').help_tags() end,       desc = "Vim help tag" },
+      { '<leader>lv', function() require('telescope.builtin').help_tags() end,       desc = "Vim help tag" },
       { '<leader>d',  function() require('telescope.builtin').diagnostics() end,     desc = "Diagnostics info" },
       { '<leader>o',  function() require('telescope.builtin').builtin() end,         desc = "Telescope builtin" },
       {
