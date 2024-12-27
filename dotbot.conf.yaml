@@ -23,7 +23,10 @@
     ~/.gitignore: shellrc/gitignore
 
     # Kitty
-    ~/.config/kitty: config/kitty
+    # ~/.config/kitty: config/kitty
+
+    # Ghostty
+    ~/.config/ghostty: config/ghostty
 
     # TMUX
     ~/.tmux.conf: tmux.conf

@@ -1,0 +1,28 @@
+theme = catppuccin-mocha
+macos-titlebar-style = hidden
+
+font-size = 12
+font-family = "Hack Nerd Font Mono"
+
+### START KEY BINDING
+keybind = clear
+
+keybind = super+alt+i=inspector:toggle
+keybind = super+v=paste_from_clipboard
+keybind = super+c=copy_to_clipboard
+
+keybind = super+zero=reset_font_size
+keybind = super+minus=decrease_font_size:1
+keybind = super+plus=increase_font_size:1
+
+keybind = super+n=new_window
+keybind = global:super+enter=new_window
+
+keybind = super+comma=open_config
+keybind = super+q=quit
+keybind = super+down=jump_prompt:1
+
+keybind = super+up=jump_prompt:-1
+keybind = super+down=jump_prompt:1
+
+### END of KEY BINDING
