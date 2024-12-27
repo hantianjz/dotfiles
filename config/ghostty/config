@@ -20,9 +20,8 @@ keybind = global:super+enter=new_window
 
 keybind = super+comma=open_config
 keybind = super+q=quit
-keybind = super+down=jump_prompt:1
 
-keybind = super+up=jump_prompt:-1
-keybind = super+down=jump_prompt:1
+keybind = super+up=jump_to_prompt:-1
+keybind = super+down=jump_to_prompt:1
 
 ### END of KEY BINDING
