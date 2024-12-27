@@ -1,8 +1,14 @@
 theme = catppuccin-mocha
 macos-titlebar-style = hidden
+confirm-close-surface = false
 
 font-size = 12
 font-family = "Hack Nerd Font Mono"
+
+shell-integration-features = no-cursor
+
+cursor-style = block
+cursor-style-blink = true
 
 ### START KEY BINDING
 keybind = clear
@@ -23,5 +29,7 @@ keybind = super+q=quit
 
 keybind = super+up=jump_to_prompt:-1
 keybind = super+down=jump_to_prompt:1
+
+keybind = super+w=close_surface
 
 ### END of KEY BINDING
