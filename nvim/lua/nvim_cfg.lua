@@ -53,7 +53,7 @@ o.swapfile = false
 vim.g.syntax_on = true
 
 local function reset_edit_setting()
-  vim.cmd("nohlsearch")
+  vim.cmd("nohl")
 end
 
 -- Setup mapping to source local file
@@ -66,7 +66,7 @@ vim.keymap.set("n", "<Leader>lt", [[:Inspect<CR>]])
 vim.keymap.set("n", '<Leader><Leader>i', [[:Inspect!<CR>]])
 vim.keymap.set('n', '<leader><leader>', [[<C-^>]], { noremap = true })
 vim.keymap.set('n', '<leader>w', vim.diagnostic.open_float)
-vim.keymap.set('n', '<leader>esc', reset_edit_setting)
+vim.keymap.set('n', '<leader><ESC>', reset_edit_setting)
 
 vim.keymap.set('n', 'ø', function() vim.cmd("copen") end) -- ALT-O on macos
 vim.keymap.set('n', '≈', function() vim.cmd("cclose") end) -- ALT-x
