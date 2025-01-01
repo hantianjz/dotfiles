@@ -38,7 +38,7 @@ return {
 
         -- Mappings.
         local opts = { buffer = bufnr, noremap = true, silent = true }
-        vim.keymap.set('n', '<leader>lR', vim.lsp.buf.rename, opts)
+        vim.keymap.set('n', '<leader>R', vim.lsp.buf.rename, opts)
         vim.keymap.set('n', '<leader>a', vim.lsp.buf.code_action, opts)
       end
 

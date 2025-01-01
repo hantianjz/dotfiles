@@ -5,7 +5,7 @@ return {
     require('hop').setup()
     vim.keymap.set('n', 'f',
       function()
-        require 'hop'.hint_word({})
+        require 'hop'.hint_words({})
       end,
       {})
   end
