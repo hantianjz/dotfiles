@@ -25,7 +25,8 @@ return {
           'lua_ls',
           'ts_ls',
           'ocamllsp',
-          "jdtls"
+          "jdtls",
+          "typos_lsp",
         }
       }
       -- local caps = require('cmp_nvim_lsp').default_capabilities()
@@ -147,7 +148,11 @@ return {
               }
             }
           }
-        end
+        end,
+
+        ["typos_lsp"] = function()
+          require('lspconfig').typos_lsp.setup({})
+        end,
       }
     end
   },

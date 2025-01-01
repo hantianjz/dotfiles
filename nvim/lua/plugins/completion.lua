@@ -24,7 +24,7 @@ return {
     },
 
     -- use a release tag to download pre-built binaries
-    version = 'v0.8.1',
+    version = 'v0.8.2',
     -- AND/OR build from source, requires nightly: https://rust-lang.github.io/rustup/concepts/channels.html#working-with-nightly-rust
     -- build = 'cargo build --release',
     -- If you use nix, you can build from source using latest nightly rust with:
@@ -79,7 +79,7 @@ return {
               { "kind_icon",  "kind",              gap = 1 },
               { "source_name" }
             }
-          }
+          },
         },
       },
     },

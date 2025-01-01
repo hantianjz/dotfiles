@@ -7,7 +7,6 @@ o.autoread = true -- reload files when changed on disk, i.e. via `git checkout`
 o.encoding = "UTF-8"
 o.laststatus = 2  -- always show statusline
 o.list = true
--- o.listchars = [[tab:▸ ,extends:❯,precedes:❮,nbsp:±,trail:▫]]
 o.listchars = [[tab:▸ ,extends:❯,precedes:❮,nbsp:±]]
 
 o.clipboard = [[unnamed,unnamedplus]] -- yank and paste with the system clipboard
@@ -73,9 +72,6 @@ vim.keymap.set('n', '≈', function() vim.cmd("cclose") end) -- ALT-x
 vim.keymap.set('n', '∆', function() vim.cmd("cnext") end) -- ALT-j
 vim.keymap.set('n', '˚', function() vim.cmd("cprev") end) -- ALT-k
 
-
--- vim.keymap.set('n', '<leader>x', [[:%! xxd<cr>]], { noremap = true })
--- vim.keymap.set('n', '<leader>X', [[:%! xxd -r<cr>]], { noremap = true })
 
 -- Inspect a lua object
 P = function(v)

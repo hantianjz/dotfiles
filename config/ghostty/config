@@ -5,6 +5,10 @@ confirm-close-surface = false
 font-size = 12
 font-family = "Hack Nerd Font Mono"
 
+clipboard-read = allow
+clipboard-write = allow
+window-save-state = never
+
 shell-integration-features = no-cursor
 
 cursor-style = block
@@ -33,3 +37,8 @@ keybind = super+down=jump_to_prompt:1
 keybind = super+w=close_surface
 
 ### END of KEY BINDING
+
+mouse-hide-while-typing = true
+focus-follows-mouse = true
+macos-titlebar-style = hidden
+macos-option-as-alt = true
