@@ -1,5 +1,6 @@
 return {
   'hantianjz/semhl.nvim',
+  branch  = "main",
   lazy    = false,
   enabled = true,
   opts    = {
