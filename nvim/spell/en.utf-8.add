@@ -5,3 +5,8 @@ statusline
 listchars
 lua
 macos
+neovim
+hardcoded
+TODO
+semhl
+nvim
