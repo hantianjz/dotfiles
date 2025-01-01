@@ -78,6 +78,10 @@ P = function(v)
   return v
 end
 
+PRTP = function()
+  print(vim.inspect(vim.api.nvim_list_runtime_paths()))
+end
+
 -- Highlight when yanking (copying) text
 --  Try it with `yap` in normal mode
 --  See `:help vim.highlight.on_yank()`
