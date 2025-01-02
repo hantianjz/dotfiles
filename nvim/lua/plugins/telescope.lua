@@ -11,10 +11,10 @@ return {
       { '<leader>g',  function() require('telescope.builtin').git_files() end,       desc = "Get files" },
       { '<leader>s',  function() require('telescope.builtin').live_grep() end,       desc = "Live grep for string" },
       { '<leader>b',  function() require('telescope.builtin').buffers() end,         desc = "Current buffers" },
-      { '<leader>lf', function() require('telescope.builtin').lsp_references() end,  desc = "Show symbol references" },
-      { '<leader>ld', function() require('telescope.builtin').lsp_definitions() end, desc = "Show symbol definition" },
       { '<leader>vh', function() require('telescope.builtin').help_tags() end,       desc = "Vim help tag" },
       { '<leader>d',  function() require('telescope.builtin').diagnostics() end,     desc = "Diagnostics info" },
+      { '<leader>lf', function() require('telescope.builtin').lsp_references() end,  desc = "Show symbol references" },
+      { '<leader>ld', function() require('telescope.builtin').lsp_definitions() end, desc = "Show symbol definition" },
       { '<leader>o',  function() require('telescope.builtin').builtin() end,         desc = "Telescope builtin" },
       {
         '<leader>vc',
@@ -39,6 +39,7 @@ return {
 
     config = function()
       local actions = require("telescope.actions")
+      -- local open_with_trouble = require("trouble.sources.telescope").open
 
       require("telescope").setup({
         defaults = {
