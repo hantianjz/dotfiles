@@ -68,8 +68,8 @@ vim.keymap.set('n', '<leader><ESC>', reset_edit_setting)
 
 vim.keymap.set('n', 'ø', function() vim.cmd("copen") end) -- ALT-O on macos
 vim.keymap.set('n', '≈', function() vim.cmd("cclose") end) -- ALT-x
-vim.keymap.set('n', '∆', function() vim.cmd("cnext") end) -- ALT-j
-vim.keymap.set('n', '˚', function() vim.cmd("cprev") end) -- ALT-k
+vim.keymap.set('n', '∆', function() vim.cmd("silent! cnext") end) -- ALT-j
+vim.keymap.set('n', '˚', function() vim.cmd("silent! cprev") end) -- ALT-k
 
 
 -- Inspect a lua object
