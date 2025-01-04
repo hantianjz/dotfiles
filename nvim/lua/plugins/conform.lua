@@ -10,7 +10,7 @@ return {
         require("conform").format({ lsp_fallback = true, timeout_ms = 1000, })
       end,
       mode = { "n", "v" },
-      desc = "Format Injected Langs",
+      desc = "Format current file",
     },
   },
   opts = {
@@ -20,17 +20,14 @@ return {
       sh = { "shfmt" },
       gn = { "gn" },
       zig = { "zigfmt" },
-      rust = { "rustfmt" },
       typescript = { "prettier" },
+      html = { "djlint" },
       ["*"] = { "codespell", "trim_whitespace" },
     },
     formatters = {
       black = {
         prepend_args = { "--fast" },
       },
-      -- gn = {
-      --   prepend_args = { "format", "--stdin" }
-      -- },
       shfmt = {
         prepend_args = { "-i", "2" }
       }
@@ -45,4 +42,19 @@ return {
     quiet = false,
     notify_on_error = true,
   },
+  config = function(_, opts)
+    require("conform").setup(opts)
+
+    -- Use mason to install formatters
+    local formatters = { "clang-format", "black", "shfmt", "prettier", "mdformat", "djlint" }
+    local formatters_to_install = {}
+    for _, formatter in pairs(formatters) do
+      if not require("mason-registry").is_installed(formatter) then
+        table.insert(formatters_to_install, formatter)
+      end
+    end
+    if formatters_to_install and next(formatters_to_install) then
+      require("mason.api.command").MasonInstall(formatters_to_install)
+    end
+  end
 }

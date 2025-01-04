@@ -27,9 +27,9 @@ return {
           'ocamllsp',
           "jdtls",
           "typos_lsp",
+          "harper_ls",
         }
       }
-      -- local caps = require('cmp_nvim_lsp').default_capabilities()
       local caps = require('blink.cmp').get_lsp_capabilities()
       local util = require("lspconfig/util")
 
@@ -152,6 +152,11 @@ return {
 
         ["typos_lsp"] = function()
           require('lspconfig').typos_lsp.setup({})
+        end,
+
+        ["harper_ls"] = function()
+          require 'lspconfig'.harper_ls.setup({
+          })
         end,
       }
     end
