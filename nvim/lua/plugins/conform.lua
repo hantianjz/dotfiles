@@ -43,8 +43,6 @@ return {
     notify_on_error = true,
   },
   config = function(_, opts)
-    require("conform").setup(opts)
-
     -- Use mason to install formatters
     local formatters = { "clang-format", "black", "shfmt", "prettier", "mdformat", "djlint" }
     local formatters_to_install = {}
@@ -56,5 +54,17 @@ return {
     if formatters_to_install and next(formatters_to_install) then
       require("mason.api.command").MasonInstall(formatters_to_install)
     end
+
+    -- Specify where the formatter cmd is for each formatter that we had installed from mason
+    for _, formatter in pairs(formatters) do
+      local mason_bin_dir = vim.fn.stdpath("data") .. "/mason/bin"
+      local cmd = require("conform.util").find_executable({
+        mason_bin_dir .. "//" .. formatter
+      }, formatter)
+      opts.formatters[formatter] = opts.formatters[formatter] or {}
+      opts.formatters[formatter].command = cmd
+    end
+
+    require("conform").setup(opts)
   end
 }
