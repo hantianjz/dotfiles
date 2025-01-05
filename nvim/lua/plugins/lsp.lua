@@ -153,9 +153,6 @@ return {
         ["typos_lsp"] = function()
           require('lspconfig').typos_lsp.setup({
             on_attach = on_attach,
-            settings = {
-              config = vim.fn.stdpath("config") .. "/typos.toml"
-            }
           })
         end,
 
@@ -165,20 +162,40 @@ return {
             filetypes = {
               "c", "cpp", "cs", "gitcommit", "go", "html", "java", "javascript", "markdown", "nix", "python",
               "ruby", "rust", "swift", "toml", "typescript", "typescriptreact", "haskell", "cmake" },
+          })
+        end,
+      }
+
+      -- Additional LSP config
+      require('lspconfig').typos_lsp.setup({
+        -- Logging level of the language server. Logs appear in :LspLog. Defaults to error.
+        init_options = {
+          -- Custom config. Used together with a config file found in the workspace or its parents,
+          -- taking precedence for settings declared in both.
+          -- Equivalent to the typos `--config` cli argument.
+          config = vim.fn.stdpath("config") .. "/typos.toml",
+          -- How typos are rendered in the editor, can be one of an Error, Warning, Info or Hint.
+          -- Defaults to error.
+          diagnosticSeverity = "Hint"
+        }
+      })
+      require("lspconfig").harper_ls.setup {
+        settings = {
+          ["harper-ls"] = {
             diagnosticSeverity = "hint", -- Can also be "information", "warning", or "error"
             codeActions = {
               forceStable = true
             },
             fileDictPath = vim.fn.stdpath("cache") .. "/harper/",
             linters = {
-              spell_check = true,
+              spell_check = false,
               spelled_numbers = true,
               an_a = true,
               sentence_capitalization = false,
-              unclosed_quotes = true,
+              unclosed_quotes = false,
               wrong_quotes = false,
               long_sentences = true,
-              repeated_words = true,
+              repeated_words = false,
               spaces = false,
               matcher = true,
               correct_number_suffix = true,
@@ -188,8 +205,8 @@ return {
               avoid_curses = true,
               terminating_conjunctions = true
             }
-          })
-        end,
+          }
+        }
       }
     end
   },
