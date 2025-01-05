@@ -16,6 +16,7 @@ return {
       { '<leader>lf', function() require('telescope.builtin').lsp_references() end,  desc = "Show symbol references" },
       { '<leader>ld', function() require('telescope.builtin').lsp_definitions() end, desc = "Show symbol definition" },
       { '<leader>o',  function() require('telescope.builtin').builtin() end,         desc = "Telescope builtin" },
+      { '<C-q>',      function() require('telescope.builtin').quickfix() end,        desc = "Telescope open quickfix list" },
       {
         '<leader>vc',
         function()
@@ -46,6 +47,11 @@ return {
           mappings = {
             i = {
               ["<esc>"] = actions.close,
+              ["<C-q>"] = actions.send_to_qflist,
+            },
+            n = {
+              ["<esc>"] = actions.close,
+              ["<C-q>"] = actions.send_to_qflist,
             },
           },
         },

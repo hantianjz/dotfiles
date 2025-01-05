@@ -27,7 +27,6 @@ return {
           'ocamllsp',
           "jdtls",
           "typos_lsp",
-          "harper_ls",
         }
       }
       local caps = require('blink.cmp').get_lsp_capabilities()
@@ -155,15 +154,6 @@ return {
             on_attach = on_attach,
           })
         end,
-
-        ["harper_ls"] = function()
-          require 'lspconfig'.harper_ls.setup({
-            on_attach = on_attach,
-            filetypes = {
-              "c", "cpp", "cs", "gitcommit", "go", "html", "java", "javascript", "markdown", "nix", "python",
-              "ruby", "rust", "swift", "toml", "typescript", "typescriptreact", "haskell", "cmake" },
-          })
-        end,
       }
 
       -- Additional LSP config
@@ -179,35 +169,6 @@ return {
           diagnosticSeverity = "Hint"
         }
       })
-      require("lspconfig").harper_ls.setup {
-        settings = {
-          ["harper-ls"] = {
-            diagnosticSeverity = "hint", -- Can also be "information", "warning", or "error"
-            codeActions = {
-              forceStable = true
-            },
-            fileDictPath = vim.fn.stdpath("cache") .. "/harper/",
-            linters = {
-              spell_check = false,
-              spelled_numbers = true,
-              an_a = true,
-              sentence_capitalization = false,
-              unclosed_quotes = false,
-              wrong_quotes = false,
-              long_sentences = true,
-              repeated_words = false,
-              spaces = false,
-              matcher = true,
-              correct_number_suffix = true,
-              number_suffix_capitalization = true,
-              multiple_sequential_pronouns = true,
-              linking_verbs = false,
-              avoid_curses = true,
-              terminating_conjunctions = true
-            }
-          }
-        }
-      }
     end
   },
 }
