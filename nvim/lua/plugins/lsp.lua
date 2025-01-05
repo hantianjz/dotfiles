@@ -151,11 +151,20 @@ return {
         end,
 
         ["typos_lsp"] = function()
-          require('lspconfig').typos_lsp.setup({})
+          require('lspconfig').typos_lsp.setup({
+            on_attach = on_attach,
+            settings = {
+              config = vim.fn.stdpath("config") .. "/typos.toml"
+            }
+          })
         end,
 
         ["harper_ls"] = function()
           require 'lspconfig'.harper_ls.setup({
+            on_attach = on_attach,
+            filetypes = {
+              "c", "cpp", "cs", "gitcommit", "go", "html", "java", "javascript", "markdown", "nix", "python",
+              "ruby", "rust", "swift", "toml", "typescript", "typescriptreact", "haskell", "cmake" },
             diagnosticSeverity = "hint", -- Can also be "information", "warning", or "error"
             codeActions = {
               forceStable = true
