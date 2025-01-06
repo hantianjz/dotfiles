@@ -7,16 +7,17 @@ return {
       { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' }
     },
     keys = {
-      { '<leader>t',  function() require('telescope.builtin').find_files() end,      desc = "Find files" },
-      { '<leader>g',  function() require('telescope.builtin').git_files() end,       desc = "Get files" },
-      { '<leader>s',  function() require('telescope.builtin').live_grep() end,       desc = "Live grep for string" },
-      { '<leader>b',  function() require('telescope.builtin').buffers() end,         desc = "Current buffers" },
-      { '<leader>vh', function() require('telescope.builtin').help_tags() end,       desc = "Vim help tag" },
-      { '<leader>d',  function() require('telescope.builtin').diagnostics() end,     desc = "Diagnostics info" },
-      { '<leader>lf', function() require('telescope.builtin').lsp_references() end,  desc = "Show symbol references" },
-      { '<leader>ld', function() require('telescope.builtin').lsp_definitions() end, desc = "Show symbol definition" },
-      { '<leader>o',  function() require('telescope.builtin').builtin() end,         desc = "Telescope builtin" },
-      { '<C-q>',      function() require('telescope.builtin').quickfix() end,        desc = "Telescope open quickfix list" },
+      { '<leader>t',  function() require('telescope.builtin').find_files() end,               desc = "Find files" },
+      { '<leader>g',  function() require('telescope.builtin').git_files() end,                desc = "Get files" },
+      { '<leader>s',  function() require('telescope.builtin').live_grep() end,                desc = "Live grep for string" },
+      { '<leader>b',  function() require('telescope.builtin').buffers() end,                  desc = "Current buffers" },
+      { '<leader>vh', function() require('telescope.builtin').help_tags() end,                desc = "Vim help tag" },
+      { '<leader>d',  function() require('telescope.builtin').diagnostics({ bufnr = 0 }) end, desc = "Diagnostics info for current buffer" },
+      { '<leader>D',  function() require('telescope.builtin').diagnostics() end,              desc = "Diagnostics info for whole project" },
+      { '<leader>lf', function() require('telescope.builtin').lsp_references() end,           desc = "Show symbol references" },
+      { '<leader>ld', function() require('telescope.builtin').lsp_definitions() end,          desc = "Show symbol definition" },
+      { '<leader>o',  function() require('telescope.builtin').builtin() end,                  desc = "Telescope builtin" },
+      { '<C-q>',      function() require('telescope.builtin').quickfix() end,                 desc = "Telescope open quickfix list" },
       {
         '<leader>vc',
         function()
