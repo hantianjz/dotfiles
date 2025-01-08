@@ -27,6 +27,7 @@ return {
           'ocamllsp',
           "jdtls",
           "typos_lsp",
+          "ruff",
         }
       }
       local caps = require('blink.cmp').get_lsp_capabilities()
@@ -86,6 +87,12 @@ return {
           }
         end,
 
+        ['ruff'] = function()
+          require 'lspconfig'.ruff.setup {
+            on_attach = on_attach,
+          }
+        end,
+
         ['pyright'] = function()
           require 'lspconfig'.pyright.setup {
             root_dir = function(...)
@@ -95,13 +102,14 @@ return {
             settings = {
               pyright = {
                 autoImportCompletion = true,
+                disableOrganizedImport = true,
               },
               python = {
                 analysis = {
                   autoSearchPaths = true,
                   diagnosticMode = 'openFilesOnly',
                   useLibraryCodeForTypes = true,
-                  typeCheckingMode = 'off'
+                  typeCheckingMode = 'on'
                 }
               }
             }
