@@ -24,7 +24,7 @@ return {
     },
 
     -- use a release tag to download pre-built binaries
-    version = 'v0.8.2',
+    version = '*',
     -- AND/OR build from source, requires nightly: https://rust-lang.github.io/rustup/concepts/channels.html#working-with-nightly-rust
     -- build = 'cargo build --release',
     -- If you use nix, you can build from source using latest nightly rust with:
@@ -39,16 +39,24 @@ return {
       -- see the "default configuration" section below for full documentation on how to define
       -- your own keymap.
       keymap = {
-        preset = 'super-tab',
-        ['<CR>'] = { 'accept', 'fallback' },
+        preset = 'none',
+        ['<Tab>'] = { 'select_next', 'fallback' },
+        ['<S-Tab>'] = { 'select_prev', 'fallback' },
+        ['<CR>'] = { 'select_and_accept', 'fallback' },
+        ['<C-w>'] = { 'show', 'show_documentation', 'hide_documentation' },
+        ['<C-b>'] = { 'scroll_documentation_up', 'fallback' },
+        ['<C-f>'] = { 'scroll_documentation_down', 'fallback' },
+
+        ['<Up>'] = { 'select_prev', 'fallback' },
+        ['<Down>'] = { 'select_next', 'fallback' },
       },
+
 
       -- default list of enabled providers defined so that you can extend it
       -- elsewhere in your config, without redefining it, due to `opts_extend`
       sources = {
         default = { 'lsp', 'path', 'snippets', 'buffer' },
-        -- optionally disable cmdline completions
-        -- cmdline = {},
+        cmdline = {},
       },
 
       -- experimental signature help support
@@ -68,7 +76,7 @@ return {
       completion = {
         list = {
           max_items = 20,
-          selection = "auto_insert"
+          selection = { preselect = false, auto_insert = false }
         },
 
         menu = {
