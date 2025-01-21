@@ -38,6 +38,7 @@
     ~/bin/grb: scripts/grb
     ~/bin/gprune: scripts/gprune
     ~/bin/new_safari_window: scripts/new_safari_window
+    ~/bin/ton: ~/.tmux/plugins/tmux-open-nvim/scripts/ton
     ~/bin/gn:
       create: true
       path: scripts/gn/macos/gn
