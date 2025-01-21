@@ -1,64 +1,53 @@
 - defaults:
     link:
       relink: true
-
 - clean: ['~']
 - shell:
-  - [mkdir -p ~/bin/, make local bin folder]
-  - [git submodule update --init --recursive, Installing submodules]
-  - [rm -rf ~/.config/fish]
-
+    - [mkdir -p ~/bin/, make local bin folder]
+    - [git submodule update --init --recursive, Installing submodules]
+    - [rm -rf ~/.config/fish]
 - link:
     # FISH
     ~/.config/fish: fish
-
     ~/.bashrc: shellrc/bashrc
     ~/.profile: shellrc/profile
-
     # VIM
     ~/.config/nvim: nvim
-
     # GIT
     ~/.gitconfig: shellrc/gitconfig
     ~/.gitignore: shellrc/gitignore
-
     # Kitty
     # ~/.config/kitty: config/kitty
 
     # Ghostty
     ~/.config/ghostty: config/ghostty
-
     # TMUX
     ~/.tmux.conf: tmux.conf
     ~/.tmux: tmux
-
     ~/.aerospace.toml:
-        path: config/aerospace.toml
-
+      path: config/aerospace.toml
     # Zsh Shell completion
     ~/.local/share/zsh/site-functions:
-        create: true
-        path: share/zsh/site-functions
-
+      create: true
+      path: share/zsh/site-functions
     # Local Scripts
     ~/bin/batch_find_replace:
-        create: true
-        path: scripts/batch_find_replace
+      create: true
+      path: scripts/batch_find_replace
     ~/bin/find_replace: scripts/find_replace
     ~/bin/grb: scripts/grb
     ~/bin/gprune: scripts/gprune
     ~/bin/new_safari_window: scripts/new_safari_window
-
     ~/bin/gn:
-     create: true
-     path: scripts/gn/macos/gn
-
+      create: true
+      path: scripts/gn/macos/gn
     ~/.gdbinit: gdbinit
-
 - shell_install:
-  - [cp fonts/*.ttf ~/Library/Fonts ]
-  - [~/.tmux/plugins/tpm/scripts/install_plugins.sh >/dev/null 2>&1, Installing tmux plugins]
-  - [mkdir -p ~/.vim/backup, Create vim backup folder]
-  - [touch ~/.gitconfig_local, Touch local gitconfig file]
-  - [brew bundle install, Install brew files]
-  - [pipx install black bpython codespell diff-highlight glasgow isort pyright pyserial argcomplete, Install pipx packages]
+    - [~/.tmux/plugins/tpm/scripts/install_plugins.sh >/dev/null 2>&1, Installing tmux plugins]
+    - [mkdir -p ~/.vim/backup, Create vim backup folder]
+    - [touch ~/.gitconfig_local, Touch local gitconfig file]
+    - [brew bundle install, Install brew files]
+    - [pipx install bpython diff-highlight glasgow argcomplete, Install pipx packages]
+- upgrade_all:
+    - [brew upgrade]
+    - [pipx upgrade-all]
