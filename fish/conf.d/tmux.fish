@@ -1,5 +1,5 @@
 function tmux-from-session-name
-  tmux -2 new-session -As $argv[1]
+  tmux new-session -As $argv[1]
 end
 
 function new-tmux-from-dir-name
@@ -7,7 +7,7 @@ function new-tmux-from-dir-name
 end
 
 function __tmux-list-sessions
-  tmux list-sessions -F "#{session_name}"
+  tmux list-sessions -F "#{session_name}" 2> /dev/null
 end
 
 alias tmn "new-tmux-from-dir-name"
