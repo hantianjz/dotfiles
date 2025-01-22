@@ -3,8 +3,13 @@
       relink: true
 - clean: ['~']
 - shell:
-    - [mkdir -p ~/bin/, make local bin folder]
     - [git submodule update --init --recursive, Installing submodules]
+    - [brew bundle install, Install brew files]
+    - [pipx install bpython diff-highlight glasgow argcomplete, Install pipx packages]
+    - [~/.tmux/plugins/tpm/scripts/install_plugins.sh >/dev/null 2>&1, Installing tmux plugins]
+    - [mkdir -p ~/.vim/backup, Create vim backup folder]
+    - [touch ~/.gitconfig_local, Touch local gitconfig file]
+    - [mkdir -p ~/bin/, make local bin folder]
 - link:
     # FISH
     ~/.config/fish:
@@ -38,12 +43,6 @@
       create: true
       path: scripts/gn/macos/gn
     ~/.gdbinit: gdbinit
-- shell:
-    - [~/.tmux/plugins/tpm/scripts/install_plugins.sh >/dev/null 2>&1, Installing tmux plugins]
-    - [mkdir -p ~/.vim/backup, Create vim backup folder]
-    - [touch ~/.gitconfig_local, Touch local gitconfig file]
-    - [brew bundle install, Install brew files]
-    - [pipx install bpython diff-highlight glasgow argcomplete, Install pipx packages]
 - shell:
     - brew upgrade
     - pipx upgrade-all
