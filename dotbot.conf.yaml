@@ -18,9 +18,6 @@
     # GIT
     ~/.gitconfig: shellrc/gitconfig
     ~/.gitignore: shellrc/gitignore
-    # Kitty
-    # ~/.config/kitty: config/kitty
-
     # Ghostty
     ~/.config/ghostty: config/ghostty
     # TMUX
@@ -28,10 +25,6 @@
     ~/.tmux: tmux
     ~/.aerospace.toml:
       path: config/aerospace.toml
-    # Zsh Shell completion
-    ~/.local/share/zsh/site-functions:
-      create: true
-      path: share/zsh/site-functions
     # Local Scripts
     ~/bin/batch_find_replace:
       create: true
