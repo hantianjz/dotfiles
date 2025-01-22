@@ -1,2 +1,6 @@
 tmux-sensible/
 tmux-yank/
+tmux-battery/
+tmux-cpu/
+tmux-open-nvim/
+tmux-resurrect/
