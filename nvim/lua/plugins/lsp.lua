@@ -28,6 +28,7 @@ return {
           "jdtls",
           "typos_lsp",
           "ruff",
+          "rust_analyzer",
         }
       }
       local caps = require('blink.cmp').get_lsp_capabilities()
@@ -162,6 +163,23 @@ return {
             on_attach = on_attach,
           })
         end,
+
+        ["rust_analyzer"] = function()
+          require('lspconfig').rust_analyzer.setup({
+            on_attach = on_attach,
+            settings = {
+              ["rust-analyzer"] = {
+                check = {
+                  command   = "clippy",
+                  extraArgs = { "--", "-W", "clippy::pedantic" },
+                },
+                diagnostics = {
+                  enable = true,
+                }
+              },
+            },
+          })
+        end
       }
 
       -- Additional LSP config
