@@ -12,3 +12,4 @@ source ${CURR_FILE_DIR}/shellrc.bash
 unset CURR_FILE_DIR
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+. "$HOME/.cargo/env"

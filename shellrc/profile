@@ -8,3 +8,4 @@ CURR_FILE_DIR="$(cd "$(dirname "${CURR_FILE}")" && pwd)"
 #*****************CURR_FILE_DIR*****************
 
 unset CURR_FILE_DIR
+. "$HOME/.cargo/env"

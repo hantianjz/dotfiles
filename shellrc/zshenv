@@ -9,3 +9,4 @@ CURR_FILE_DIR="$(cd "$(dirname "${CURR_FILE}" )" && pwd )"
 
 source ${ZDOTDIR:-$HOME}/.zprezto/runcoms/zshenv
 unset CURR_FILE_DIR
+. "$HOME/.cargo/env"

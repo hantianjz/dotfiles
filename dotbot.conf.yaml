@@ -10,6 +10,7 @@
     - [mkdir -p ~/.vim/backup, Create vim backup folder]
     - [touch ~/.gitconfig_local, Touch local gitconfig file]
     - [mkdir -p ~/bin/, make local bin folder]
+    - ['curl --proto ''=https'' --tlsv1.2 -sSf https://sh.rustup.rs | sh', install rustup]
 - link:
     # FISH
     ~/.config/fish:
