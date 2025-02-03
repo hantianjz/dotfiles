@@ -31,7 +31,6 @@ bindkey "^I" expand-or-complete-with-dots
 if [ -f ~/.fzf.zsh ]; then
   export FZF_DEFAULT_COMMAND='fd --type file'
   export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-  source ~/.fzf.zsh
 fi
 
 # enable autocomplete function

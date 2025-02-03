@@ -7,8 +7,12 @@ set -gx EDITOR 'nvim'
 set -gx VISUAL 'nvim'
 set -gx XDG_CONFIG_HOME ~/.config/
 
-set -gx FZF_DEFAULT_COMMAND 'fd --type f --strip-cwd-prefix --hidden --follow --exclude .git'
-set -gx FZF_CTRL_T_COMMAND $FZF_DEFAULT_COMMAND
+set -gx FZF_DEFAULT_OPTS --cycle --border --preview-window=wrap --marker="*" --height=75% --layout=reverse
+
+set fzf_fd_opts --type f --hidden --follow
+
+set fzf_git_log_opts --height=100%
+set fzf_history_opts --layout=default --height=50%
 
 set LOCAL_FISH_CONFIG ~/.config/local_config.fish
 if test -f $LOCAL_FISH_CONFIG

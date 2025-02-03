@@ -56,7 +56,10 @@ return {
       -- elsewhere in your config, without redefining it, due to `opts_extend`
       sources = {
         default = { 'lsp', 'path', 'snippets', 'buffer' },
-        cmdline = {},
+        per_filetype = {
+          oil = { 'path' }
+        },
+        cmdline = {}
       },
 
       -- experimental signature help support
@@ -74,6 +77,18 @@ return {
       },
 
       completion = {
+        documentation = {
+          auto_show = true,
+          auto_show_delay_ms = 1000,
+        },
+
+        ghost_text = {
+          enabled = true,
+          show_without_selection = false
+        },
+
+        accept = { auto_brackets = { enabled = true }, },
+
         list = {
           max_items = 20,
           selection = { preselect = false, auto_insert = false }
