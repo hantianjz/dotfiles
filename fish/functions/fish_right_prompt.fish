@@ -158,4 +158,8 @@ function fish_right_prompt
     end
 
     set_color normal
+
+    if test -n "$ACTIVE_HERMIT"
+        echo -n ' '🦀
+    end
 end

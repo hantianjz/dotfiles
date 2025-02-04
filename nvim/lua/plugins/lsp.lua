@@ -24,7 +24,7 @@ return {
           'pyright',
           'lua_ls',
           'ts_ls',
-          'ocamllsp',
+          -- 'ocamllsp',
           "jdtls",
           "typos_lsp",
           "ruff",

@@ -23,7 +23,7 @@ keybind = super+c=copy_to_clipboard
 
 keybind = super+zero=reset_font_size
 keybind = super+minus=decrease_font_size:1
-keybind = super+plus=increase_font_size:1
+keybind = super+equal=increase_font_size:1
 
 keybind = super+n=new_window
 keybind = global:super+enter=new_window
