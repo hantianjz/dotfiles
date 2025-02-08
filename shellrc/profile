@@ -9,3 +9,4 @@ CURR_FILE_DIR="$(cd "$(dirname "${CURR_FILE}")" && pwd)"
 
 unset CURR_FILE_DIR
 . "$HOME/.cargo/env"
+eval "$(/opt/homebrew/bin/brew shellenv)"
