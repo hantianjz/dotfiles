@@ -21,15 +21,14 @@ return {
           'bashls',
           'clangd',
           'jsonls',
-          'pyright',
           'lua_ls',
           'ts_ls',
-          -- 'ocamllsp',
-          "jdtls",
-          "typos_lsp",
-          "ruff",
-          "rust_analyzer",
-        }
+          'jdtls',
+          'typos_lsp',
+          'rust_analyzer',
+          'mesonlsp'
+        },
+        automatic_installation = true,
       }
       local caps = require('blink.cmp').get_lsp_capabilities()
       local util = require("lspconfig/util")
@@ -68,6 +67,7 @@ return {
               "--function-arg-placeholders",
               "--fallback-style=llvm",
             },
+            filetypes = { "c", "cpp" },
             init_options = {
               usePlaceholders = true,
               completeUnimported = true,
@@ -178,6 +178,12 @@ return {
                 }
               },
             },
+          })
+        end,
+
+        ["mesonlsp"] = function()
+          require 'lspconfig'.mesonlsp.setup({
+            root_dir = util.root_pattern('meson_options.txt', 'meson.options', '.git'),
           })
         end
       }

@@ -55,11 +55,20 @@ return {
       -- default list of enabled providers defined so that you can extend it
       -- elsewhere in your config, without redefining it, due to `opts_extend`
       sources = {
-        default = { 'lsp', 'path', 'snippets', 'buffer' },
+        default = { 'lsp', 'path', 'snippets', 'buffer', 'copilot' },
         per_filetype = {
           oil = { 'path' }
         },
-        cmdline = {}
+        cmdline = {},
+        providers = {
+          copilot = {
+            name = "copilot",
+            module = "blink-cmp-copilot",
+            score_offset = 100,
+            async = true,
+          },
+        },
+
       },
 
       -- experimental signature help support
@@ -92,6 +101,10 @@ return {
         list = {
           max_items = 20,
           selection = { preselect = false, auto_insert = false }
+        },
+
+        trigger = {
+          prefetch_on_insert = false,
         },
 
         menu = {

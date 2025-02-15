@@ -38,6 +38,13 @@ return {
       if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
         return
       end
+
+      -- Disable auto write on format for thse filetypes
+      for _, value in ipairs({ "yaml" }) do
+        if value == vim.bo[bufnr].filetype then
+          return
+        end
+      end
       return { timeout_ms = 500, lsp_format = "fallback" }
     end,
 

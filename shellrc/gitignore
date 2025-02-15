@@ -13,3 +13,4 @@ b
 c
 .DS_Store
 .clangd
+*_pb2.py
