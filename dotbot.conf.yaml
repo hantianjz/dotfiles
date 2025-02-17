@@ -11,6 +11,7 @@
     - [touch ~/.gitconfig_local, Touch local gitconfig file]
     - [mkdir -p ~/bin/, make local bin folder]
     - ['curl --proto ''=https'' --tlsv1.2 -sSf https://sh.rustup.rs | sh', install rustup]
+    # - [sudo ln -sfn /opt/homebrew/opt/openjdk/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk.jdk]
 - link:
     # FISH
     ~/.config/fish:
