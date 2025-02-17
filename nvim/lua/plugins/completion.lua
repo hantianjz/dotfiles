@@ -52,6 +52,7 @@ return {
       },
 
 
+      cmdline = { enabled = false },
       -- default list of enabled providers defined so that you can extend it
       -- elsewhere in your config, without redefining it, due to `opts_extend`
       sources = {
@@ -59,7 +60,6 @@ return {
         per_filetype = {
           oil = { 'path' }
         },
-        cmdline = {},
         providers = {
           copilot = {
             name = "copilot",
