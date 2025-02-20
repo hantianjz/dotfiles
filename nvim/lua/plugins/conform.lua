@@ -27,7 +27,7 @@ return {
     },
     formatters = {
       black = {
-        prepend_args = { "--fast" },
+        prepend_args = { "--fast", "--line-length", "120" },
       },
       shfmt = {
         prepend_args = { "-i", "2" }
@@ -39,7 +39,7 @@ return {
         return
       end
 
-      -- Disable auto write on format for thse filetypes
+      -- Disable auto write on format for these filetypes
       for _, value in ipairs({ "yaml" }) do
         if value == vim.bo[bufnr].filetype then
           return
