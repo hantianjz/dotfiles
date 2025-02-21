@@ -4,6 +4,10 @@ function fish_right_prompt
         echo -n (set_color red)"✘ $cmd_status"
     end
 
+    if test -n "$ACTIVE_HERMIT"
+        echo -n ' '🦀
+    end
+
     if not command -sq git
         set_color normal
         return
@@ -158,8 +162,4 @@ function fish_right_prompt
     end
 
     set_color normal
-
-    if test -n "$ACTIVE_HERMIT"
-        echo -n ' '🦀
-    end
 end

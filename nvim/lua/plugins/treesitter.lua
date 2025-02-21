@@ -6,12 +6,12 @@ return {
     config = function()
       require 'nvim-treesitter.configs'.setup {
         highlight = {
-          enable = false,
+          enable = true,
           disable = {},
         },
 
         indent = {
-          enable = false,
+          enable = true,
           disable = {},
         },
 
