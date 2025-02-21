@@ -40,7 +40,7 @@ return {
       end
 
       -- Disable auto write on format for these filetypes
-      for _, value in ipairs({ "yaml" }) do
+      for _, value in ipairs({ "yaml", "dts" }) do
         if value == vim.bo[bufnr].filetype then
           return
         end

@@ -40,6 +40,7 @@ return {
         local opts = { buffer = bufnr, noremap = true, silent = true }
         vim.keymap.set('n', '<leader>R', vim.lsp.buf.rename, opts)
         vim.keymap.set('n', '<leader>a', vim.lsp.buf.code_action, opts)
+        vim.keymap.set('n', '<leader>e', vim.lsp.buf.signature_help, opts)
       end
 
       require 'mason-lspconfig'.setup_handlers {
@@ -183,6 +184,7 @@ return {
 
         ["mesonlsp"] = function()
           require 'lspconfig'.mesonlsp.setup({
+            on_attach = on_attach,
             root_dir = util.root_pattern('meson_options.txt', 'meson.options', '.git'),
           })
         end
