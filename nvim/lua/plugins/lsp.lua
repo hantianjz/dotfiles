@@ -187,7 +187,7 @@ return {
             on_attach = on_attach,
             root_dir = util.root_pattern('meson_options.txt', 'meson.options', '.git'),
           })
-        end
+        end,
       }
 
       -- Additional LSP config
@@ -202,6 +202,10 @@ return {
           -- Defaults to error.
           diagnosticSeverity = "Hint"
         }
+      })
+
+      require 'lspconfig'.bitbake_ls.setup({
+        on_attach = on_attach,
       })
     end
   },

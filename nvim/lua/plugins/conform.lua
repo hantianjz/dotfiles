@@ -23,6 +23,7 @@ return {
       typescript = { "prettier" },
       html = { "djlint" },
       yaml = { "yamlfmt" },
+      toml = { "taplo" },
       ["*"] = { "trim_whitespace" },
     },
     formatters = {
@@ -55,8 +56,11 @@ return {
     notify_on_error = true,
   },
   config = function(_, opts)
+    -- Disable format on write by default
+    vim.g.disable_autoformat = true
+
     -- Use mason to install formatters
-    local formatters = { "clang-format", "black", "shfmt", "prettier", "mdformat", "djlint", "yamlfmt" }
+    local formatters = { "clang-format", "black", "shfmt", "prettier", "mdformat", "djlint", "yamlfmt"}
     local formatters_to_install = {}
     for _, formatter in pairs(formatters) do
       if not require("mason-registry").is_installed(formatter) then
