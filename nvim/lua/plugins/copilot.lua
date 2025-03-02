@@ -1,6 +1,6 @@
 return {
   {
-    enabled = false,
+    enabled = true,
     "zbirenbaum/copilot.lua",
     dependencies =
     {

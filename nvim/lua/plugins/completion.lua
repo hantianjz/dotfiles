@@ -56,7 +56,7 @@ return {
       -- default list of enabled providers defined so that you can extend it
       -- elsewhere in your config, without redefining it, due to `opts_extend`
       sources = {
-        default = { 'avante', 'lsp', 'path', 'snippets', 'buffer' },
+        default = { 'avante', 'copilot', 'lsp', 'path', 'snippets', 'buffer' },
         per_filetype = {
           oil = { 'path' }
         },
@@ -69,12 +69,12 @@ return {
             }
           },
 
-          -- copilot = {
-          --   name = "copilot",
-          --   module = "blink-cmp-copilot",
-          --   score_offset = 100,
-          --   async = true,
-          -- },
+          copilot = {
+            name = "copilot",
+            module = "blink-cmp-copilot",
+            score_offset = 100,
+            async = true,
+          },
         },
 
       },
