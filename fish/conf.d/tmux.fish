@@ -1,4 +1,8 @@
 function tmux-from-session-name
+  set -e DEACTIVATED_HERMIT
+  if test -n "$HERMIT_ENV"
+      type -q _hermit_deactivate; and _hermit_deactivate
+  end
   tmux new-session -As $argv[1]
 end
 

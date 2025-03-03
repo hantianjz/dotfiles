@@ -3,7 +3,6 @@ return {
     "Saghen/blink.cmp",
     -- optional: provides snippets for the snippet source
     dependencies = {
-      { 'Kaiser-Yang/blink-cmp-avante' },
       {
         'L3MON4D3/LuaSnip',
         -- follow latest release.
@@ -56,18 +55,19 @@ return {
       -- default list of enabled providers defined so that you can extend it
       -- elsewhere in your config, without redefining it, due to `opts_extend`
       sources = {
-        default = { 'avante', 'copilot', 'lsp', 'path', 'snippets', 'buffer' },
+        -- default = { 'avante', 'copilot', 'lsp', 'path', 'snippets', 'buffer' },
+        default = { 'copilot', 'lsp', 'path', 'snippets', 'buffer' },
         per_filetype = {
-          oil = { 'path' }
+          oil = { 'path' },
+          codecompanion = { "codecompanion" },
         },
         providers = {
-          avante = {
-            module = 'blink-cmp-avante',
-            name = 'Avante',
-            opts = {
-              -- options for blink-cmp-avante
-            }
-          },
+          -- avante = {
+          --   module = 'blink-cmp-avante',
+          --   name = 'Avante',
+          --   opts = {
+          --   }
+          -- },
 
           copilot = {
             name = "copilot",

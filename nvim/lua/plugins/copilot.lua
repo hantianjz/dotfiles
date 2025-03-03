@@ -1,7 +1,7 @@
 return {
   {
-    enabled = true,
     "zbirenbaum/copilot.lua",
+    enabled = true,
     dependencies =
     {
       "giuxtaposition/blink-cmp-copilot",
