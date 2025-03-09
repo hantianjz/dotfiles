@@ -1,8 +1,17 @@
+---@mod plugins.lsp LSP configuration
+---
+--- This module configures Language Server Protocol (LSP) support for Neovim.
+--- It sets up Mason for LSP management and configures various language servers.
+
+---@type LazySpec[]
 return {
+  -- Core LSP packages
   { 'neovim/nvim-lspconfig' },
   { 'onsails/lspkind.nvim' },
   { 'p00f/clangd_extensions.nvim' },
   { 'pappasam/jedi-language-server' },
+
+  -- Mason package manager
   {
     'williamboman/mason.nvim',
     build = ":MasonUpdate",
@@ -10,203 +19,177 @@ return {
       require('mason').setup()
     end
   },
+
+  -- Mason LSP configuration
   {
     'williamboman/mason-lspconfig.nvim',
     dependencies = {
       "Saghen/blink.cmp",
     },
     config = function()
-      require('mason-lspconfig').setup {
-        ensure_installed = {
-          'bashls',
-          'clangd',
-          'jsonls',
-          'lua_ls',
-          'ts_ls',
-          'jdtls',
-          'typos_lsp',
-          'rust_analyzer',
-          'mesonlsp'
-        },
+      local mason_lspconfig = require('mason-lspconfig')
+      local lspconfig = require('lspconfig')
+      local util = require("lspconfig/util")
+      local caps = require('blink.cmp').get_lsp_capabilities()
+
+      -- List of LSP servers to install and configure
+      local ensure_installed = {
+        'bashls',
+        'clangd',
+        'jsonls',
+        'lua_ls',
+        'ts_ls',
+        'jdtls',
+        'typos_lsp',
+        'rust_analyzer',
+        'mesonlsp'
+      }
+
+      -- Basic Mason setup
+      mason_lspconfig.setup {
+        ensure_installed = ensure_installed,
         automatic_installation = true,
       }
-      local caps = require('blink.cmp').get_lsp_capabilities()
-      local util = require("lspconfig/util")
 
-      local on_attach = function(_, bufnr)
+      ---Default on_attach function for LSP configuration
+      ---@param _ any Client
+      ---@param bufnr number Buffer number
+      local function on_attach(_, bufnr)
         vim.api.nvim_set_option_value('omnifunc', 'v:lua.vim.lsp.omnifunc', { buf = bufnr })
 
-        -- Mappings.
+        -- Mappings
         local opts = { buffer = bufnr, noremap = true, silent = true }
         vim.keymap.set('n', '<leader>R', vim.lsp.buf.rename, opts)
         vim.keymap.set('n', '<leader>a', vim.lsp.buf.code_action, opts)
         vim.keymap.set('n', '<leader>e', vim.lsp.buf.signature_help, opts)
       end
 
-      require 'mason-lspconfig'.setup_handlers {
-        function(server_name) -- default handler (optional)
-          require 'lspconfig'[server_name].setup { capabilities = caps }
-        end,
+      -- LSP Server Configurations
+      local servers = {
+        -- Simple servers with default configuration
+        ['jdtls'] = { on_attach = on_attach },
+        ['ruff'] = { on_attach = on_attach },
+        ['ts_ls'] = { on_attach = on_attach },
+        ['ocamllsp'] = { on_attach = on_attach },
+        ['bitbake_ls'] = { on_attach = on_attach },
 
-        ['jdtls'] = function()
-          require 'lspconfig'.jdtls.setup {
-            on_attach = on_attach,
+        -- Clangd configuration
+        ['clangd'] = {
+          root_dir = util.root_pattern('.git'),
+          capabilities = caps,
+          cmd = {
+            "clangd",
+            "--background-index",
+            "--clang-tidy",
+            "--header-insertion=iwyu",
+            "--completion-style=detailed",
+            "--function-arg-placeholders",
+            "--fallback-style=llvm",
+          },
+          filetypes = { "c", "cpp" },
+          init_options = {
+            usePlaceholders = true,
+            completeUnimported = true,
+            clangdFileStatus = true,
+          },
+          on_attach = on_attach,
+          single_file_support = true,
+          handlers = {
+            ['textDocument/publishDiagnostics'] = vim.lsp.with(
+              vim.lsp.diagnostic.on_publish_diagnostics, {
+                signs = true,
+                underline = true,
+                update_in_insert = false,
+                virtual_text = false,
+              }
+            ),
           }
-        end,
+        },
 
-        ['clangd'] = function()
-          require 'lspconfig'.clangd.setup {
-            root_dir = function(...)
-              return util.root_pattern('.git')(...)
-            end,
-            capabilities = caps,
-            cmd = { "clangd",
-              "--background-index",
-              "--clang-tidy",
-              "--header-insertion=iwyu",
-              "--completion-style=detailed",
-              "--function-arg-placeholders",
-              "--fallback-style=llvm",
+        -- Python configuration
+        ['pyright'] = {
+          root_dir = util.root_pattern('.git'),
+          on_attach = on_attach,
+          settings = {
+            pyright = {
+              autoImportCompletion = true,
+              disableOrganizedImport = true,
             },
-            filetypes = { "c", "cpp" },
-            init_options = {
-              usePlaceholders = true,
-              completeUnimported = true,
-              clangdFileStatus = true,
-            },
-            on_attach = on_attach,
-            single_file_support = true,
-            handlers = {
-              ['textDocument/publishDiagnostics'] = vim.lsp.with(
-                vim.lsp.diagnostic.on_publish_diagnostics, {
-                  signs = true,
-                  underline = true,
-                  update_in_insert = false,
-                  virtual_text = false,
-                }
-              ),
-            }
-          }
-        end,
-
-        ['ruff'] = function()
-          require 'lspconfig'.ruff.setup {
-            on_attach = on_attach,
-          }
-        end,
-
-        ['pyright'] = function()
-          require 'lspconfig'.pyright.setup {
-            root_dir = function(...)
-              return util.root_pattern('.git')(...)
-            end,
-            on_attach = on_attach,
-            settings = {
-              pyright = {
-                autoImportCompletion = true,
-                disableOrganizedImport = true,
-              },
-              python = {
-                analysis = {
-                  autoSearchPaths = true,
-                  diagnosticMode = 'openFilesOnly',
-                  useLibraryCodeForTypes = true,
-                  typeCheckingMode = 'on'
-                }
+            python = {
+              analysis = {
+                autoSearchPaths = true,
+                diagnosticMode = 'workspace',  -- Options: 'openFilesOnly', 'workspace', or 'off'
+                useLibraryCodeForTypes = true,
+                typeCheckingMode = 'on'
               }
             }
           }
-        end,
+        },
 
-        ["ts_ls"] = function()
-          local lspconfig = require("lspconfig")
-          lspconfig.ts_ls.setup {
-            on_attach = on_attach,
-          }
-        end,
-
-        ["ocamllsp"] = function()
-          local lspconfig = require("lspconfig")
-          lspconfig.ocamllsp.setup {
-            on_attach = on_attach,
-          }
-        end,
-
-        ["lua_ls"] = function()
-          local lspconfig = require("lspconfig")
-          lspconfig.lua_ls.setup {
-            on_attach = on_attach,
-            settings = {
-              Lua = {
-                format = {
-                  enable = true,
-                  defaultConfig = {
-                    indent_style = "space",
-                    indent_size = "2",
-                  },
+        -- Lua configuration
+        ['lua_ls'] = {
+          on_attach = on_attach,
+          settings = {
+            Lua = {
+              format = {
+                enable = true,
+                defaultConfig = {
+                  indent_style = "space",
+                  indent_size = "2",
                 },
-                runtime = {
-                  version = 'LuaJIT'
-                },
-                workspace = {
-                  checkThirdParty = false,
-                  library = {
-                    vim.env.VIMRUNTIME
-                  }
-                },
-              }
-            }
-          }
-        end,
-
-        ["typos_lsp"] = function()
-          require('lspconfig').typos_lsp.setup({
-            on_attach = on_attach,
-          })
-        end,
-
-        ["rust_analyzer"] = function()
-          require('lspconfig').rust_analyzer.setup({
-            on_attach = on_attach,
-            settings = {
-              ["rust-analyzer"] = {
-                check = {
-                  command   = "clippy",
-                  extraArgs = { "--", "-W", "clippy::pedantic" },
-                },
-                diagnostics = {
-                  enable = true,
+              },
+              runtime = {
+                version = 'LuaJIT'
+              },
+              workspace = {
+                checkThirdParty = true,
+                library = {
+                  vim.env.VIMRUNTIME
                 }
               },
-            },
-          })
-        end,
+            }
+          }
+        },
 
-        ["mesonlsp"] = function()
-          require 'lspconfig'.mesonlsp.setup({
-            on_attach = on_attach,
-            root_dir = util.root_pattern('meson_options.txt', 'meson.options', '.git'),
-          })
-        end,
+        -- Typos configuration
+        ['typos_lsp'] = {
+          on_attach = on_attach,
+          init_options = {
+            config = vim.fn.stdpath("config") .. "/typos.toml",
+            diagnosticSeverity = "Hint"
+          }
+        },
+
+        -- Rust configuration
+        ['rust_analyzer'] = {
+          on_attach = on_attach,
+          settings = {
+            ["rust-analyzer"] = {
+              check = {
+                command = "clippy",
+                extraArgs = { "--", "-W", "clippy::pedantic" },
+              },
+              diagnostics = {
+                enable = true,
+              }
+            },
+          },
+        },
+
+        -- Meson configuration
+        ['mesonlsp'] = {
+          on_attach = on_attach,
+          root_dir = util.root_pattern('meson_options.txt', 'meson.options', '.git'),
+        },
       }
 
-      -- Additional LSP config
-      require('lspconfig').typos_lsp.setup({
-        -- Logging level of the language server. Logs appear in :LspLog. Defaults to error.
-        init_options = {
-          -- Custom config. Used together with a config file found in the workspace or its parents,
-          -- taking precedence for settings declared in both.
-          -- Equivalent to the typos `--config` cli argument.
-          config = vim.fn.stdpath("config") .. "/typos.toml",
-          -- How typos are rendered in the editor, can be one of an Error, Warning, Info or Hint.
-          -- Defaults to error.
-          diagnosticSeverity = "Hint"
-        }
-      })
-
-      require 'lspconfig'.bitbake_ls.setup({
-        on_attach = on_attach,
-      })
+      -- Set up all servers
+      mason_lspconfig.setup_handlers {
+        function(server_name)
+          local config = servers[server_name] or { capabilities = caps }
+          lspconfig[server_name].setup(config)
+        end,
+      }
     end
   },
 }

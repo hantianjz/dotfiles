@@ -1,13 +1,19 @@
+---@mod plugins.completion Completion engine configuration
+---
+--- Configures blink.cmp, a fast completion engine written in Rust.
+--- Includes support for various completion sources including LSP,
+--- Copilot, snippets, and more.
+
+---@type LazySpec[]
 return {
   {
     "Saghen/blink.cmp",
-    -- optional: provides snippets for the snippet source
+    version = '*',
     dependencies = {
+      -- Snippet Engine
       {
         'L3MON4D3/LuaSnip',
-        -- follow latest release.
-        version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
-        -- install jsregexp (optional!).
+        version = "v2.*",
         build = "make install_jsregexp",
         dependencies = {
           {
@@ -23,21 +29,9 @@ return {
       },
     },
 
-    -- use a release tag to download pre-built binaries
-    version = '*',
-    -- AND/OR build from source, requires nightly: https://rust-lang.github.io/rustup/concepts/channels.html#working-with-nightly-rust
-    -- build = 'cargo build --release',
-    -- If you use nix, you can build from source using latest nightly rust with:
-    -- build = 'nix run .#build-plugin',
-
-    ---@module 'blink.cmp'
     ---@type blink.cmp.Config
     opts = {
-      -- 'default' for mappings similar to built-in completion
-      -- 'super-tab' for mappings similar to vscode (tab to accept, arrow keys to navigate)
-      -- 'enter' for mappings similar to 'super-tab' but with 'enter' to accept
-      -- see the "default configuration" section below for full documentation on how to define
-      -- your own keymap.
+      -- Keymaps Configuration
       keymap = {
         preset = 'none',
         ['<Tab>'] = { 'select_next', 'fallback' },
@@ -46,29 +40,26 @@ return {
         ['<C-w>'] = { 'show', 'show_documentation', 'hide_documentation' },
         ['<C-b>'] = { 'scroll_documentation_up', 'fallback' },
         ['<C-f>'] = { 'scroll_documentation_down', 'fallback' },
-
         ['<Up>'] = { 'select_prev', 'fallback' },
         ['<Down>'] = { 'select_next', 'fallback' },
       },
 
+      -- Command Line Completion
       cmdline = { enabled = false },
-      -- default list of enabled providers defined so that you can extend it
-      -- elsewhere in your config, without redefining it, due to `opts_extend`
+
+      -- Completion Sources Configuration
       sources = {
-        -- default = { 'avante', 'copilot', 'lsp', 'path', 'snippets', 'buffer' },
+        -- Default sources for all filetypes
         default = { 'copilot', 'lsp', 'path', 'snippets', 'buffer' },
+
+        -- Filetype-specific sources
         per_filetype = {
           oil = { 'path' },
           codecompanion = { "codecompanion" },
         },
-        providers = {
-          -- avante = {
-          --   module = 'blink-cmp-avante',
-          --   name = 'Avante',
-          --   opts = {
-          --   }
-          -- },
 
+        -- Provider-specific configurations
+        providers = {
           copilot = {
             name = "copilot",
             module = "blink-cmp-copilot",
@@ -76,45 +67,61 @@ return {
             async = true,
           },
         },
-
       },
 
-      -- experimental signature help support
+      -- Signature Help
       signature = { enabled = true },
 
+      -- Snippets Configuration
       snippets = {
-        expand = function(snippet) require('luasnip').lsp_expand(snippet) end,
+        expand = function(snippet)
+          require('luasnip').lsp_expand(snippet)
+        end,
         active = function(filter)
           if filter and filter.direction then
             return require('luasnip').jumpable(filter.direction)
           end
           return require('luasnip').in_snippet()
         end,
-        jump = function(direction) require('luasnip').jump(direction) end,
+        jump = function(direction)
+          require('luasnip').jump(direction)
+        end,
       },
 
+      -- Completion Behavior Configuration
       completion = {
+        -- Documentation Display
         documentation = {
           auto_show = true,
           auto_show_delay_ms = 1000,
         },
 
+        -- Ghost Text
         ghost_text = {
           enabled = true,
           show_without_selection = false
         },
 
-        accept = { auto_brackets = { enabled = true }, },
-
-        list = {
-          max_items = 20,
-          selection = { preselect = false, auto_insert = false }
+        -- Auto Brackets
+        accept = {
+          auto_brackets = { enabled = true },
         },
 
+        -- List Configuration
+        list = {
+          max_items = 20,
+          selection = {
+            preselect = false,
+            auto_insert = false
+          }
+        },
+
+        -- Trigger Settings
         trigger = {
           prefetch_on_insert = false,
         },
 
+        -- Menu Display Configuration
         menu = {
           draw = {
             treesitter = { 'lsp' },
@@ -127,9 +134,9 @@ return {
         },
       },
     },
-    -- allows extending the providers array elsewhere in your config
-    -- without having to redefine it
+
+    -- Allow extending sources elsewhere in config
     opts_extend = { "sources.default" }
   }
-
 }
+

@@ -1,3 +1,9 @@
+---@mod plugins.avante AI-powered code assistant configuration
+---
+--- Configures the avante.nvim plugin for AI-assisted coding with support for
+--- multiple AI providers including Copilot and OpenAI.
+
+---@type LazySpec
 return {
   "yetone/avante.nvim",
   enabled = false,
@@ -5,30 +11,40 @@ return {
   lazy = false,
   version = "*",
   opts = {
+    -- AI Provider Configuration
     provider = "copilot",
     auto_suggestions_provider = "openai",
+    
+    -- OpenAI Configuration
     openai = {
       endpoint = "https://api.openai.com/v1",
       model = "gpt-4o-mini",
-      timeout = 30000, -- timeout in milliseconds
-      temperature = 0, -- adjust if needed
+      timeout = 30000,
+      temperature = 0,
       max_tokens = 4096,
-      -- reasoning_effort = "high" -- only supported for reasoning models (o1, etc.)
     },
+
+    -- Behavior Settings
     behaviour = {
-      auto_suggestions = false, -- Experimental stage
+      auto_suggestions = false, -- Experimental feature
     },
+
+    -- RAG Service Configuration
     rag_service = {
-      enabled = false, -- Enables the rag service, requires OPENAI_API_KEY to be set
+      enabled = false, -- Requires OPENAI_API_KEY
     },
+
+    -- UI Configuration
     windows = {
       position = "left",
       width = 40,
     },
+
+    -- Keymaps
     mappings = {
-      ask = "<leader>aa",     -- ask
-      edit = "<leader>ae",    -- edit
-      refresh = "<leader>ar", -- refresh
+      ask = "<leader>aa",     -- Ask AI assistant
+      edit = "<leader>ae",    -- Edit suggestion
+      refresh = "<leader>ar", -- Refresh suggestions
       suggestion = {
         accept = "<S-Tab>",
         next = "<S-Down>",
@@ -36,18 +52,22 @@ return {
       },
     }
   },
-  -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
-  build = "make",
-  -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
+
+  -- Build Configuration
+  build = "make", -- Use "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" for Windows
+
+  -- Dependencies
   dependencies = {
+    -- Core dependencies
     'Kaiser-Yang/blink-cmp-avante',
     "nvim-treesitter/nvim-treesitter",
     "stevearc/dressing.nvim",
     "nvim-lua/plenary.nvim",
     "MunifTanjim/nui.nvim",
-    --- The below dependencies are optional,
-    "echasnovski/mini.pick", -- for file_selector provider mini.pick
-    "ibhagwan/fzf-lua",      -- for file_selector provider fzf
+    
+    -- Optional dependencies for file selection
+    "echasnovski/mini.pick", -- File selector provider: mini.pick
+    "ibhagwan/fzf-lua",      -- File selector provider: fzf
     "giuxtaposition/blink-cmp-copilot",
   },
 }

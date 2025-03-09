@@ -9,7 +9,7 @@ return {
     keys = {
       { '<leader>t',  function() require('telescope.builtin').find_files() end,               desc = "Find files" },
       { '<leader>g',  function() require('telescope.builtin').git_files() end,                desc = "Get files" },
-      { '<leader>s',  function() require('telescope.builtin').live_grep() end,                desc = "Live grep for string" },
+      -- { '<leader>s',  function() require('telescope.builtin').live_grep() end,                desc = "Live grep for string" },
       { '<leader>b',  function() require('telescope.builtin').buffers() end,                  desc = "Current buffers" },
       { '<leader>vh', function() require('telescope.builtin').help_tags() end,                desc = "Vim help tag" },
       { '<leader>d',  function() require('telescope.builtin').diagnostics({ bufnr = 0 }) end, desc = "Diagnostics info for current buffer" },
@@ -56,6 +56,7 @@ return {
             },
           },
         },
+        layout_strategy = 'flex',
         pickers = {
           find_files = {
             find_command = { "fd", "--type", "f", "--strip-cwd-prefix", "--hidden", "--follow", "--exclude", ".git" },
@@ -64,7 +65,7 @@ return {
         extensions = {
           fzf = {
             fuzzy = true,                   -- false will only do exact matching
-            iverride_generic_sorter = true, -- override the generic sorter
+            override_generic_sorter = true, -- override the generic sorter
             override_file_sorter = true,    -- override the file sorter
             case_mode = "smart_case",       -- or "ignore_case" or "respect_case"
             -- the default case_mode is "smart_case"
@@ -73,6 +74,7 @@ return {
       })
 
       require('telescope').load_extension('fzf')
+      require "config.telescope.live_multi_grep".setup()
     end
   },
 }
