@@ -5,7 +5,7 @@ function fish_right_prompt
     end
 
     if test -n "$ACTIVE_HERMIT"
-        echo -n ' '🦀
+        echo -n ' '🐚
     end
 
     if not command -sq git

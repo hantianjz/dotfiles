@@ -48,9 +48,6 @@ o.backupcopy = "auto" -- see :help crontab
 o.updatetime = 500
 o.swapfile = false
 
--- For avante.nvim
-vim.opt.laststatus = 3
-
 vim.g.syntax_on = true
 
 local function reset_edit_setting()
@@ -58,8 +55,6 @@ local function reset_edit_setting()
 end
 
 -- Setup mapping to source local file
-vim.keymap.set("n", '<Leader><Leader>r', [[:source %<CR>]])
-vim.keymap.set("n", '<Leader><Leader>t', [[<Plug>PlenaryTestFile]])
 vim.keymap.set("n", '<Leader>h', [[:ClangdSwitchSourceHeader<CR>]])
 vim.keymap.set("n", "<Leader>x", [[:.lua<CR>]])
 vim.keymap.set("v", "<Leader>x", [[:lua<CR>]])
