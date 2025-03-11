@@ -13,7 +13,6 @@ return {
       ["-"] = { "actions.parent", mode = "n" },
       ["_"] = { "actions.open_cwd", mode = "n" },
       ["gs"] = { "actions.change_sort", mode = "n" },
-      ["<C-o>"] = { "actions.open_external", mode = "n" },
     },
     use_default_keymaps = false,
   },
