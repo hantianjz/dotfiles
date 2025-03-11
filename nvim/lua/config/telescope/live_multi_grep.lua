@@ -33,9 +33,13 @@ local live_multigrep = function(opts)
       end
 
       -- Split on double space to separate search pattern and file pattern
-      local patterns = vim.split(prompt, " ; ")
-      local search_pattern = patterns[1]
-      local file_pattern = patterns[2]
+      local patterns = vim.split(prompt, " ")
+
+      local search_pattern = "^"
+      for _, str in ipairs(patterns) do
+        search_pattern = search_pattern .. "(?=.*" .. str .. ")"
+      end
+      search_pattern = search_pattern .. ".*$"
 
       -- Base ripgrep command with standard options
       local args = {
@@ -50,12 +54,7 @@ local live_multigrep = function(opts)
 
       -- Add search pattern if provided
       if search_pattern and search_pattern ~= "" then
-        vim.list_extend(args, { "-e", search_pattern })
-      end
-
-      -- Add file pattern if provided
-      if file_pattern and file_pattern ~= "" then
-        vim.list_extend(args, { "-g", file_pattern })
+        vim.list_extend(args, { "-P", search_pattern })
       end
 
       -- Add any additional user-specified arguments
