@@ -36,5 +36,33 @@ return {
       silent = true,
       desc = "Navigate to right pane"
     },
+    {
+      "<C-h>",
+      function() vim.cmd([[stopinsert]]) vim.cmd([[TmuxNavigateLeft]]),
+      mode = { "t" },
+      silent = true,
+      desc = "Terminal mode: Navigate to left pane"
+    },
+    {
+      "<C-j>",
+      function() vim.cmd([[stopinsert]]) vim.cmd([[TmuxNavigateDown]]),
+      mode = { "t" },
+      silent = true,
+      desc = "Terminal mode: Navigate to bottom pane"
+    },
+    {
+      "<C-k>",
+      function() vim.cmd([[stopinsert]]) vim.cmd([[TmuxNavigateUp]]),
+      mode = { "t" },
+      silent = true,
+      desc = "Terminal mode: Navigate to top pane"
+    },
+    {
+      "<C-l>",
+      function() vim.cmd([[stopinsert]]) vim.cmd([[TmuxNavigateRight]]),
+      mode = { "t" },
+      silent = true,
+      desc = "Terminal mode: Navigate to right pane"
+    },
   },
 }
