@@ -18,21 +18,21 @@ return {
     {
       "<C-j>",
       function() vim.cmd([[:TmuxNavigateDown]]) end,
-      mode = { "n", "t" },
+      mode = { "n", "i", "t" },
       silent = true,
       desc = "Navigate to bottom pane"
     },
     {
       "<C-k>",
       function() vim.cmd([[:TmuxNavigateUp]]) end,
-      mode = { "n", "t" },
+      mode = { "n", "i", "t" },
       silent = true,
       desc = "Navigate to top pane"
     },
     {
       "<C-l>",
       function() vim.cmd([[:TmuxNavigateRight]]) end,
-      mode = { "n", "t" },
+      mode = { "n", "i", "t" },
       silent = true,
       desc = "Navigate to right pane"
     },
