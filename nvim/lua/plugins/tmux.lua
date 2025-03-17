@@ -11,7 +11,7 @@ return {
     {
       "<C-h>",
       function() vim.cmd([[:TmuxNavigateLeft]]) end,
-      mode = { "n", "t" },
+      mode = { "n", "i", "t" },
       silent = true,
       desc = "Navigate to left pane"
     },
