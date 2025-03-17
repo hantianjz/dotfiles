@@ -69,6 +69,7 @@ vim.keymap.set('i', '<C-s>', '<Esc>:w<CR>a', { noremap = true, silent = true })
 vim.keymap.set('n', '∆', function() vim.cmd("silent! cnext") end) -- ALT-j
 vim.keymap.set('n', '˚', function() vim.cmd("silent! cprev") end) -- ALT-k
 
+vim.keymap.set('t', '<Esc>', '<C-\\><C-n>', { noremap = true, silent = true })
 
 -- Inspect a lua object
 P = function(v)

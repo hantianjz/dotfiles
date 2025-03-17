@@ -55,7 +55,7 @@ return {
         -- Filetype-specific sources
         per_filetype = {
           oil = { 'path' },
-          codecompanion = { "codecompanion" },
+          -- codecompanion = { "codecompanion" },
         },
 
         -- Provider-specific configurations

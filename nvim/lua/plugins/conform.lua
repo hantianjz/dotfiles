@@ -10,15 +10,15 @@ return {
   dependencies = { "mason.nvim" },
   cmd = "ConformInfo",
   lazy = false,
-  
+
   -- Keybindings
   keys = {
     {
       "<leader>f",
       function()
-        require("conform").format({ 
-          lsp_fallback = true, 
-          timeout_ms = 1000 
+        require("conform").format({
+          lsp_fallback = true,
+          timeout_ms = 1000
         })
       end,
       mode = { "n", "v" },
@@ -31,23 +31,24 @@ return {
     formatters_by_ft = {
       -- Systems Programming
       c = { "clang-format" },
-      
+      rust = { "rustfmt", lsp_format = "fallback" },
+
       -- Scripting Languages
       python = { "isort", "black" },
       sh = { "shfmt" },
-      
+
       -- Build Systems
       gn = { "gn" },
       zig = { "zigfmt" },
-      
+
       -- Web Technologies
       typescript = { "prettier" },
       html = { "djlint" },
-      
+
       -- Configuration Files
       yaml = { "yamlfmt" },
       toml = { "taplo" },
-      
+
       -- Global Formatters
       ["*"] = { "trim_whitespace" },
     },
@@ -77,9 +78,9 @@ return {
         end
       end
 
-      return { 
-        timeout_ms = 500, 
-        lsp_format = "fallback" 
+      return {
+        timeout_ms = 500,
+        lsp_format = "fallback"
       }
     end,
 
@@ -152,3 +153,4 @@ return {
     })
   end
 }
+

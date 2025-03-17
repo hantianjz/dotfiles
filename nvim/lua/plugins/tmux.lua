@@ -11,58 +11,32 @@ return {
     {
       "<C-h>",
       function() vim.cmd([[TmuxNavigateLeft]]) end,
-      mode = { "n", "i" },
       silent = true,
       desc = "Navigate to left pane"
     },
     {
       "<C-j>",
       function() vim.cmd([[TmuxNavigateDown]]) end,
-      mode = { "n", "i" },
       silent = true,
       desc = "Navigate to bottom pane"
     },
     {
       "<C-k>",
       function() vim.cmd([[TmuxNavigateUp]]) end,
-      mode = { "n", "i" },
       silent = true,
       desc = "Navigate to top pane"
     },
     {
       "<C-l>",
       function() vim.cmd([[TmuxNavigateRight]]) end,
-      mode = { "n", "i" },
       silent = true,
       desc = "Navigate to right pane"
     },
-    {
-      "<C-h>",
-      function() vim.cmd([[stopinsert]]); vim.cmd([[TmuxNavigateLeft]]),
-      mode = { "t" },
-      silent = true,
-      desc = "Terminal mode: Navigate to left pane"
-    },
-    {
-      "<C-j>",
-      function() vim.cmd([[stopinsert]]); vim.cmd([[TmuxNavigateDown]]),
-      mode = { "t" },
-      silent = true,
-      desc = "Terminal mode: Navigate to bottom pane"
-    },
-    {
-      "<C-k>",
-      function() vim.cmd([[stopinsert]]); vim.cmd([[TmuxNavigateUp]]),
-      mode = { "t" },
-      silent = true,
-      desc = "Terminal mode: Navigate to top pane"
-    },
-    {
-      "<C-l>",
-      function() vim.cmd([[stopinsert]]); vim.cmd([[TmuxNavigateRight]]),
-      mode = { "t" },
-      silent = true,
-      desc = "Terminal mode: Navigate to right pane"
-    },
   },
+  config = function()
+    vim.keymap.set('t', '<C-l>', '<C-\\><C-n>:TmuxNavigateRight<CR>', { noremap = true, silent = true })
+    vim.keymap.set('t', '<C-k>', '<C-\\><C-n>:TmuxNavigateUp<CR>', { noremap = true, silent = true })
+    vim.keymap.set('t', '<C-j>', '<C-\\><C-n>:TmuxNavigateDown<CR>', { noremap = true, silent = true })
+    vim.keymap.set('t', '<C-h>', '<C-\\><C-n>:TmuxNavigateLeft<CR>', { noremap = true, silent = true })
+  end,
 }

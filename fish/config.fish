@@ -5,6 +5,7 @@ end
 
 set -gx EDITOR 'nvim'
 set -gx VISUAL 'nvim'
+set -gx AIDER_EDITOR 'nvim'
 set -gx XDG_CONFIG_HOME ~/.config/
 
 set -gx FZF_DEFAULT_OPTS --cycle --border --preview-window=wrap --marker="*" --height=75% --layout=reverse

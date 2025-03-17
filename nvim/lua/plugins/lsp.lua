@@ -118,7 +118,7 @@ return {
             python = {
               analysis = {
                 autoSearchPaths = true,
-                diagnosticMode = 'workspace',  -- Options: 'openFilesOnly', 'workspace', or 'off'
+                diagnosticMode = 'workspace', -- Options: 'openFilesOnly', 'workspace', or 'off'
                 useLibraryCodeForTypes = true,
                 typeCheckingMode = 'on'
               }
@@ -167,7 +167,7 @@ return {
             ["rust-analyzer"] = {
               check = {
                 command = "clippy",
-                extraArgs = { "--", "-W", "clippy::pedantic" },
+                extraArgs = { "--release", "--", "-D", "warning" },
               },
               diagnostics = {
                 enable = true,
