@@ -9,7 +9,7 @@ o.laststatus = 2  -- always show statusline
 o.list = true
 o.listchars = [[tab:▸ ,extends:❯,precedes:❮,nbsp:±]]
 
-o.clipboard = [[unnamed,unnamedplus]] -- yank and paste with the system clipboard
+o.clipboard = [[unnamed]] -- yank and paste with the system clipboard
 
 -- Indenting
 o.autoindent = true
@@ -43,12 +43,30 @@ o.mouse = 'a'
 -- keep a copy of last edit
 -- if this throws errors, make sure the backup dir exists
 o.backup = true
-o.backupdir = vim.env.HOME .. "/.vim/backup/"
+o.backupdir = vim.fn.stdpath("cache") .. "/backup"
 o.backupcopy = "auto" -- see :help crontab
 o.updatetime = 500
 o.swapfile = false
 
 vim.g.syntax_on = true
+
+-- Fix easyclip for neovim 0.11+
+vim.g.EasyClipUseGlobalPasteToggle = '0'
+
+-- Some general easyclip settings
+vim.g.EasyClipPreserveCursorPositionAfterYank = '1'
+vim.g.EasyClipAutoFormat = '1'
+vim.g.EasyClipUseSubstituteDefaults = '1'
+
+vim.g.EasyClipShareYanks = '1'
+vim.g.EasyClipShareYanksDirectory = vim.fn.stdpath("cache")
+
+-- File type mapping for .inc files to BitBake
+vim.filetype.add({
+  extension = {
+    inc = "bitbake",
+  },
+})
 
 local function reset_edit_setting()
   vim.cmd("nohl")

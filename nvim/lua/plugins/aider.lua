@@ -6,7 +6,7 @@ return {
       function()
         vim.cmd("AiderOpen")
       end,
-      mode = { "n", "v" }
+      mode = { "n" }
     },
   },
   opts = {

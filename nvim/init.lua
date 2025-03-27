@@ -1,3 +1,5 @@
 require("nvim_cfg")
 require("config.lazy")
 require("config.lsp")
+require("config.exit_terminal").setup()
+require("config.split_management").setup()

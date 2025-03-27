@@ -40,7 +40,7 @@
 [core]
   excludesfile = ~/.gitignore
   editor = nvim
-  pager = diff-highlight | less --tabs=4 -RFX
+  pager = diff-so-fancy | less --tabs=4 -RFX
 [rerere]
   enabled = true
 [pull]
@@ -48,23 +48,24 @@
 [include]
   path = ~/.gitconfig_local
 [pager]
-  log = diff-highlight | less
-  show = diff-highlight | less
-  diff = diff-highlight | less
+  log = diff-so-fancy | less
+  show = diff-so-fancy | less
+  diff = diff-so-fancy | less
 [interactive]
-  diffFilter = diff-highlight
-[color "diff-highlight"]
+  diffFilter = diff-so-fancy --patch
+[color "diff-so-fancy"]
   oldNormal = red bold
   oldHighlight = red bold 52
   newNormal = green bold
   newHighlight = green bold 22
 [color "diff"]
-  meta = yellow
+  meta = 11
   frag = magenta bold
   commit = yellow bold
   old = red bold
   new = green bold
   whitespace = red reverse
+  func = 146 bold
 [filter "lfs"]
   required = true
   clean = git-lfs clean -- %f
