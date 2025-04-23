@@ -1,13 +1,6 @@
 [user]
-  name = James Zhao
-[push]
-  config = default
-  default = current
-[diff]
-  renames = true
-  compactionHeuristic = true
-  colorMoved = default
-  algorithm = histogram
+	name = James Zhao
+	email = hjz@squareup.com
 [status]
   showUntrackedFiles = all
   submoduleSummary = true
@@ -24,12 +17,34 @@
   # a few sections ago!
 [branch]
   autosetupmerge = true
+  sort = -committerdate
+[tag]
+  sort = version:refname
 [merge]
   summary = true
   conflictstyle = zdiff3
 [rebase]
-  autosquash = true
-  autostash = true
+  autoSquash = true
+  autoStash = true
+  updateRef =true
+[diff]
+  algorithm = histogram
+  colorMoved = plain
+  mnemonicPrefix = true
+  renames = true
+[pull]
+  rebase = true
+[push]
+  default = simple
+  autoSetupRemote = true
+  followTags = true
+[fetch]
+  prune = true
+  pruneTags = true
+  all = true
+[rerere]
+  enabled = true
+  autoupdate = true
 [color]
   diff = auto
   status = auto
@@ -41,10 +56,8 @@
   excludesfile = ~/.gitignore
   editor = nvim
   pager = diff-so-fancy | less --tabs=4 -RFX
-[rerere]
-  enabled = true
-[pull]
-  rebase = true
+  untrackedcache = true
+  fsmonitor = false
 [include]
   path = ~/.gitconfig_local
 [pager]
@@ -71,3 +84,5 @@
   clean = git-lfs clean -- %f
   smudge = git-lfs smudge -- %f
   process = git-lfs filter-process
+[column]
+  ui = auto

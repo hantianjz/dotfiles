@@ -10,4 +10,3 @@ BRANCH=$1
 
 git checkout -B ${BRANCH}
 git push
-git branch --set-upstream-to=origin/${BRANCH} ${BRANCH}

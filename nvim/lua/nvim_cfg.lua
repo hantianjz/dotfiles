@@ -9,7 +9,7 @@ o.laststatus = 2  -- always show statusline
 o.list = true
 o.listchars = [[tab:▸ ,extends:❯,precedes:❮,nbsp:±]]
 
-o.clipboard = [[unnamed]] -- yank and paste with the system clipboard
+o.clipboard = [[unnamed,unnamedplus]] -- yank and paste with the system clipboard
 
 -- Indenting
 o.autoindent = true
@@ -55,10 +55,10 @@ vim.g.EasyClipUseGlobalPasteToggle = '0'
 
 -- Some general easyclip settings
 vim.g.EasyClipPreserveCursorPositionAfterYank = '1'
-vim.g.EasyClipAutoFormat = '1'
+vim.g.EasyClipAutoFormat = '0'
 vim.g.EasyClipUseSubstituteDefaults = '1'
 
-vim.g.EasyClipShareYanks = '1'
+vim.g.EasyClipShareYanks = '0'
 vim.g.EasyClipShareYanksDirectory = vim.fn.stdpath("cache")
 
 -- File type mapping for .inc files to BitBake
@@ -109,3 +109,9 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     vim.highlight.on_yank()
   end,
 })
+
+-- Disable vim provider
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_node_provider = 0

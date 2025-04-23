@@ -30,7 +30,7 @@ return {
     -- Formatter configurations by filetype
     formatters_by_ft = {
       -- Systems Programming
-      c = { "clang-format" },
+      c = { "clang-format", lsp_format = "fallback"},
       rust = { "rustfmt", lsp_format = "fallback" },
 
       -- Scripting Languages
