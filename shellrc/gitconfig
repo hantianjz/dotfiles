@@ -55,18 +55,18 @@
 [core]
   excludesfile = ~/.gitignore
   editor = nvim
-  pager = diff-so-fancy | less --tabs=4 -RFX
+  pager = delta
   untrackedcache = true
   fsmonitor = false
 [include]
   path = ~/.gitconfig_local
 [pager]
-  log = diff-so-fancy | less
-  show = diff-so-fancy | less
-  diff = diff-so-fancy | less
+  log = delta
+  show = delta
+  diff = delta
 [interactive]
-  diffFilter = diff-so-fancy --patch
-[color "diff-so-fancy"]
+  diffFilter = delta --color-only
+[color "delta"]
   oldNormal = red bold
   oldHighlight = red bold 52
   newNormal = green bold
@@ -86,3 +86,6 @@
   process = git-lfs filter-process
 [column]
   ui = auto
+[delta]
+  navigate = true
+  dark = true

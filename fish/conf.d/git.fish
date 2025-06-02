@@ -94,7 +94,7 @@ alias gSu 'git submodule foreach git pull origin master'
 # Working Copy (w)
 alias gws 'git status --ignore-submodules $_git_status_ignore_submodules --short'
 alias gwS 'git status --ignore-submodules $_git_status_ignore_submodules'
-alias gwd 'git diff --no-ext-diff --word-diff'
+alias gwd 'git diff --no-ext-diff'
 alias gwr 'git reset --soft'
 alias gwR 'git reset --hard'
 alias gclean "git clean -dff && git submodule foreach git clean -dff"
