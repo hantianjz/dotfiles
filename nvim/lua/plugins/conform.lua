@@ -17,7 +17,7 @@ return {
       "<leader>f",
       function()
         require("conform").format({
-          lsp_fallback = true,
+          lsp_format = "first",
           timeout_ms = 1000
         })
       end,
@@ -30,8 +30,8 @@ return {
     -- Formatter configurations by filetype
     formatters_by_ft = {
       -- Systems Programming
-      c = { "clang-format", lsp_format = "fallback"},
-      rust = { "rustfmt", lsp_format = "fallback" },
+      c = { "clang-format", lsp_format = "first" },
+      rust = { "rustfmt", lsp_format = "first" },
 
       -- Scripting Languages
       python = { "isort", "black" },
@@ -80,13 +80,14 @@ return {
 
       return {
         timeout_ms = 500,
-        lsp_format = "fallback"
+        lsp_format = "first"
       }
     end,
 
     -- General options
     default_format_opts = {
-      lsp_format = "fallback",
+      timeout_ms = 500,
+      lsp_format = "first",
     },
     quiet = false,
     notify_on_error = true,
@@ -153,4 +154,3 @@ return {
     })
   end
 }
-

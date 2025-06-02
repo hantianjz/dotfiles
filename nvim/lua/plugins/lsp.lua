@@ -1,9 +1,3 @@
----@mod plugins.lsp LSP configuration
----
---- This module configures Language Server Protocol (LSP) support for Neovim.
---- It sets up Mason for LSP management and configures various language servers.
-
----@type LazySpec[]
 return {
   -- Core LSP packages
   { 'neovim/nvim-lspconfig' },
@@ -28,7 +22,6 @@ return {
     },
     config = function()
       local mason_lspconfig = require('mason-lspconfig')
-      local lspconfig = require('lspconfig')
       local util = require("lspconfig/util")
       local caps = require('blink.cmp').get_lsp_capabilities()
 
@@ -38,8 +31,6 @@ return {
         'clangd',
         'jsonls',
         'lua_ls',
-        'ts_ls',
-        'jdtls',
         'typos_lsp',
         'rust_analyzer',
         'mesonlsp'
@@ -64,17 +55,12 @@ return {
         vim.keymap.set('n', '<leader>e', vim.lsp.buf.signature_help, opts)
       end
 
-      -- LSP Server Configurations
-      local servers = {
-        -- Simple servers with default configuration
-        ['jdtls'] = { on_attach = on_attach },
-        ['ruff'] = { on_attach = on_attach },
-        ['ts_ls'] = { on_attach = on_attach },
-        ['ocamllsp'] = { on_attach = on_attach },
-        ['bitbake_ls'] = { on_attach = on_attach },
-
-        -- Clangd configuration
-        ['clangd'] = {
+      vim.lsp.config('jdtls', { on_attach = on_attach })
+      vim.lsp.config('ruff', { on_attach = on_attach })
+      vim.lsp.config('ts_ls', { on_attach = on_attach })
+      vim.lsp.config('ocamllsp', { on_attach = on_attach })
+      vim.lsp.config('clangd',
+        {
           root_dir = util.root_pattern('.git'),
           capabilities = caps,
           cmd = {
@@ -95,101 +81,87 @@ return {
           on_attach = on_attach,
           single_file_support = true,
           handlers = {
-            ['textDocument/publishDiagnostics'] = vim.lsp.with(
-              vim.lsp.diagnostic.on_publish_diagnostics, {
-                signs = true,
-                underline = true,
-                update_in_insert = false,
-                virtual_text = false,
-              }
-            ),
+            -- ['textDocument/publishDiagnostics'] = vim.lsp.with(
+            --   vim.lsp.diagnostic.on_publish_diagnostics, {
+            --     signs = true,
+            --     underline = true,
+            --     update_in_insert = false,
+            --     virtual_text = false,
+            --   }
+            -- ),
           }
-        },
+        })
 
-        -- Python configuration
-        ['pyright'] = {
-          root_dir = util.root_pattern('.git'),
-          on_attach = on_attach,
-          settings = {
-            pyright = {
-              autoImportCompletion = true,
-              disableOrganizedImport = true,
+      vim.lsp.config('lua_ls', {
+        on_attach = on_attach,
+        settings = {
+          Lua = {
+            format = {
+              enable = true,
+              defaultConfig = {
+                indent_style = "space",
+                indent_size = "2",
+              },
             },
-            python = {
-              analysis = {
-                autoSearchPaths = true,
-                diagnosticMode = 'workspace', -- Options: 'openFilesOnly', 'workspace', or 'off'
-                useLibraryCodeForTypes = true,
-                typeCheckingMode = 'on'
-              }
-            }
-          }
-        },
-
-        -- Lua configuration
-        ['lua_ls'] = {
-          on_attach = on_attach,
-          settings = {
-            Lua = {
-              format = {
-                enable = true,
-                defaultConfig = {
-                  indent_style = "space",
-                  indent_size = "2",
-                },
-              },
-              runtime = {
-                version = 'LuaJIT'
-              },
-              workspace = {
-                checkThirdParty = true,
-                library = {
-                  vim.env.VIMRUNTIME
-                }
-              },
-            }
-          }
-        },
-
-        -- Typos configuration
-        ['typos_lsp'] = {
-          on_attach = on_attach,
-          init_options = {
-            config = vim.fn.stdpath("config") .. "/typos.toml",
-            diagnosticSeverity = "Hint"
-          }
-        },
-
-        -- Rust configuration
-        ['rust_analyzer'] = {
-          on_attach = on_attach,
-          settings = {
-            ["rust-analyzer"] = {
-              check = {
-                command = "clippy",
-                extraArgs = { "--release", "--", "-D", "warning" },
-              },
-              diagnostics = {
-                enable = true,
+            runtime = {
+              version = 'LuaJIT'
+            },
+            workspace = {
+              checkThirdParty = true,
+              library = {
+                vim.env.VIMRUNTIME
               }
             },
+          }
+        }
+      })
+
+      vim.lsp.config('pyright', {
+        root_dir = util.root_pattern('.git'),
+        on_attach = on_attach,
+        settings = {
+          pyright = {
+            autoImportCompletion = true,
+            disableOrganizedImport = true,
+          },
+          python = {
+            analysis = {
+              autoSearchPaths = true,
+              diagnosticMode = 'workspace', -- Options: 'openFilesOnly', 'workspace', or 'off'
+              useLibraryCodeForTypes = true,
+              typeCheckingMode = 'on'
+            }
+          }
+        }
+      })
+
+      vim.lsp.config('typos_lsp', {
+        on_attach = on_attach,
+        init_options = {
+          config = vim.fn.stdpath("config") .. "/typos.toml",
+          diagnosticSeverity = "Hint"
+        }
+      })
+
+      vim.lsp.config('rust_analyzer', {
+        on_attach = on_attach,
+        settings = {
+          ["rust-analyzer"] = {
+            check = {
+              command = "clippy",
+              extraArgs = { "--release", "--", "-D", "warning" },
+            },
+            diagnostics = {
+              enable = true,
+            }
           },
         },
+      })
 
-        -- Meson configuration
-        ['mesonlsp'] = {
-          on_attach = on_attach,
-          root_dir = util.root_pattern('meson_options.txt', 'meson.options', '.git'),
-        },
-      }
-
-      -- Set up all servers
-      mason_lspconfig.setup_handlers {
-        function(server_name)
-          local config = servers[server_name] or { capabilities = caps }
-          lspconfig[server_name].setup(config)
-        end,
-      }
+      vim.lsp.config('mesonlsp', {
+        on_attach = on_attach,
+        root_dir = util.root_pattern('meson_options.txt', 'meson.options', '.git'),
+      })
     end
   },
 }
