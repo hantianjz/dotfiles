@@ -100,3 +100,4 @@ alias gwR 'git reset --hard'
 alias gclean "git clean -dff && git submodule foreach git clean -dff"
 
 alias gis 'git status'
+alias ghd 'git show HEAD'
