@@ -4,14 +4,15 @@
 - clean: ['~']
 - shell:
     - [git submodule update --init --recursive, Installing submodules]
-    - [brew bundle install, Install brew files]
-    - [pipx install bpython glasgow argcomplete, Install pipx packages]
     - [~/.tmux/plugins/tpm/scripts/install_plugins.sh >/dev/null 2>&1, Installing tmux plugins]
     - [mkdir -p ~/.vim/backup, Create vim backup folder]
     - [touch ~/.gitconfig_local, Touch local gitconfig file]
     - [mkdir -p ~/bin/, make local bin folder]
+- macos:
+    - [brew bundle install, Install brew files]
+    - [sudo ln -sfn /opt/homebrew/opt/openjdk/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk.jdk]
+- rust:
     - ['curl --proto ''=https'' --tlsv1.2 -sSf https://sh.rustup.rs | sh', install rustup]
-    # - [sudo ln -sfn /opt/homebrew/opt/openjdk/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk.jdk]
 - link:
     # FISH
     ~/.config/fish:
@@ -45,7 +46,3 @@
       create: true
       path: scripts/gn/macos/gn
     ~/.gdbinit: gdbinit
-- shell:
-    - brew upgrade
-    - pipx upgrade-all
-    - fisher update
