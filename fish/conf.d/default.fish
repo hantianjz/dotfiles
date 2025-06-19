@@ -3,6 +3,7 @@ alias ll "ls -Ghal"
 
 alias vim 'nvim'
 alias v 'nvim'
+alias cat 'bat'
 
 alias .. "cd .."
 alias ... "cd ../.."
