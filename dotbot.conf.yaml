@@ -8,6 +8,7 @@
     - [mkdir -p ~/.vim/backup, Create vim backup folder]
     - [touch ~/.gitconfig_local, Touch local gitconfig file]
     - [mkdir -p ~/bin/, make local bin folder]
+    - [curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher]
 - macos:
     - [brew bundle install, Install brew files]
     - [sudo ln -sfn /opt/homebrew/opt/openjdk/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk.jdk]
