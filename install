@@ -3,6 +3,7 @@
 set -e
 
 CONFIG="dotbot.conf.yaml"
+CONFIG_APT="dotbot_apt.conf.yaml"
 DOTBOT_DIR=".dotbot"
 DOTBOT_IFPLAT_PLUG_DIR=".dotbot-ifplatform"
 DOTBOT_BREW_PLUG_DIR=".dotbot-brew/brew.py"
@@ -17,7 +18,8 @@ cd "${BASEDIR}"
 git -C "${DOTBOT_DIR}" submodule sync --quiet --recursive
 git submodule update --init --recursive "${DOTBOT_DIR}"
 
-if [ uname == "Linux" ]; then
+if [[ "$(uname)" == "Linux" ]]; then
+  echo "Do sometnhing?"
   sudo "${BASEDIR}/${DOTBOT_DIR}/${DOTBOT_BIN}" -d "${BASEDIR}" -c "${CONFIG_APT}" -p "${DOTBOT_BREW_PLUG_DIR}" --plugin-dir "${DOTBOT_IFPLAT_PLUG_DIR}" -p "${DOTBOT_IF_PLUG_DIR}" -p "${DOTBOT_HOSTNAME_PLUG_DIR}" -p "${DOTBOT_APTGET_PLUG_DIR}" "${@}"
 fi
 
