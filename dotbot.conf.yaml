@@ -2,18 +2,17 @@
     link:
       relink: true
 - clean: ['~']
+- ifmacos:
+    - brewfile:
+        - Brewfile
+    # - [sudo ln -sfn /opt/homebrew/opt/openjdk/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk.jdk]
 - shell:
-    - [git submodule update --init --recursive, Installing submodules]
-    - [~/.tmux/plugins/tpm/scripts/install_plugins.sh >/dev/null 2>&1, Installing tmux plugins]
+    - [~/.tmux/plugins/tpm/scripts/install_plugins.sh >/dev/null 2>&1, Installing tmux pluifplatform.py]
     - [mkdir -p ~/.vim/backup, Create vim backup folder]
     - [touch ~/.gitconfig_local, Touch local gitconfig file]
     - [mkdir -p ~/bin/, make local bin folder]
-    - [curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher]
-- macos:
-    - [brew bundle install, Install brew files]
-    - [sudo ln -sfn /opt/homebrew/opt/openjdk/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk.jdk]
-- rust:
-    - ['curl --proto ''=https'' --tlsv1.2 -sSf https://sh.rustup.rs | sh', install rustup]
+- shell:
+    - ['curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher']
 - link:
     # FISH
     ~/.config/fish:
@@ -46,4 +45,4 @@
     ~/bin/gn:
       create: true
       path: scripts/gn/macos/gn
-    ~/.gdbinit: gdbinit
+    ~/.gdbinit: config/gdbinit
