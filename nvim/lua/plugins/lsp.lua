@@ -32,16 +32,16 @@ return {
         'clangd',
         'jsonls',
         'lua_ls',
-        'typos_lsp',
         'rust_analyzer',
         'mesonlsp',
-        'gopls'
+        'gopls',
+        -- 'typos-lsp'
       }
 
       -- Basic Mason setup
       mason_lspconfig.setup {
         ensure_installed = ensure_installed,
-        automatic_installation = true,
+        automatic_enable = true,
       }
 
       ---Default on_attach function for LSP configuration
@@ -64,7 +64,7 @@ return {
       vim.lsp.config('ocamllsp', { on_attach = on_attach })
       vim.lsp.config('clangd',
         {
-          root_dir = util.root_pattern('.git'),
+          root_markers = { ".git" },
           capabilities = caps,
           cmd = {
             "clangd",
@@ -75,7 +75,7 @@ return {
             "--function-arg-placeholders",
             "--fallback-style=llvm",
           },
-          filetypes = { "c", "cpp" },
+          filetypes = { "c", "cpp", "proto" },
           init_options = {
             usePlaceholders = true,
             completeUnimported = true,
@@ -84,14 +84,14 @@ return {
           on_attach = on_attach,
           single_file_support = true,
           handlers = {
-            -- ['textDocument/publishDiagnostics'] = vim.lsp.with(
-            --   vim.lsp.diagnostic.on_publish_diagnostics, {
-            --     signs = true,
-            --     underline = true,
-            --     update_in_insert = false,
-            --     virtual_text = false,
-            --   }
-            -- ),
+            ['textDocument/publishDiagnostics'] = vim.lsp.with(
+              vim.lsp.diagnostic.on_publish_diagnostics, {
+                signs = true,
+                underline = true,
+                update_in_insert = false,
+                virtual_text = false,
+              }
+            ),
           }
         })
 
@@ -120,25 +120,16 @@ return {
       })
 
       vim.lsp.config('pyright', {
-        root_dir = util.root_pattern('.git'),
         on_attach = on_attach,
         root_markers = { "pyrightconfig.json", ".git" },
         settings = {
           python = {
             analysis = {
               autoSearchPaths = true,
-              diagnosticMode = 'openFilesOnly', -- Options: 'openFilesOnly', 'workspace', or 'off'
+              diagnosticMode = 'workspace', -- Options: 'openFilesOnly', 'workspace', or 'off'
               useLibraryCodeForTypes = true,
             }
           }
-        }
-      })
-
-      vim.lsp.config('typos_lsp', {
-        on_attach = on_attach,
-        init_options = {
-          config = vim.fn.stdpath("config") .. "/typos.toml",
-          diagnosticSeverity = "Hint"
         }
       })
 

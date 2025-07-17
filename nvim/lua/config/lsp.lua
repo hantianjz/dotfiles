@@ -1,7 +1,13 @@
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
 
-vim.lsp.set_log_level("off") -- "debug" or "trace"
+-- Enable LSP logging at info level
+vim.lsp.set_log_level("warn")
+
+-- Set the LSP log file path
+local log_path = vim.fn.stdpath('cache') .. '/lsp.log'
+vim.fn.setenv('NVIM_LSP_LOG_FILE', log_path)
+print("LSP logs will be written to: " .. log_path)
 
 local diag_float_config = {
   scope = "cursor",
