@@ -32,6 +32,7 @@ return {
       -- Systems Programming
       c = { "clang-format", lsp_format = "first" },
       rust = { "rustfmt", lsp_format = "first" },
+      go = { "goimports", "gofmt" },
 
       -- Scripting Languages
       python = { "isort", "black" },

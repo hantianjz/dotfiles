@@ -1,9 +1,7 @@
 return {
   -- Core LSP packages
-  { 'neovim/nvim-lspconfig' },
   { 'onsails/lspkind.nvim' },
   { 'p00f/clangd_extensions.nvim' },
-  { 'pappasam/jedi-language-server' },
 
   -- Mason package manager
   {
@@ -16,8 +14,11 @@ return {
 
   -- Mason LSP configuration
   {
-    'williamboman/mason-lspconfig.nvim',
+    "mason-org/mason-lspconfig.nvim",
+    opts = {},
     dependencies = {
+      { "mason-org/mason.nvim", opts = {} },
+      "neovim/nvim-lspconfig",
       "Saghen/blink.cmp",
     },
     config = function()
@@ -33,7 +34,8 @@ return {
         'lua_ls',
         'typos_lsp',
         'rust_analyzer',
-        'mesonlsp'
+        'mesonlsp',
+        'gopls'
       }
 
       -- Basic Mason setup
@@ -55,6 +57,7 @@ return {
         vim.keymap.set('n', '<leader>e', vim.lsp.buf.signature_help, opts)
       end
 
+      vim.lsp.config('gopls', { on_attach = on_attach })
       vim.lsp.config('jdtls', { on_attach = on_attach })
       vim.lsp.config('ruff', { on_attach = on_attach })
       vim.lsp.config('ts_ls', { on_attach = on_attach })
@@ -119,17 +122,13 @@ return {
       vim.lsp.config('pyright', {
         root_dir = util.root_pattern('.git'),
         on_attach = on_attach,
+        root_markers = { "pyrightconfig.json", ".git" },
         settings = {
-          pyright = {
-            autoImportCompletion = true,
-            disableOrganizedImport = true,
-          },
           python = {
             analysis = {
               autoSearchPaths = true,
-              diagnosticMode = 'workspace', -- Options: 'openFilesOnly', 'workspace', or 'off'
+              diagnosticMode = 'openFilesOnly', -- Options: 'openFilesOnly', 'workspace', or 'off'
               useLibraryCodeForTypes = true,
-              typeCheckingMode = 'on'
             }
           }
         }
