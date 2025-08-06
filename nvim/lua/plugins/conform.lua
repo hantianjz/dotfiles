@@ -49,6 +49,7 @@ return {
       -- Configuration Files
       yaml = { "yamlfmt" },
       toml = { "taplo" },
+      just = { "just" },
 
       -- Global Formatters
       ["*"] = { "trim_whitespace" },
@@ -67,7 +68,7 @@ return {
     -- Format on save configuration
     format_on_save = function(bufnr)
       -- Check for global or buffer-local disable flags
-      if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
+      if vim.g.autoformat == false or vim.b[bufnr].autoformat == false then
         return
       end
 
@@ -95,8 +96,8 @@ return {
   },
 
   config = function(_, opts)
-    -- Disable format on write by default
-    vim.g.disable_autoformat = true
+    -- Enable autoformat on write by default
+    vim.g.autoformat = true
 
     -- Define formatters to install via Mason
     local formatters = {
@@ -138,9 +139,9 @@ return {
     vim.api.nvim_create_user_command("FormatDisable", function(args)
       if args.bang then
         -- FormatDisable! disables formatting for current buffer only
-        vim.b.disable_autoformat = true
+        vim.b.autoformat = false
       else
-        vim.g.disable_autoformat = true
+        vim.g.autoformat = false
       end
     end, {
       desc = "Disable autoformat-on-save",
@@ -148,8 +149,8 @@ return {
     })
 
     vim.api.nvim_create_user_command("FormatEnable", function()
-      vim.b.disable_autoformat = false
-      vim.g.disable_autoformat = false
+      vim.b.autoformat = true
+      vim.g.autoformat = true
     end, {
       desc = "Re-enable autoformat-on-save",
     })

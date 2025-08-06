@@ -3,7 +3,18 @@ alias ll "ls -Ghal"
 
 alias vim 'nvim'
 alias v 'nvim'
-alias cat 'bat'
+
+switch (uname)
+  case Darwin
+    alias cat 'bat'
+  case Linux
+    alias cat 'batcat'
+end
+
+switch (uname)
+  case Linux
+    alias fd 'fdfind'
+end
 
 alias .. "cd .."
 alias ... "cd ../.."
