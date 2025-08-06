@@ -104,23 +104,10 @@ return {
       "clang-format",
       "black",
       "shfmt",
-      "prettier",
       "mdformat",
       "djlint",
       "yamlfmt"
     }
-
-    -- Install missing formatters
-    local formatters_to_install = {}
-    for _, formatter in pairs(formatters) do
-      if not require("mason-registry").is_installed(formatter) then
-        table.insert(formatters_to_install, formatter)
-      end
-    end
-
-    if formatters_to_install and next(formatters_to_install) then
-      require("mason.api.command").MasonInstall(formatters_to_install)
-    end
 
     -- Configure formatter paths from Mason
     local mason_bin_dir = vim.fn.stdpath("data") .. "/mason/bin"

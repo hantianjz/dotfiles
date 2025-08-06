@@ -18,9 +18,9 @@ cd "${BASEDIR}"
 git -C "${DOTBOT_DIR}" submodule sync --quiet --recursive
 git submodule update --init --recursive "${DOTBOT_DIR}"
 
-if [[ "$(uname)" == "Linux" ]]; then
-  echo "Do sometnhing?"
-  sudo "${BASEDIR}/${DOTBOT_DIR}/${DOTBOT_BIN}" -d "${BASEDIR}" -c "${CONFIG_APT}" -p "${DOTBOT_BREW_PLUG_DIR}" --plugin-dir "${DOTBOT_IFPLAT_PLUG_DIR}" -p "${DOTBOT_IF_PLUG_DIR}" -p "${DOTBOT_HOSTNAME_PLUG_DIR}" -p "${DOTBOT_APTGET_PLUG_DIR}" "${@}"
-fi
+# if [[ "$(uname)" == "Linux" ]]; then
+  # echo "Do sometnhing?"
+  #sudo "${BASEDIR}/${DOTBOT_DIR}/${DOTBOT_BIN}" -d "${BASEDIR}" -c "${CONFIG_APT}" -p "${DOTBOT_BREW_PLUG_DIR}" --plugin-dir "${DOTBOT_IFPLAT_PLUG_DIR}" -p "${DOTBOT_IF_PLUG_DIR}" -p "${DOTBOT_HOSTNAME_PLUG_DIR}" -p "${DOTBOT_APTGET_PLUG_DIR}" "${@}"
+# fi
 
 "${BASEDIR}/${DOTBOT_DIR}/${DOTBOT_BIN}" -d "${BASEDIR}" -c "${CONFIG}" -p "${DOTBOT_BREW_PLUG_DIR}" --plugin-dir "${DOTBOT_IFPLAT_PLUG_DIR}" -p "${DOTBOT_IF_PLUG_DIR}" -p "${DOTBOT_HOSTNAME_PLUG_DIR}" "${@}"
