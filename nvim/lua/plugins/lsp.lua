@@ -57,6 +57,7 @@ return {
         vim.keymap.set('n', '<leader>e', vim.lsp.buf.signature_help, opts)
       end
 
+      vim.lsp.config('copilot', {})
       vim.lsp.config('gopls', { on_attach = on_attach })
       vim.lsp.config('jdtls', { on_attach = on_attach })
       vim.lsp.config('ruff', { on_attach = on_attach })
