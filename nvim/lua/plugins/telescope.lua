@@ -42,6 +42,10 @@ return {
     config = function()
       local actions = require("telescope.actions")
       -- local open_with_trouble = require("trouble.sources.telescope").open
+      local fd_bin = "fd"
+      if jit.os == "Linux" then
+        fd_bin = "fdfind"
+      end
 
       require("telescope").setup({
         defaults = {
@@ -59,7 +63,7 @@ return {
         layout_strategy = 'flex',
         pickers = {
           find_files = {
-            find_command = { "fd", "--type", "f", "--strip-cwd-prefix", "--hidden", "--follow", "--exclude", ".git" },
+            find_command = { fd_bin, "--type", "f", "--strip-cwd-prefix", "--hidden", "--follow", "--exclude", ".git" },
           },
         },
         extensions = {
