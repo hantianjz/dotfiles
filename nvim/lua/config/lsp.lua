@@ -2,7 +2,7 @@
 vim.o.completeopt = 'menuone,noselect'
 
 -- Enable LSP logging at info level
-vim.lsp.set_log_level("warn")
+vim.lsp.set_log_level("error")
 
 -- Set the LSP log file path
 local log_path = vim.fn.stdpath('cache') .. '/lsp.log'

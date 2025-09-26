@@ -13,7 +13,7 @@ return {
       require('nvim-treesitter.configs').setup {
         -- Syntax Highlighting
         highlight = {
-          enable = true,
+          enable = false,
           disable = {},
         },
 
@@ -27,27 +27,28 @@ return {
         ensure_installed = {
           -- Shell
           "bash",
-          
+
           -- Systems Programming
           "c",
           "cpp",
-          
+
           -- Scripting
           "lua",
           "python",
-          
+
           -- Web & Config
           "yaml",
           "typescript",
-          
+
           -- JVM
           "java"
         },
 
         -- Installation Settings
-        auto_install = true,   -- Automatically install missing parsers
-        sync_install = true,   -- Install parsers synchronously
+        auto_install = true, -- Automatically install missing parsers
+        sync_install = true, -- Install parsers synchronously
       }
     end
   }
 }
+
