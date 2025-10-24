@@ -34,6 +34,7 @@
     ~/.aerospace.toml:
       path: config/aerospace.toml
     # Local Scripts
+    ~/bin/notify: scripts/notify
     ~/bin/batch_find_replace:
       create: true
       path: scripts/batch_find_replace

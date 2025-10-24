@@ -76,7 +76,7 @@ return {
             "--function-arg-placeholders",
             "--fallback-style=llvm",
           },
-          filetypes = { "c", "cpp", "proto" },
+          filetypes = { "c", "cpp" },
           init_options = {
             usePlaceholders = true,
             completeUnimported = true,
