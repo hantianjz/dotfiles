@@ -1,6 +1,7 @@
 return {
-  dir = "~/Development/hjz/semhl.nvim", -- 👈 use local path instead of repo
-  name = "semhl.nvim",                  -- optional but recommended
+  -- dir = "~/Development/hjz/semhl.nvim", -- 👈 use local path instead of repo
+  "hantianjz/semhl.nvim",
+  name = "semhl.nvim", -- optional but recommended
   enabled = true,
   opts = {
     filetypes = { "c", "cpp", "h", "python", "lua", "typescript", "java", "rust" },

@@ -6,7 +6,10 @@ return {
   { 'tpope/vim-repeat' },
   { 'tpope/vim-vinegar' },
   -- Language plugins
-  { 'ziglang/zig.vim' },
+  {
+    'ziglang/zig.vim',
+    ft = "zig"
+  },
   { 'rust-lang/rust.vim' },
   {
     'https://gn.googlesource.com/gn',

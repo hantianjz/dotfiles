@@ -11,7 +11,9 @@ return {
     version = '*',
     dependencies = {
       -- Snippet Engine
+      { "fang2hou/blink-copilot" },
       {
+
         'L3MON4D3/LuaSnip',
         version = "v2.*",
         build = "make install_jsregexp",
@@ -62,7 +64,7 @@ return {
         providers = {
           copilot = {
             name = "copilot",
-            module = "blink-cmp-copilot",
+            module = "blink-copilot",
             score_offset = 100,
             async = true,
           },

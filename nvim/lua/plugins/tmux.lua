@@ -6,7 +6,6 @@
 ---@type LazySpec
 return {
   'christoomey/vim-tmux-navigator',
-  lazy = false,
   keys = {
     {
       "<C-h>",
