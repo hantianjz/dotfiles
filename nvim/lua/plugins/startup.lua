@@ -6,6 +6,7 @@
 ---@type LazySpec
 return {
   "goolord/alpha-nvim",
+  event = "VimEnter",
   dependencies = { 'nvim-tree/nvim-web-devicons' },
   config = function()
     local theta = require("alpha.themes.theta")

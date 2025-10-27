@@ -8,6 +8,7 @@
 return {
   {
     "Saghen/blink.cmp",
+    event = "InsertEnter",
     version = '*',
     dependencies = {
       -- Snippet Engine

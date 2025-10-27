@@ -9,7 +9,6 @@ return {
   "stevearc/conform.nvim",
   dependencies = { "mason.nvim" },
   cmd = "ConformInfo",
-  lazy = false,
 
   -- Keybindings
   keys = {

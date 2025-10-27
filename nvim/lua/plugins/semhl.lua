@@ -3,6 +3,7 @@ return {
   "hantianjz/semhl.nvim",
   name = "semhl.nvim", -- optional but recommended
   enabled = true,
+  ft = { "c", "cpp", "h", "python", "lua", "typescript", "java", "rust" },
   opts = {
     filetypes = { "c", "cpp", "h", "python", "lua", "typescript", "java", "rust" },
     max_file_size = 100 * 1024,
