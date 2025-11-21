@@ -6,9 +6,6 @@
 ---@type LazySpec[]
 return {
   {
-    "nvim-treesitter/playground"
-  },
-  {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
     lazy = false,
@@ -16,7 +13,7 @@ return {
       require('nvim-treesitter.configs').setup {
         -- Syntax Highlighting
         highlight = {
-          enable = false,
+          enable = true,
           disable = {},
         },
 
@@ -44,7 +41,9 @@ return {
           "typescript",
 
           -- JVM
-          "java"
+          "java",
+
+          "markdown",
         },
 
         -- Installation Settings

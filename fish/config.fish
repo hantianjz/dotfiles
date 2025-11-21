@@ -21,3 +21,5 @@ set LOCAL_FISH_CONFIG ~/.config/local_config.fish
 if test -f $LOCAL_FISH_CONFIG
   source $LOCAL_FISH_CONFIG
 end
+
+zoxide init fish | source
