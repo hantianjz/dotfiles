@@ -2,12 +2,16 @@ theme = catppuccin-mocha.conf
 macos-titlebar-style = hidden
 confirm-close-surface = false
 
-font-size = 12
+font-size = 10
 font-family = "Hack Nerd Font Mono"
 
 clipboard-read = allow
 clipboard-write = allow
 window-save-state = never
+window-theme = ghostty
+confirm-close-surface=false
+resize-overlay = never
+gtk-toolbar-style = flat
 
 shell-integration-features = no-cursor
 
@@ -43,3 +47,5 @@ focus-follows-mouse = true
 macos-titlebar-style = hidden
 macos-option-as-alt = false
 keybind = shift+enter=text:\x1b\r
+mouse-scroll-multiplier = 0.95
+

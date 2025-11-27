@@ -1,18 +1,24 @@
+if type -q nvim
+  alias vim 'nvim'
+  alias v 'nvim'
+end
+
+if type -q eza
+  alias ls 'eza'
+end
+
 alias l 'ls -Gal'
 alias ll "ls -Ghal"
 
-alias vim 'nvim'
-alias v 'nvim'
-
-switch (uname)
-  case Darwin
-    alias cat 'bat'
-  case Linux
-    alias cat 'batcat'
+if type -q batcat
+  alias cat 'batcat'
 end
 
-switch (uname)
-  case Linux
+if type -q bat
+  alias cat 'bat'
+end
+
+if type -q fdfind
     alias fd 'fdfind'
 end
 
@@ -28,15 +34,19 @@ alias du='du -kh'
 alias ducks='du -cksh * | sort -rn|head -11'
 alias profileme "history | awk '{print \$4}' | awk 'BEGIN{FS=\"|\"}{print \$1}' | sort | uniq -c | sort -n | tail -n 20 | sort -nr"
 
-alias jsformat "python -mjson.tool"
-
-alias n "nnn -dEeQrux"
-alias nnn "nnn -dEeQrux"
+if type -q nnn
+  alias n "nnn -dEeQrux"
+  alias nnn "nnn -dEeQrux"
+end
 
 alias mkdir 'mkdir -p'
 alias o 'open'
-alias pbc pbcopy
-alias pbp pbpaste
+if type -q pbcopy
+  alias pbc pbcopy
+end
+if type -q pbpaste
+  alias pbp pbpaste
+end
 alias pg 'ps ax | grep -v grep | grep -i '
 
 alias po 'prevd'
