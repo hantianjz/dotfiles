@@ -1,6 +1,0 @@
-#!/bin/bash
-
-osascript <<EOD
-tell application "Safari" to make new document
-return
-EOD
