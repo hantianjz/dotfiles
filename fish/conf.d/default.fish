@@ -5,7 +5,7 @@ if type -q nvim
 end
 
 if type -q eza
-  alias ls 'eza'
+  alias ls 'eza -l'
 end
 
 alias l 'ls -Gal'

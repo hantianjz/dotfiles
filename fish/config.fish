@@ -22,4 +22,6 @@ if test -f $LOCAL_FISH_CONFIG
   source $LOCAL_FISH_CONFIG
 end
 
-zoxide init fish | source
+if type -q zoxide
+  zoxide init fish | source
+end
