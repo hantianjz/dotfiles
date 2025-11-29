@@ -15,6 +15,3 @@ alias ducks='du -cksh * | sort -rn|head -11' # Lists folders and files sizes in 
 alias profileme="history | awk '{print \$4}' | awk 'BEGIN{FS=\"|\"}{print \$1}' | sort | uniq -c | sort -n | tail -n 20 | sort -nr"
 
 alias jsformat="python -mjson.tool"
-
-alias n="nnn -dEeQrux"
-alias nnn="nnn -dEeQrux"

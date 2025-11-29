@@ -1,6 +1,7 @@
 if type -q nvim
   alias vim 'nvim'
   alias v 'nvim'
+  alias n 'nvim .'
 end
 
 if type -q eza
@@ -33,11 +34,6 @@ alias diffu='diff --unified'
 alias du='du -kh'
 alias ducks='du -cksh * | sort -rn|head -11'
 alias profileme "history | awk '{print \$4}' | awk 'BEGIN{FS=\"|\"}{print \$1}' | sort | uniq -c | sort -n | tail -n 20 | sort -nr"
-
-if type -q nnn
-  alias n "nnn -dEeQrux"
-  alias nnn "nnn -dEeQrux"
-end
 
 alias mkdir 'mkdir -p'
 alias o 'open'

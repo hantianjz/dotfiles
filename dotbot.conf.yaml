@@ -24,12 +24,12 @@
     # VIM
     ~/.config/nvim: nvim
     # GIT
-    ~/.gitconfig: shellrc/gitconfig
-    ~/.gitignore: shellrc/gitignore
+    ~/.gitconfig: config/gitconfig
+    ~/.gitignore: config/gitignore
     # Ghostty
     ~/.config/ghostty: config/ghostty
     # TMUX
-    ~/.tmux.conf: tmux.conf
+    ~/.tmux.conf: config/tmux.conf
     ~/.tmux: tmux
     ~/.aerospace.toml:
       path: config/aerospace.toml

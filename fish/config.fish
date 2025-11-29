@@ -23,5 +23,3 @@ if test -f $LOCAL_FISH_CONFIG
 end
 
 zoxide init fish | source
-
-eval (/usr/bin/try init ~/src/tries | string collect)

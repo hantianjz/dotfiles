@@ -2,7 +2,7 @@ theme = catppuccin-mocha.conf
 macos-titlebar-style = hidden
 confirm-close-surface = false
 
-font-size = 10
+font-size = 9
 font-family = "Hack Nerd Font Mono"
 
 clipboard-read = allow
@@ -21,24 +21,24 @@ cursor-style-blink = true
 ### START KEY BINDING
 keybind = clear
 
-keybind = super+alt+i=inspector:toggle
-keybind = super+v=paste_from_clipboard
-keybind = super+c=copy_to_clipboard
+keybind = performable:super+alt+i=inspector:toggle
+keybind = performable:super+v=paste_from_clipboard
+keybind = performable:super+c=copy_to_clipboard
+keybind = shift+insert=paste_from_clipboard
+keybind = control+insert=copy_to_clipboard
 
-keybind = super+zero=reset_font_size
-keybind = super+minus=decrease_font_size:1
-keybind = super+equal=increase_font_size:1
+keybind = performable:super+zero=reset_font_size
+keybind = performable:super+minus=decrease_font_size:1
+keybind = performable:super+equal=increase_font_size:1
 
-keybind = super+n=new_window
+keybind = performable:super+n=new_window
 keybind = global:super+enter=new_window
 
-keybind = super+comma=open_config
-keybind = super+q=quit
+keybind = performable:super+comma=open_config
+keybind = performable:super+q=quit
 
-keybind = super+up=jump_to_prompt:-1
-keybind = super+down=jump_to_prompt:1
-
-keybind = super+w=close_surface
+keybind = performable:super+up=jump_to_prompt:-1
+keybind = performable:super+down=jump_to_prompt:1
 
 ### END of KEY BINDING
 

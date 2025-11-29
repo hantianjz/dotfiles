@@ -42,9 +42,6 @@ return {
       local actions = require("telescope.actions")
       -- local open_with_trouble = require("trouble.sources.telescope").open
       local fd_bin = "fd"
-      if jit.os == "Linux" then
-        fd_bin = "fdfind"
-      end
 
       require("telescope").setup({
         defaults = {
