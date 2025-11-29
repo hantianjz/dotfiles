@@ -1,2 +1,5 @@
 #!/bin/bash
-git fetch -p && git branch -r | cut -d" " -f 3 | egrep -v -f /dev/fd/0 <(git branch -vv | grep origin) | cut -d" " -f 3 | xargs git branch -D
+set -u # Fail on expanding undefined variable
+set -e # Fail on command fail
+set -o pipefail # Early fail for piped commands
+git fetch -p && git branch -r | cut -d" " -f 3 | grep -E -v -f /dev/fd/0 <(git branch -vv | grep origin) | cut -d" " -f 3 | xargs git branch -D

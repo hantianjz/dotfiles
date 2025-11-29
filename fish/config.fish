@@ -25,3 +25,13 @@ end
 if type -q zoxide
   zoxide init fish | source
 end
+
+set LOCAL_BIN ~/.local/bin
+if test -e $LOCAL_BIN
+  fish_add_path $LOCAL_BIN
+end
+
+set HOME_BIN ~/bin
+if test -e $HOME_BIN
+  fish_add_path $HOME_BIN
+end
