@@ -47,3 +47,7 @@ alias pg 'ps ax | grep -v grep | grep -i '
 
 alias po 'prevd'
 alias popd 'prevd'
+
+if type -q btop
+  alias top btop
+end
