@@ -8,7 +8,7 @@ if envy.PLATFORM == "darwin" then
   envy.extend(PACKAGES, { {
     recipe = "local.brew_package@r0",
     source = "local.brew_package@r0.lua",
-    options = { packages = { "ghostty", "neovim", "pv", "bat", "libusb", "btop", "fd", "ripgrep", "direnv", "gh", "git-delta", "git-lfs", "hexyl", "tmux", "typos-cli", "zoxide", "aerospace", "wget", "nnn", } }
+    options = { taps = { "qmk/qmk", "nikitabobko/tap" }, packages = { "ghostty", "neovim", "pv", "bat", "libusb", "btop", "fd", "ripgrep", "direnv", "gh", "git-delta", "git-lfs", "hexyl", "tmux", "typos-cli", "zoxide", "aerospace", "wget", "nnn", } }
   } })
 end
 
