@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+#
+# get-compiler-includes - Extract system include paths from a C/C++ compiler
+#
+# Usage:
+#   get-compiler-includes [compiler] [cpu-flags...]
+#
+# Examples:
+#   get-compiler-includes
+#   get-compiler-includes arm-none-eabi-gcc
+#   get-compiler-includes arm-none-eabi-gcc -mcpu=cortex-m33
+#   get-compiler-includes gcc
+#   get-compiler-includes clang
+#
+# Output:
+#   Prints include paths one per line, suitable for use in .clangd config
+
+set -euo pipefail
+
+# Default to arm-none-eabi-gcc if no compiler specified
+COMPILER="${1:-arm-none-eabi-gcc}"
+shift || true
+
+# Collect any additional flags (like -mcpu=cortex-m33)
+CPU_FLAGS=("$@")
+
+# Check if compiler exists
+if ! command -v "$COMPILER" &> /dev/null; then
+    echo "Error: Compiler '$COMPILER' not found in PATH" >&2
+    exit 1
+fi
+
+# Use the compiler's preprocessor in verbose mode to extract include paths
+# This works by running the preprocessor on empty input and parsing the output
+echo "# Extracting include paths from: $COMPILER ${CPU_FLAGS[*]}" >&2
+echo "# Compiler location: $(which "$COMPILER")" >&2
+echo "" >&2
+
+# Run compiler with -E (preprocess only), -Wp,-v (verbose preprocessor)
+# and capture stderr where the include paths are printed
+"$COMPILER" "${CPU_FLAGS[@]}" -E -Wp,-v - < /dev/null 2>&1 | \
+    grep '^ /' | \
+    sed 's/^ //'
+
+# Exit with success
+exit 0

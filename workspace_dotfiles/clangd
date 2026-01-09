@@ -1,2 +1,26 @@
 CompileFlags:
-  CompilationDatabase: out
+  CompilationDatabase: build/firmware
+  Add:
+    # Target 32-bit ARM architecture (fixes type size mismatches)
+    - --target=arm-none-eabi
+    - -mcpu=cortex-m33
+    - -mthumb
+    - -mfpu=fpv5-sp-d16
+    - -mfloat-abi=hard
+    # Force 32-bit long type for ARM target
+    - -D__SIZEOF_LONG__=4
+    - -D__SIZEOF_POINTER__=4
+    # ARM GCC system includes for stdlib.h and other standard headers
+    - -I/Users/hjz/Library/Caches/hermit/pkg/arm-gnu-toolchain-xpack-13.2.1-1.1/lib/gcc/arm-none-eabi/13.2.1/include
+    - -I/Users/hjz/Library/Caches/hermit/pkg/arm-gnu-toolchain-xpack-13.2.1-1.1/lib/gcc/arm-none-eabi/13.2.1/include-fixed
+    - -I/Users/hjz/Library/Caches/hermit/pkg/arm-gnu-toolchain-xpack-13.2.1-1.1/arm-none-eabi/include
+    # Suppress some warnings that might be noisy in the editor
+    - -Wno-unknown-warning-option
+  Remove:
+    # Remove path prefix mapping that can confuse clangd
+    - -ffile-prefix-map*
+
+Diagnostics:
+  # Suppress some common embedded development false positives
+  UnusedIncludes: None
+  MissingIncludes: None
