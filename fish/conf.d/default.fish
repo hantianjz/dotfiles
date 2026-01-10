@@ -1,7 +1,16 @@
 if type -q nvim
   alias vim 'nvim'
   alias v 'nvim'
-  alias n 'nvim .'
+  function n --description 'Open nvim in current or specified directory'
+    if test (count $argv) -eq 0
+      nvim .
+    else if test -d $argv[1]
+      nvim $argv[1]
+    else
+      echo "Error: '$argv[1]' is not a valid directory" >&2
+      return 1
+    end
+  end
 end
 
 if type -q eza
