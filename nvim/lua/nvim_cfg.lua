@@ -1,4 +1,5 @@
 vim.g.mapleader = ';'
+vim.g.maplocalleader = '.'
 
 local o = vim.o
 local w = vim.wo

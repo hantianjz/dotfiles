@@ -1,0 +1,100 @@
+return {
+  "pwntester/octo.nvim",
+  cmd = "Octo",
+  opts = {
+    picker = "snacks",
+    enable_builtin = true,
+    mappings_disable_default = true,
+    picker_config = {
+      use_emojis = false,
+      search_static = false,
+      mappings = {
+      },
+      snacks = {                -- snacks specific config
+        actions = {             -- custom actions for specific snacks pickers (array of tables)
+          pull_requests = {},   -- actions for the pull requests picker
+          notifications = {},   -- actions for the notifications picker
+          issue_templates = {}, -- actions for the issue templates picker
+          search = {},          -- actions for the search picker
+        },
+      },
+    },
+
+    -- Custom keymappings for review mode
+    mappings = {
+      review_diff = {
+        submit_review = { lhs = "<localleader>vs", desc = "submit review" },
+        discard_review = { lhs = "<localleader>vd", desc = "discard review" },
+        add_review_comment = { lhs = "<localleader>ca", desc = "add a new review comment", mode = { "n", "x" } },
+        add_review_suggestion = { lhs = "<localleader>sa", desc = "add a new review suggestion", mode = { "n", "x" } },
+        focus_files = { lhs = "<localleader>e", desc = "move focus to changed file panel" },
+        toggle_files = { lhs = "<localleader>b", desc = "hide/show changed files panel" },
+        next_thread = { lhs = "<C-t>", desc = "move to next thread" },
+        select_next_entry = { lhs = "<C-q>", desc = "move to next changed file" },
+        close_review_tab = { lhs = "<C-c>", desc = "close review tab" },
+        toggle_viewed = { lhs = "<localleader><space>", desc = "toggle viewer viewed state" },
+        goto_file = { lhs = "gf", desc = "go to file" },
+      },
+      file_panel = {
+        submit_review = { lhs = "<localleader>vs", desc = "submit review" },
+        discard_review = { lhs = "<localleader>vd", desc = "discard review" },
+        next_entry = { lhs = "j", desc = "move to next changed file" },
+        prev_entry = { lhs = "k", desc = "move to previous changed file" },
+        select_entry = { lhs = "<cr>", desc = "show selected changed file diffs" },
+        refresh_files = { lhs = "R", desc = "refresh changed files panel" },
+        focus_files = { lhs = "<localleader>e", desc = "move focus to changed file panel" },
+        toggle_files = { lhs = "<localleader>b", desc = "hide/show changed files panel" },
+        select_next_entry = { lhs = "<C-q>", desc = "move to next changed file" },
+        close_review_tab = { lhs = "<C-c>", desc = "close review tab" },
+        toggle_viewed = { lhs = "<localleader><space>", desc = "toggle viewer viewed state" },
+      },
+      submit_win = {
+        approve_review = { lhs = "<C-a>", desc = "approve review", mode = { "n", "i" } },
+        comment_review = { lhs = "<C-m>", desc = "comment review", mode = { "n", "i" } },
+        request_changes = { lhs = "<C-r>", desc = "request changes review", mode = { "n", "i" } },
+        close_review_tab = { lhs = "<C-c>", desc = "close review tab", mode = { "n", "i" } },
+      },
+      review_thread = {
+        -- goto_issue = { lhs = "<localleader>gi", desc = "navigate to a local repo issue" },
+        add_comment = { lhs = "<localleader>ca", desc = "add comment" },
+        add_reply = { lhs = "<localleader>cr", desc = "add reply" },
+        add_suggestion = { lhs = "<localleader>sa", desc = "add suggestion" },
+        delete_comment = { lhs = "<localleader>cd", desc = "delete comment" },
+        next_comment = { lhs = "<C-n>", desc = "go to next comment" },
+        select_next_entry = { lhs = "<C-q>", desc = "move to next changed file" },
+        close_review_tab = { lhs = "<C-c>", desc = "close review tab" },
+        react_hooray = { lhs = "<localleader>rp", desc = "add/remove 🎉 reaction" },
+        react_heart = { lhs = "<localleader>rh", desc = "add/remove ❤️ reaction" },
+        react_eyes = { lhs = "<localleader>re", desc = "add/remove 👀 reaction" },
+        react_thumbs_up = { lhs = "<localleader>r+", desc = "add/remove 👍 reaction" },
+        react_thumbs_down = { lhs = "<localleader>r-", desc = "add/remove 👎 reaction" },
+        react_rocket = { lhs = "<localleader>rr", desc = "add/remove 🚀 reaction" },
+        react_laugh = { lhs = "<localleader>rl", desc = "add/remove 😄 reaction" },
+        react_confused = { lhs = "<localleader>rc", desc = "add/remove 😕 reaction" },
+        resolve_thread = { lhs = "<localleader>rt", desc = "resolve PR thread" },
+        unresolve_thread = { lhs = "<localleader>rT", desc = "unresolve PR thread" },
+      },
+      pull_request = {
+        checkout_pr = { lhs = "<localleader>po", desc = "checkout PR" },
+        list_commits = { lhs = "<localleader>pc", desc = "list PR commits" },
+        list_changed_files = { lhs = "<localleader>pf", desc = "list PR changed files" },
+        show_pr_diff = { lhs = "<localleader>pd", desc = "show PR diff" },
+        reload = { lhs = "<C-r>", desc = "reload PR" },
+        review_start = { lhs = "<localleader>vs", desc = "start a review for the current PR" },
+        review_resume = { lhs = "<localleader>vr", desc = "resume a pending review for the current PR" },
+      },
+    },
+  },
+  keys = {
+    {
+      "<leader>op",
+      "<CMD>Octo pr list<CR>",
+      desc = "List GitHub PullRequests",
+    },
+  },
+  dependencies = {
+    "nvim-lua/plenary.nvim",
+    "folke/snacks.nvim",
+    "nvim-tree/nvim-web-devicons",
+  },
+}

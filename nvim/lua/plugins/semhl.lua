@@ -5,6 +5,7 @@ return {
   enabled = true,
   ft = { "c", "cpp", "h", "python", "lua", "typescript", "java", "rust" },
   opts = {
+    source = "lsp",
     filetypes = { "c", "cpp", "h", "python", "lua", "typescript", "java", "rust" },
     max_file_size = 100 * 1024,
     target_delta_e = 30,
