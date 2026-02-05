@@ -23,7 +23,7 @@ return {
           },
           notify = true,
           semantic_tokens = true,
-          telescope = true,
+          fzf = true,
           treesitter = true,
           treesitter_context = true,
         }

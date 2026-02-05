@@ -1,23 +1,13 @@
 return {
-  "pwntester/octo.nvim",
+  "hantianjz/octo.nvim",
   cmd = "Octo",
   opts = {
-    picker = "snacks",
+    picker = "fzf-lua",
     enable_builtin = true,
     mappings_disable_default = true,
     picker_config = {
-      use_emojis = false,
+      use_emojis = true,
       search_static = false,
-      mappings = {
-      },
-      snacks = {                -- snacks specific config
-        actions = {             -- custom actions for specific snacks pickers (array of tables)
-          pull_requests = {},   -- actions for the pull requests picker
-          notifications = {},   -- actions for the notifications picker
-          issue_templates = {}, -- actions for the issue templates picker
-          search = {},          -- actions for the search picker
-        },
-      },
     },
 
     -- Custom keymappings for review mode
@@ -29,8 +19,8 @@ return {
         add_review_suggestion = { lhs = "<localleader>sa", desc = "add a new review suggestion", mode = { "n", "x" } },
         focus_files = { lhs = "<localleader>e", desc = "move focus to changed file panel" },
         toggle_files = { lhs = "<localleader>b", desc = "hide/show changed files panel" },
-        next_thread = { lhs = "<C-t>", desc = "move to next thread" },
-        select_next_entry = { lhs = "<C-q>", desc = "move to next changed file" },
+        next_thread = { lhs = "<C-e>", desc = "move to next thread" },
+        select_next_entry = { lhs = "<C-n>", desc = "move to next changed file" },
         close_review_tab = { lhs = "<C-c>", desc = "close review tab" },
         toggle_viewed = { lhs = "<localleader><space>", desc = "toggle viewer viewed state" },
         goto_file = { lhs = "gf", desc = "go to file" },
@@ -44,7 +34,7 @@ return {
         refresh_files = { lhs = "R", desc = "refresh changed files panel" },
         focus_files = { lhs = "<localleader>e", desc = "move focus to changed file panel" },
         toggle_files = { lhs = "<localleader>b", desc = "hide/show changed files panel" },
-        select_next_entry = { lhs = "<C-q>", desc = "move to next changed file" },
+        select_next_entry = { lhs = "<C-n>", desc = "move to next changed file" },
         close_review_tab = { lhs = "<C-c>", desc = "close review tab" },
         toggle_viewed = { lhs = "<localleader><space>", desc = "toggle viewer viewed state" },
       },
@@ -60,8 +50,8 @@ return {
         add_reply = { lhs = "<localleader>cr", desc = "add reply" },
         add_suggestion = { lhs = "<localleader>sa", desc = "add suggestion" },
         delete_comment = { lhs = "<localleader>cd", desc = "delete comment" },
-        next_comment = { lhs = "<C-n>", desc = "go to next comment" },
-        select_next_entry = { lhs = "<C-q>", desc = "move to next changed file" },
+        next_comment = { lhs = "<C-m>", desc = "go to next comment" },
+        select_next_entry = { lhs = "<C-n>", desc = "move to next changed file" },
         close_review_tab = { lhs = "<C-c>", desc = "close review tab" },
         react_hooray = { lhs = "<localleader>rp", desc = "add/remove 🎉 reaction" },
         react_heart = { lhs = "<localleader>rh", desc = "add/remove ❤️ reaction" },
@@ -88,7 +78,7 @@ return {
   keys = {
     {
       "<leader>op",
-      "<CMD>Octo pr list<CR>",
+      "<CMD>Octo pr list is:pr is:open draft:false<CR>",
       desc = "List GitHub PullRequests",
     },
   },
