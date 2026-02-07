@@ -90,6 +90,15 @@ vim.keymap.set('n', '˚', function() vim.cmd("silent! cprev") end) -- ALT-k
 
 vim.keymap.set('t', '<Esc>', '<C-\\><C-n>', { noremap = true, silent = true })
 
+-- Let fzf-lua handle <Esc> in its own terminal buffers so the picker
+-- closes properly instead of dropping into normal mode.
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "fzf",
+  callback = function(e)
+    vim.keymap.set("t", "<Esc>", "<Esc>", { buffer = e.buf, silent = true, nowait = true })
+  end,
+})
+
 -- Inspect a lua object
 P = function(v)
   print(vim.inspect(v))
