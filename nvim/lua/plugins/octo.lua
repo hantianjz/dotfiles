@@ -81,6 +81,20 @@ return {
       },
     },
   },
+  config = function(_, opts)
+    require("octo").setup(opts)
+    vim.api.nvim_create_autocmd("LspAttach", {
+      group = vim.api.nvim_create_augroup("octo_lsp_disable", { clear = true }),
+      callback = function(args)
+        local bufname = vim.api.nvim_buf_get_name(args.buf)
+        if bufname:match("^octo://") then
+          vim.schedule(function()
+            vim.lsp.buf_detach_client(args.buf, args.data.client_id)
+          end)
+        end
+      end,
+    })
+  end,
   keys = {
     {
       "<leader>op",
