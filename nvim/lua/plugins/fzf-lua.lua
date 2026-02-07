@@ -22,6 +22,23 @@ return {
       require("fzf-lua").setup({
         "default-title",
         winopts = {
+          on_create = function()
+            local buf = vim.api.nvim_get_current_buf()
+            local win = vim.api.nvim_get_current_win()
+            -- Pass <Esc> through to fzf instead of exiting terminal mode
+            vim.keymap.set("t", "<Esc>", "<Esc>", { buffer = buf, silent = true, nowait = true })
+            -- Dismiss picker when focus leaves the window
+            vim.api.nvim_create_autocmd("WinLeave", {
+              buffer = buf,
+              callback = function()
+                vim.schedule(function()
+                  if vim.api.nvim_win_is_valid(win) then
+                    pcall(vim.api.nvim_win_close, win, true)
+                  end
+                end)
+              end,
+            })
+          end,
           preview = {
             layout = "flex",
             flip_columns = 120,
