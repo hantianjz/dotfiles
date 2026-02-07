@@ -1,6 +1,7 @@
 return {
   "hantianjz/octo.nvim",
   cmd = "Octo",
+  event = { { event = "BufReadCmd", pattern = "octo://*" } },
   opts = {
     picker = "fzf-lua",
     enable_builtin = true,
@@ -86,6 +87,7 @@ return {
       "<CMD>Octo pr list is:pr is:open draft:false <CR>",
       desc = "List GitHub PullRequests",
     },
+    { "@", "@<C-x><C-o>", mode = "i", ft = "octo", silent = true },
   },
   dependencies = {
     "nvim-lua/plenary.nvim",
