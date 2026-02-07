@@ -78,7 +78,7 @@ return {
   keys = {
     {
       "<leader>op",
-      "<CMD>Octo pr list is:pr is:open draft:false<CR>",
+      "<CMD>Octo pr list is:pr is:open draft:false <CR>",
       desc = "List GitHub PullRequests",
     },
   },
