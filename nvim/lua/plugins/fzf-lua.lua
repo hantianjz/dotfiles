@@ -48,6 +48,13 @@ return {
               buffer = buf,
               callback = function()
                 vim.schedule(function()
+                  -- If focus moved to another floating window (e.g. preview pane),
+                  -- we're still inside fzf-lua's UI — don't hide
+                  local new_win = vim.api.nvim_get_current_win()
+                  local config = vim.api.nvim_win_get_config(new_win)
+                  if config.relative and config.relative ~= "" then
+                    return
+                  end
                   -- Only update state if <Esc> hasn't already handled it
                   if state.current then
                     state.hidden = state.current
