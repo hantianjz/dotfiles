@@ -97,8 +97,13 @@ return {
   end,
   keys = {
     {
+      "<leader>oo",
+      "<CMD>Octo pr search is:open draft:false<CR>",
+      desc = "List GitHub PullRequests having no review from me",
+    },
+    {
       "<leader>op",
-      "<CMD>Octo pr list is:pr is:open draft:false <CR>",
+      "<CMD>Octo pr list<CR>",
       desc = "List GitHub PullRequests",
     },
     { "@", "@<C-x><C-o>", mode = "i", ft = "octo", silent = true },
