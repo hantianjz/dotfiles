@@ -60,3 +60,7 @@ alias popd 'prevd'
 if type -q btop
   alias top btop
 end
+
+if type -q cyme
+  alias lsusb cyme
+end

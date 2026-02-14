@@ -40,4 +40,5 @@
     ~/bin/find_replace: scripts/find_replace
     ~/bin/grb: scripts/grb
     ~/bin/gprune: scripts/gprune
+    ~/bin/usb: scripts/usb
     ~/.gdbinit: config/gdbinit

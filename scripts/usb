@@ -1,0 +1,151 @@
+#!/usr/bin/env -S uv run --script
+# /// script
+# dependencies = []
+# requires-python = ">=3.10"
+# ///
+
+"""Control USB port power via uhubctl by device name or VID:PID."""
+
+import argparse
+import re
+import shutil
+import subprocess
+import sys
+from dataclasses import dataclass
+
+HUB_PATTERN = re.compile(r"^Current status for hub ([0-9.-]+)")
+PORT_PATTERN = re.compile(
+    r"^\s+Port (\d+):.*\[([0-9a-f]{4}):([0-9a-f]{4}) ([^\]]+)\]"
+)
+
+
+@dataclass
+class USBDevice:
+    location: str
+    port: int
+    vid: str
+    pid: str
+    description: str
+
+    def vid_pid(self) -> str:
+        return f"{self.vid}:{self.pid}"
+
+    def __str__(self) -> str:
+        return f"{self.description} [{self.vid_pid()}] at hub {self.location} port {self.port}"
+
+
+def parse_uhubctl_output(output: str) -> list[USBDevice]:
+    devices = []
+    current_hub = None
+    for line in output.splitlines():
+        hub_match = HUB_PATTERN.match(line)
+        if hub_match:
+            current_hub = hub_match.group(1)
+            continue
+        if current_hub is None:
+            continue
+        port_match = PORT_PATTERN.match(line)
+        if port_match:
+            devices.append(
+                USBDevice(
+                    location=current_hub,
+                    port=int(port_match.group(1)),
+                    vid=port_match.group(2),
+                    pid=port_match.group(3),
+                    description=port_match.group(4).strip(),
+                )
+            )
+    return devices
+
+
+def match_devices(devices: list[USBDevice], search: str) -> list[USBDevice]:
+    if ":" in search and len(search.split(":")) == 2:
+        parts = search.lower().split(":")
+        if all(len(p) <= 4 and all(c in "0123456789abcdef" for c in p) for p in parts):
+            return [d for d in devices if d.vid_pid().lower() == search.lower()]
+    term = search.lower()
+    return [d for d in devices if term in d.description.lower()]
+
+
+def select_device(devices: list[USBDevice]) -> USBDevice | None:
+    if len(devices) == 1:
+        return devices[0]
+    print("Multiple devices found:")
+    for i, dev in enumerate(devices, 1):
+        print(f"  {i}) {dev}")
+    try:
+        choice = input("Select device [1]: ").strip()
+        idx = int(choice) - 1 if choice else 0
+        if 0 <= idx < len(devices):
+            return devices[idx]
+        print("Invalid selection.")
+    except (ValueError, EOFError, KeyboardInterrupt):
+        print()
+    return None
+
+
+def control_port(device: USBDevice, action: str, dry_run: bool) -> int:
+    cmd = [
+        "sudo",
+        "uhubctl",
+        "--location",
+        device.location,
+        "--ports",
+        str(device.port),
+        "--action",
+        action,
+    ]
+    if dry_run:
+        print(f"Would run: {' '.join(cmd)}")
+        return 0
+    print(f"Running: {' '.join(cmd)}")
+    return subprocess.run(cmd).returncode
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description="Control USB port power by device name or VID:PID"
+    )
+    parser.add_argument("search", nargs="?", help="Device name substring or VID:PID (e.g. 1a86:55d4)")
+    parser.add_argument(
+        "-a", "--action", choices=["on", "off", "cycle"], default="cycle"
+    )
+    parser.add_argument("-n", "--dry-run", action="store_true", help="Show command without executing")
+    args = parser.parse_args()
+
+    if not shutil.which("uhubctl"):
+        print("Error: uhubctl not found. Install it with: brew install uhubctl", file=sys.stderr)
+        return 1
+
+    result = subprocess.run(
+        ["sudo", "uhubctl"], capture_output=True, text=True
+    )
+    if not result.stdout.strip():
+        print(f"Error running uhubctl:\n{result.stderr}", file=sys.stderr)
+        return 1
+
+    devices = parse_uhubctl_output(result.stdout)
+    if not devices:
+        print("No USB devices detected by uhubctl.")
+        return 1
+
+    if args.search is None:
+        print(result.stdout, end="")
+        return 0
+
+    matches = match_devices(devices, args.search)
+    if not matches:
+        print(f"No devices matching '{args.search}'. Detected devices:")
+        for dev in devices:
+            print(f"  - {dev}")
+        return 1
+
+    device = select_device(matches)
+    if device is None:
+        return 1
+
+    return control_port(device, args.action, args.dry_run)
+
+
+if __name__ == "__main__":
+    sys.exit(main())
