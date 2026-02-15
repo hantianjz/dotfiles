@@ -34,6 +34,14 @@ envy.extend(PACKAGES, {
       install = "touch " .. HOME .. "/.gitconfig_local",
     },
   },
+  {
+    spec = "local.shell@r0",
+    source = "local.shell@r0.lua",
+    options = {
+      check = "test -f " .. HOME .. "/.config/local_config.fish",
+      install = "touch " .. HOME .. "/.config/local_config.fish",
+    },
+  },
 })
 
 -- Symlinks
