@@ -1,0 +1,98 @@
+#!/usr/bin/env bash
+# envy-managed bootstrap script - do not edit
+set -euo pipefail
+
+ENVY_MIRROR="${ENVY_MIRROR:-https://github.com/charlesnicholson/envy/releases/download}"
+FALLBACK_VERSION="0.0.22"
+
+resolve_script_dir() {
+    local src="${BASH_SOURCE[0]}"
+    while [[ -L "$src" ]]; do
+        local dir; dir="$(cd -P "$(dirname "$src")" && pwd -P)"
+        src="$(readlink "$src")"
+        [[ "$src" != /* ]] && src="$dir/$src"
+    done
+    cd -P "$(dirname "$src")" && pwd -P
+}
+
+find_manifest() {
+    local d; d="$(resolve_script_dir)"
+    local candidates=()
+    while [[ "$d" != / ]]; do
+        if [[ -f "$d/envy.lua" ]]; then
+            local is_root="true"
+            if head -20 "$d/envy.lua" | grep -qE '^--[[:space:]]*@envy[[:space:]]+root[[:space:]]+"false"'; then
+                is_root="false"
+            fi
+            if [[ "$is_root" == "true" ]]; then
+                echo "$d/envy.lua" && return
+            else
+                candidates+=("$d/envy.lua")
+            fi
+        fi
+        d="${d%/*}"; d="${d:-/}"
+    done
+    [[ ${#candidates[@]} -gt 0 ]] && echo "${candidates[${#candidates[@]}-1]}" && return
+    return 1
+}
+
+MANIFEST=$(find_manifest) || { echo "ERROR: envy.lua not found" >&2; exit 1; }
+
+parse_directives() {
+    head -20 "$MANIFEST" | sed -nE '
+        s/^--[[:space:]]*@envy[[:space:]]+version[[:space:]]+"(([^"\\]|\\.)*)".*/version \1/p
+        s/^--[[:space:]]*@envy[[:space:]]+cache-posix[[:space:]]+"(([^"\\]|\\.)*)".*/cache \1/p
+        s/^--[[:space:]]*@envy[[:space:]]+mirror[[:space:]]+"(([^"\\]|\\.)*)".*/mirror \1/p
+    '
+}
+
+VERSION="" MANIFEST_CACHE="" MANIFEST_MIRROR=""
+while read -r key val; do
+    val="${val//\\\"/\"}"
+    val="${val//\\\\/\\}"
+    case "$key" in
+        version) VERSION="$val" ;; cache) MANIFEST_CACHE="$val" ;; mirror) MANIFEST_MIRROR="$val" ;;
+    esac
+done < <(parse_directives)
+
+if [[ -z "$VERSION" ]]; then
+    echo "WARNING: @envy version not found in $MANIFEST, using fallback $FALLBACK_VERSION" >&2
+    VERSION="$FALLBACK_VERSION"
+fi
+
+[[ -n "$MANIFEST_MIRROR" ]] && ENVY_MIRROR="$MANIFEST_MIRROR"
+
+if [[ -n "${ENVY_CACHE_ROOT:-}" ]]; then CACHE="$ENVY_CACHE_ROOT"
+elif [[ -n "$MANIFEST_CACHE" ]]; then
+    CACHE="$MANIFEST_CACHE"
+    [[ "$CACHE" == "~/"* ]] && CACHE="$HOME${CACHE:1}"
+    [[ "$CACHE" == "~" ]] && CACHE="$HOME"
+    while [[ "$CACHE" =~ \$\{([A-Za-z_][A-Za-z0-9_]*)\} ]]; do
+        var="${BASH_REMATCH[1]}"; CACHE="${CACHE/\$\{$var\}/${!var}}"
+    done
+    while [[ "$CACHE" =~ \$([A-Za-z_][A-Za-z0-9_]*) ]]; do
+        var="${BASH_REMATCH[1]}"; CACHE="${CACHE/\$$var/${!var}}"
+    done
+elif [[ $(uname) == Darwin ]]; then CACHE="$HOME/Library/Caches/envy"
+else CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/envy"; fi
+
+case "$(uname -s)" in
+    Darwin) PLATFORM=darwin ;; Linux) PLATFORM=linux ;;
+    *) echo "ERROR: Unsupported platform: $(uname -s)" >&2; exit 1 ;;
+esac
+
+case "$(uname -m)" in
+    x86_64) ARCH=x86_64 ;; aarch64|arm64) ARCH=arm64 ;;
+    *) echo "ERROR: Unsupported architecture: $(uname -m)" >&2; exit 1 ;;
+esac
+
+ENVY_BIN="$CACHE/envy/$VERSION/envy"
+[[ -x "$ENVY_BIN" ]] && exec "$ENVY_BIN" "$@"
+
+echo "Downloading envy $VERSION..." >&2
+T=${TMPDIR:-/tmp}/envy-$$
+mkdir -p "$T"
+URL="$ENVY_MIRROR/v$VERSION/envy-$PLATFORM-$ARCH.tar.gz"
+curl -fsSL "$URL" | tar -xzf - -C "$T" || { echo "ERROR: Failed to download envy from $URL" >&2; rm -rf "$T"; exit 1; }
+[[ $PLATFORM == darwin ]] && xattr -d com.apple.quarantine "$T/envy" 2>/dev/null || true
+chmod +x "$T/envy" && exec "$T/envy" "$@"

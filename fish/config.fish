@@ -35,3 +35,5 @@ set HOME_BIN ~/bin
 if test -e $HOME_BIN
   fish_add_path $HOME_BIN
 end
+
+source "$HOME/Library/Caches/envy/shell/hook.fish"
