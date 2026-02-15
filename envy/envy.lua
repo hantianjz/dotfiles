@@ -1,6 +1,6 @@
 -- envy.lua - Project manifest
 -- @envy version "0.0.22"
--- @envy bin "tools"
+-- @envy bin "bin"
 -- @envy deploy "true"
 
 local ROOT = "/Users/hjz/.dotfiles"
