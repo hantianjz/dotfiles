@@ -5,13 +5,13 @@ Declarative development environment setup for macOS and Linux using [envy](https
 ## Fresh Install
 
 ```sh
-cd envy && bin/envy
+envy sync --install-all
 ```
 
 ## Update
 
 ```sh
-cd envy && bin/update
+update
 ```
 
 This updates Homebrew/APT packages, Rust toolchain, cargo crates, Python tools, tmux plugins, and fish plugins.

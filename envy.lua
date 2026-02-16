@@ -3,7 +3,7 @@
 -- @envy bin "bin"
 -- @envy deploy "true"
 
-local ROOT = debug.getinfo(1, "S").source:sub(2):match("(.*)/"):match("(.*)/")
+local ROOT = debug.getinfo(1, "S").source:sub(2):match("(.*)/")
 local HOME = os.getenv("HOME")
 
 PACKAGES = {}
@@ -11,7 +11,7 @@ PACKAGES = {}
 -- Setup commands
 envy.extend(PACKAGES, { {
   spec = "local.file_setup@r0",
-  source = "local.file_setup@r0.lua",
+  source = "envy/local.file_setup@r0.lua",
   options = {
     paths = {
       HOME .. "/bin/",
@@ -55,7 +55,7 @@ end
 
 envy.extend(PACKAGES, { {
   spec = "local.symlink@r0",
-  source = "local.symlink@r0.lua",
+  source = "envy/local.symlink@r0.lua",
   options = { links = SYMLINKS },
 } })
 
@@ -102,7 +102,7 @@ end
 if envy.PLATFORM == "darwin" then
   envy.extend(PACKAGES, { {
     spec = "local.brew_package@r0",
-    source = "local.brew_package@r0.lua",
+    source = "envy/local.brew_package@r0.lua",
     options = {
       taps = { "qmk/qmk", "nikitabobko/tap" },
       packages = INSTALL_PACKAGES,
@@ -111,7 +111,7 @@ if envy.PLATFORM == "darwin" then
 elseif envy.PLATFORM == "linux" then
   envy.extend(PACKAGES, { {
     spec = "local.apt@r0",
-    source = "local.apt@r0.lua",
+    source = "envy/local.apt@r0.lua",
     options = { packages = INSTALL_PACKAGES },
   } })
 end
@@ -119,21 +119,21 @@ end
 -- Rustup
 envy.extend(PACKAGES, { {
   spec = "local.rustup@r0",
-  source = "local.rustup@r0.lua",
+  source = "envy/local.rustup@r0.lua",
   options = {},
 } })
 
 -- Rust toolchain
 envy.extend(PACKAGES, { {
   spec = "local.rustup_toolchain@r0",
-  source = "local.rustup_toolchain@r0.lua",
+  source = "envy/local.rustup_toolchain@r0.lua",
   options = { toolchain = "stable" },
 } })
 
 -- Rust crates (cargo install --git)
 envy.extend(PACKAGES, { {
   spec = "local.cargo_install@r0",
-  source = "local.cargo_install@r0.lua",
+  source = "envy/local.cargo_install@r0.lua",
   options = {
     crates = {
       { repo = "https://github.com/hantianjz/tmx" },
@@ -145,7 +145,7 @@ envy.extend(PACKAGES, { {
 -- Python tools (uv tool install)
 envy.extend(PACKAGES, { {
   spec = "local.uv_tool@r0",
-  source = "local.uv_tool@r0.lua",
+  source = "envy/local.uv_tool@r0.lua",
   options = {
     tools = { "bpython", "httpie" },
   },
@@ -155,7 +155,7 @@ envy.extend(PACKAGES, { {
 envy.extend(PACKAGES, {
   {
     spec = "local.shell@r0",
-    source = "local.shell@r0.lua",
+    source = "envy/local.shell@r0.lua",
     options = {
       check = "test -f " .. HOME .. "/.tmux/plugins/tpm/tpm",
       install = HOME .. "/.tmux/plugins/tpm/scripts/install_plugins.sh",
@@ -163,7 +163,7 @@ envy.extend(PACKAGES, {
   },
   {
     spec = "local.shell@r0",
-    source = "local.shell@r0.lua",
+    source = "envy/local.shell@r0.lua",
     options = {
       check = "fish -c 'type -q fisher'",
       install =
