@@ -7,7 +7,7 @@ CHECK = function(tmp_dir, opts)
   for _, path in ipairs(opts.paths) do
     local is_dir = path:sub(-1) == "/"
     local flag = is_dir and "-d" or "-f"
-    local res = envy.run("test " .. flag .. " " .. path, { capture = true, quiet = true })
+    local res = envy.run("test " .. flag .. " " .. path, { capture = true, quiet = true, check = false })
     if res.exit_code ~= 0 then
       table.insert(missing, path)
     end
