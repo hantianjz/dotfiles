@@ -1,0 +1,98 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+NC='\033[0m'
+
+section() {
+  echo -e "\n${BLUE}==> $1${NC}"
+}
+
+success() {
+  echo -e "${GREEN}    done${NC}"
+}
+
+skip() {
+  echo -e "    skipped (not available)"
+}
+
+fail() {
+  echo -e "${RED}    failed${NC}"
+}
+
+run() {
+  if eval "$1"; then
+    success
+  else
+    fail
+  fi
+}
+
+# Homebrew (macOS)
+if command -v brew &>/dev/null; then
+  section "Updating Homebrew packages"
+  run "brew update && brew upgrade"
+else
+  section "Homebrew"
+  skip
+fi
+
+# APT (Linux)
+if command -v apt-get &>/dev/null; then
+  section "Updating APT packages"
+  run "sudo apt-get update && sudo apt-get upgrade -y"
+else
+  section "APT"
+  skip
+fi
+
+# Rustup
+if command -v rustup &>/dev/null; then
+  section "Updating Rust toolchain"
+  run "rustup update"
+else
+  section "Rustup"
+  skip
+fi
+
+# Cargo crates (installed via --git)
+if command -v cargo &>/dev/null; then
+  section "Updating cargo crates"
+  run "cargo install --git https://github.com/hantianjz/tmx"
+  run "cargo install --git https://github.com/hantianjz/rr_cli"
+else
+  section "Cargo"
+  skip
+fi
+
+# Python tools via uv
+if command -v uv &>/dev/null; then
+  section "Updating uv tools"
+  run "uv tool upgrade bpython"
+  run "uv tool upgrade httpie"
+else
+  section "uv"
+  skip
+fi
+
+# Tmux plugins
+if [ -f "$HOME/.tmux/plugins/tpm/bin/update_plugins" ]; then
+  section "Updating tmux plugins"
+  run "$HOME/.tmux/plugins/tpm/bin/update_plugins all"
+else
+  section "Tmux plugins"
+  skip
+fi
+
+# Fisher plugins
+if fish -c 'type -q fisher' &>/dev/null; then
+  section "Updating fisher plugins"
+  run "fish -c 'fisher update'"
+else
+  section "Fisher"
+  skip
+fi
+
+echo -e "\n${GREEN}Update complete.${NC}"
