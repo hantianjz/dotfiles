@@ -36,4 +36,10 @@ if test -e $HOME_BIN
   fish_add_path $HOME_BIN
 end
 
-source "$HOME/Library/Caches/envy/shell/hook.fish"
+switch (uname)
+    case Linux
+        source "$HOME/.cache/envy/shell/hook.fish"
+    case Darwin
+        source "$HOME/Library/Caches/envy/shell/hook.fish"
+    case '*'
+end 
