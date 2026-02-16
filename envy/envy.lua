@@ -3,7 +3,7 @@
 -- @envy bin "bin"
 -- @envy deploy "true"
 
-local ROOT = "/Users/hjz/.dotfiles"
+local ROOT = debug.getinfo(1, "S").source:sub(2):match("(.*)/"):match("(.*)/")
 local HOME = os.getenv("HOME")
 
 PACKAGES = {}
