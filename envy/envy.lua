@@ -9,40 +9,18 @@ local HOME = os.getenv("HOME")
 PACKAGES = {}
 
 -- Setup commands
-envy.extend(PACKAGES, {
-  {
-    spec = "local.shell@r0",
-    source = "local.shell@r0.lua",
-    options = {
-      check = "test -d " .. HOME .. "/bin",
-      install = "mkdir -p " .. HOME .. "/bin",
+envy.extend(PACKAGES, { {
+  spec = "local.file_setup@r0",
+  source = "local.file_setup@r0.lua",
+  options = {
+    paths = {
+      HOME .. "/bin/",
+      HOME .. "/.vim/backup/",
+      HOME .. "/.gitconfig_local",
+      HOME .. "/.config/local_config.fish",
     },
   },
-  {
-    spec = "local.shell@r0",
-    source = "local.shell@r0.lua",
-    options = {
-      check = "test -d " .. HOME .. "/.vim/backup",
-      install = "mkdir -p " .. HOME .. "/.vim/backup",
-    },
-  },
-  {
-    spec = "local.shell@r0",
-    source = "local.shell@r0.lua",
-    options = {
-      check = "test -f " .. HOME .. "/.gitconfig_local",
-      install = "touch " .. HOME .. "/.gitconfig_local",
-    },
-  },
-  {
-    spec = "local.shell@r0",
-    source = "local.shell@r0.lua",
-    options = {
-      check = "test -f " .. HOME .. "/.config/local_config.fish",
-      install = "touch " .. HOME .. "/.config/local_config.fish",
-    },
-  },
-})
+} })
 
 -- Symlinks
 local SYMLINKS = {
@@ -137,6 +115,41 @@ elseif envy.PLATFORM == "linux" then
     options = { packages = INSTALL_PACKAGES },
   } })
 end
+
+-- Rustup
+envy.extend(PACKAGES, { {
+  spec = "local.rustup@r0",
+  source = "local.rustup@r0.lua",
+  options = {},
+} })
+
+-- Rust toolchain
+envy.extend(PACKAGES, { {
+  spec = "local.rustup_toolchain@r0",
+  source = "local.rustup_toolchain@r0.lua",
+  options = { toolchain = "stable" },
+} })
+
+-- Rust crates (cargo install --git)
+envy.extend(PACKAGES, { {
+  spec = "local.cargo_install@r0",
+  source = "local.cargo_install@r0.lua",
+  options = {
+    crates = {
+      { repo = "https://github.com/hantianjz/tmx" },
+      { repo = "https://github.com/hantianjz/rr_cli" },
+    },
+  },
+} })
+
+-- Python tools (uv tool install)
+envy.extend(PACKAGES, { {
+  spec = "local.uv_tool@r0",
+  source = "local.uv_tool@r0.lua",
+  options = {
+    tools = { "bpython", "httpie" },
+  },
+} })
 
 -- Post-install commands
 envy.extend(PACKAGES, {
