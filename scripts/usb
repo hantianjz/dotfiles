@@ -86,7 +86,6 @@ def select_device(devices: list[USBDevice]) -> USBDevice | None:
 
 def control_port(device: USBDevice, action: str, dry_run: bool) -> int:
     cmd = [
-        "sudo",
         "uhubctl",
         "--location",
         device.location,
@@ -118,7 +117,7 @@ def main() -> int:
         return 1
 
     result = subprocess.run(
-        ["sudo", "uhubctl"], capture_output=True, text=True
+        ["uhubctl"], capture_output=True, text=True
     )
     if not result.stdout.strip():
         print(f"Error running uhubctl:\n{result.stderr}", file=sys.stderr)

@@ -45,7 +45,6 @@ keybind = performable:super+down=jump_to_prompt:1
 mouse-hide-while-typing = true
 focus-follows-mouse = true
 macos-titlebar-style = hidden
-macos-option-as-alt = false
+macos-option-as-alt = true
 keybind = shift+enter=text:\x1b\r
 mouse-scroll-multiplier = 0.95
-

@@ -56,7 +56,7 @@ alias gma 'git merge --abort'
 
 # Push (p)
 alias gp 'git push'
-alias gpf 'git push --force'
+alias gpf 'git push --force-with-lease'
 
 # Rebase (r)
 alias gr 'git rebase'

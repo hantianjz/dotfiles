@@ -64,3 +64,7 @@ end
 if type -q cyme
   alias lsusb cyme
 end
+
+if type -q amp
+  alias amp 'amp --ide'
+end
