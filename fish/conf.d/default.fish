@@ -68,3 +68,7 @@ end
 if type -q amp
   alias amp 'amp --ide'
 end
+
+if type -q just
+  alias j 'just'
+end
