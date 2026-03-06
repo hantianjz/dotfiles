@@ -59,6 +59,19 @@ envy.extend(PACKAGES, { {
   options = { links = SYMLINKS },
 } })
 
+-- AI skills symlinks
+envy.extend(PACKAGES, { {
+  spec = "local.ai_skills_symlink@r0",
+  source = "envy/local.ai_skills_symlink@r0.lua",
+  options = {
+    source_dir = ROOT .. "/ai/skills",
+    dest_roots = {
+      HOME .. "/.agents/skills",
+      HOME .. "/.claude/skills",
+    },
+  },
+} })
+
 -- Packages: strings for same name on both platforms, tables for platform-specific names
 local PACKAGE_SPECS = {
   "bat", "binutils", "btop", "cmake", "direnv", "dos2unix", "fish", "fzf",

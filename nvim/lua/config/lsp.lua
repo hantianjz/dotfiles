@@ -7,7 +7,6 @@ vim.lsp.set_log_level("error")
 -- Set the LSP log file path
 local log_path = vim.fn.stdpath('cache') .. '/lsp.log'
 vim.fn.setenv('NVIM_LSP_LOG_FILE', log_path)
-print("LSP logs will be written to: " .. log_path)
 
 local diag_float_config = {
   scope = "cursor",
@@ -18,7 +17,7 @@ local diag_float_config = {
 
 -- lsp
 vim.diagnostic.config({
-  virtual_text = true,
+  virtual_text = false,
   float = diag_float_config
 })
 

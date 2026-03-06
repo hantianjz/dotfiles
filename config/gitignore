@@ -16,3 +16,4 @@ c
 *_pb2.py
 .aider*
 .claude/
+.linear.toml
