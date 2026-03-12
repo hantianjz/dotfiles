@@ -86,6 +86,7 @@ local PACKAGE_SPECS = {
   { "typos-cli" },
   { "yazi" },
   { "uv" },
+  { "eza" },
 }
 
 -- Platform-specific packages
