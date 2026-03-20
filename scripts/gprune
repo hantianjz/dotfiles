@@ -1,5 +1,18 @@
-#!/bin/bash
-set -u # Fail on expanding undefined variable
-set -e # Fail on command fail
-set -o pipefail # Early fail for piped commands
-git fetch -p && git branch -r | cut -d" " -f 3 | grep -E -v -f /dev/fd/0 <(git branch -vv | grep origin) | cut -d" " -f 3 | xargs git branch -D
+#!/bin/sh
+# Prune local branches whose remote tracking branch has been deleted.
+# Works on Linux and macOS, under bash, zsh, fish (invoked via /bin/sh).
+
+set -eu
+
+git fetch --prune
+
+# Find local branches whose upstream is gone
+gone_branches=$(git branch -vv | grep ': gone]' | awk '{print $1}')
+
+if [ -z "$gone_branches" ]; then
+  exit 0
+fi
+
+echo "$gone_branches" | while IFS= read -r branch; do
+  git branch -D "$branch"
+done
