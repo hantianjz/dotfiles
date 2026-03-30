@@ -7,48 +7,24 @@
 return {
   {
     "nvim-treesitter/nvim-treesitter",
+    branch = "main",
     build = ":TSUpdate",
     lazy = false,
     config = function()
-      require('nvim-treesitter.configs').setup {
-        -- Syntax Highlighting
-        highlight = {
-          enable = true,
-          disable = {},
-        },
-
-        -- Indentation
-        indent = {
-          enable = true,
-          disable = {},
-        },
-
-        -- Language Parser Installation
+      require('nvim-treesitter').setup {
         ensure_installed = {
-          -- Shell
           "bash",
-
-          -- Systems Programming
           "c",
           "cpp",
-
-          -- Scripting
           "lua",
           "python",
-
-          -- Web & Config
           "yaml",
           "typescript",
-
-          -- JVM
           "java",
-
           "markdown",
+          "markdown_inline",
         },
-
-        -- Installation Settings
-        auto_install = true, -- Automatically install missing parsers
-        sync_install = true, -- Install parsers synchronously
+        auto_install = true,
       }
     end
   }

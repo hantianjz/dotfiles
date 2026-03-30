@@ -3,7 +3,7 @@ return {
     'nvim-lualine/lualine.nvim',
     opts = {
       options = {
-        theme = 'catppuccin'
+        theme = 'auto'
       },
       sections = {
         lualine_c = {

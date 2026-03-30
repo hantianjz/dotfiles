@@ -85,14 +85,14 @@ return {
           on_attach = on_attach,
           single_file_support = true,
           handlers = {
-            ['textDocument/publishDiagnostics'] = vim.lsp.with(
-              vim.lsp.diagnostic.on_publish_diagnostics, {
+            ['textDocument/publishDiagnostics'] = function(err, result, ctx, config)
+              vim.lsp.diagnostic.on_publish_diagnostics(err, result, ctx, vim.tbl_extend('force', config or {}, {
                 signs = true,
                 underline = true,
                 update_in_insert = false,
                 virtual_text = false,
-              }
-            ),
+              }))
+            end,
           }
         })
 
