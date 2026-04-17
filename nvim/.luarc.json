@@ -2,5 +2,9 @@
     "diagnostics.disable": [
         "inject-field",
         "duplicate-set-field"
+    ],
+    "workspace.library": [
+        "/opt/homebrew/Cellar/neovim/0.12.1/share/nvim/runtime",
+        "${3rd}/luv/library"
     ]
 }

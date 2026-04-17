@@ -83,13 +83,22 @@ return {
   },
   config = function(_, opts)
     require("octo").setup(opts)
-    vim.api.nvim_create_autocmd("LspAttach", {
+    -- Disable LSP for octo:// diff buffers
+    vim.api.nvim_create_autocmd({ "BufNew", "BufRead" }, {
       group = vim.api.nvim_create_augroup("octo_lsp_disable", { clear = true }),
       callback = function(args)
-        local bufname = vim.api.nvim_buf_get_name(args.buf)
-        if bufname:match("^octo://") then
+        if vim.api.nvim_buf_get_name(args.buf):match("^octo://") then
+          vim.b[args.buf].lsp_disabled = true
+        end
+      end,
+    })
+    vim.api.nvim_create_autocmd("LspAttach", {
+      group = "octo_lsp_disable",
+      callback = function(args)
+        if vim.b[args.buf].lsp_disabled then
           vim.schedule(function()
             vim.lsp.buf_detach_client(args.buf, args.data.client_id)
+            vim.diagnostic.reset(nil, args.buf)
           end)
         end
       end,
