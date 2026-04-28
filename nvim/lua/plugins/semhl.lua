@@ -3,10 +3,10 @@ return {
   "hantianjz/semhl.nvim",
   name = "semhl.nvim", -- optional but recommended
   enabled = true,
-  ft = { "c", "cpp", "h", "python", "lua", "typescript", "java", "rust" },
+  ft = { "c", "cpp", "h", "python", "lua", "typescript", "java", "rust", "go" },
   opts = {
     source = "lsp",
-    filetypes = { "c", "cpp", "h", "python", "lua", "typescript", "java", "rust" },
+    filetypes = { "c", "cpp", "h", "python", "lua", "typescript", "java", "rust", "go" },
     max_file_size = 100 * 1024,
     target_delta_e = 30,
     disable = function(buffer)

@@ -113,6 +113,7 @@ return {
             workspace = {
               checkThirdParty = true,
               library = {
+                "${3rd}/luv/library",
                 vim.env.VIMRUNTIME
               }
             },
