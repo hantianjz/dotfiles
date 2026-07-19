@@ -35,6 +35,9 @@ local SYMLINKS = {
   { source = ROOT .. "/config/gitignore",           dest = HOME .. "/.gitignore" },
   -- Ghostty
   { source = ROOT .. "/config/ghostty",             dest = HOME .. "/.config/ghostty" },
+  -- Hyprland: keep Omarchy-specific files local; manage keyboard settings here.
+  { source = ROOT .. "/config/hypr/input.conf",    dest = HOME .. "/.config/hypr/input.conf" },
+  { source = ROOT .. "/config/hypr/bindings.conf", dest = HOME .. "/.config/hypr/bindings.conf" },
   -- Tmux
   { source = ROOT .. "/config/tmux.conf",           dest = HOME .. "/.tmux.conf" },
   { source = ROOT .. "/tmux",                       dest = HOME .. "/.tmux" },
