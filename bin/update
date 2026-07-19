@@ -1,95 +1,89 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -u
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
-section() {
-  echo -e "\n${BLUE}==> $1${NC}"
-}
-
-success() {
-  echo -e "${GREEN}    done${NC}"
-}
-
-skip() {
-  echo -e "    skipped (not available)"
-}
-
-fail() {
-  echo -e "${RED}    failed${NC}"
-}
+section() { echo -e "\n${BLUE}==> $1${NC}"; }
+success() { echo -e "${GREEN}    done${NC}"; }
+skip() { echo "    skipped (not available)"; }
+fail() { echo -e "${RED}    failed${NC}"; }
 
 run() {
-  if eval "$1"; then
+  if "$@"; then
     success
   else
     fail
   fi
 }
 
-# Homebrew (macOS)
-if command -v brew &>/dev/null; then
+if command -v brew >/dev/null 2>&1; then
   section "Updating Homebrew packages"
-  run "brew update && brew upgrade"
-else
-  section "Homebrew"
-  skip
-fi
-
-# APT (Linux)
-if command -v apt-get &>/dev/null; then
+  run brew update
+  run brew upgrade
+elif command -v apt-get >/dev/null 2>&1; then
   section "Updating APT packages"
-  run "sudo apt-get update && sudo apt-get upgrade -y"
+  run sudo apt-get update
+  run sudo apt-get upgrade -y
+elif command -v pacman >/dev/null 2>&1; then
+  section "Updating Pacman packages"
+  run sudo pacman -Syu --noconfirm
 else
-  section "APT"
+  section "System packages"
   skip
 fi
 
-# Rustup
-if command -v rustup &>/dev/null; then
+rustup_bin="$(command -v rustup 2>/dev/null || true)"
+[[ -n "$rustup_bin" ]] || rustup_bin="$HOME/.cargo/bin/rustup"
+if [[ -x "$rustup_bin" ]]; then
   section "Updating Rust toolchain"
-  run "rustup update"
+  run "$rustup_bin" update
 else
   section "Rustup"
   skip
 fi
 
-# Cargo crates (installed via --git)
-if command -v cargo &>/dev/null; then
-  section "Updating cargo crates"
-  run "cargo install --git https://github.com/hantianjz/tmx"
-  run "cargo install --git https://github.com/hantianjz/rr_cli"
+cargo_bin="$(command -v cargo 2>/dev/null || true)"
+[[ -n "$cargo_bin" ]] || cargo_bin="$HOME/.cargo/bin/cargo"
+if [[ -x "$cargo_bin" ]]; then
+  section "Updating Cargo tools"
+  run "$cargo_bin" install --git https://github.com/hantianjz/tmx
+  run "$cargo_bin" install --git https://github.com/hantianjz/rr_cli
+
+  if command -v apt-get >/dev/null 2>&1; then
+    for crate in diskus eza git-delta gping hexyl typos-cli yazi-fm yazi-cli; do
+      run "$cargo_bin" install --locked "$crate"
+    done
+  fi
 else
   section "Cargo"
   skip
 fi
 
-# Python tools via uv
-if command -v uv &>/dev/null; then
+uv_bin="$(command -v uv 2>/dev/null || true)"
+[[ -n "$uv_bin" ]] || uv_bin="$HOME/.local/bin/uv"
+if [[ -x "$uv_bin" ]]; then
   section "Updating uv tools"
-  run "uv tool upgrade bpython"
-  run "uv tool upgrade httpie"
+  run "$uv_bin" tool upgrade bpython
+  run "$uv_bin" tool upgrade httpie
 else
   section "uv"
   skip
 fi
 
-# Tmux plugins
-if [ -f "$HOME/.config/tmux/plugins/tpm/bin/update_plugins" ]; then
+if [[ -x "$HOME/.config/tmux/plugins/tpm/bin/update_plugins" ]]; then
   section "Updating tmux plugins"
-  run "$HOME/.config/tmux/plugins/tpm/bin/update_plugins all"
+  run "$HOME/.config/tmux/plugins/tpm/bin/update_plugins" all
 else
   section "Tmux plugins"
   skip
 fi
 
-# Fisher plugins
-if fish -c 'type -q fisher' &>/dev/null; then
-  section "Updating fisher plugins"
-  run "fish -c 'fisher update'"
+if command -v fish >/dev/null 2>&1 && fish -c 'type -q fisher' >/dev/null 2>&1; then
+  section "Updating Fisher plugins"
+  run fish -c 'fisher update'
 else
   section "Fisher"
   skip

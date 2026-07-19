@@ -3,4 +3,58 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 
+bootstrap_linux_curl() {
+  if command -v curl >/dev/null 2>&1; then
+    return
+  fi
+
+  if command -v apt-get >/dev/null 2>&1; then
+    sudo apt-get update
+    sudo apt-get install -y curl ca-certificates
+  elif command -v pacman >/dev/null 2>&1; then
+    sudo pacman -S --needed --noconfirm curl ca-certificates
+  else
+    echo "ERROR: curl is required and no supported Linux package manager was found" >&2
+    exit 1
+  fi
+}
+
+case "$(uname -s)" in
+  Darwin)
+    if ! command -v brew >/dev/null 2>&1; then
+      echo "Installing Homebrew..." >&2
+      NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    fi
+
+    if [[ -x /opt/homebrew/bin/brew ]]; then
+      eval "$(/opt/homebrew/bin/brew shellenv)"
+    elif [[ -x /usr/local/bin/brew ]]; then
+      eval "$(/usr/local/bin/brew shellenv)"
+    fi
+    ;;
+  Linux)
+    bootstrap_linux_curl
+    if ! command -v apt-get >/dev/null 2>&1 && ! command -v pacman >/dev/null 2>&1; then
+      echo "ERROR: supported Linux platforms require apt-get or pacman" >&2
+      exit 1
+    fi
+    ;;
+  *)
+    echo "ERROR: supported platforms are macOS and Linux" >&2
+    exit 1
+    ;;
+esac
+
+for command in curl tar git; do
+  if ! command -v "$command" >/dev/null 2>&1; then
+    echo "ERROR: required bootstrap command is missing: $command" >&2
+    exit 1
+  fi
+done
+
+if git -C "$SCRIPT_DIR" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  git -C "$SCRIPT_DIR" submodule sync --recursive
+  git -C "$SCRIPT_DIR" submodule update --init --recursive
+fi
+
 exec "$SCRIPT_DIR/bin/envy" sync "$@"

@@ -6,13 +6,27 @@ DEPENDENCIES = { {
   spec = "local.rustup_toolchain@r0",
   source = "local.rustup_toolchain@r0.lua",
   setup = { "toolchain" },
+  options = { toolchain = "stable" },
 } }
 
 local missing = {}
 
+local function cargo_command()
+  local res = envy.run("test -x \"$HOME/.cargo/bin/cargo\"", {
+    capture = true,
+    quiet = true,
+    check = false,
+  })
+  return res.exit_code == 0 and '"${HOME}/.cargo/bin/cargo"' or "cargo"
+end
+
 local check = function(pkg_dir, opts)
   missing = {}
-  local res = envy.run("cargo install --list", { capture = true, quiet = true })
+  local res = envy.run(cargo_command() .. " install --list", {
+    capture = true,
+    quiet = true,
+    check = false,
+  })
   local installed = {}
   if res.exit_code == 0 then
     for name in res.stdout:gmatch("(%S+) v%S+") do
@@ -21,9 +35,10 @@ local check = function(pkg_dir, opts)
   end
 
   for _, crate in ipairs(opts.crates) do
-    local name = crate.name or crate.repo:match(".+/(.+)$")
+    local name = crate.name or crate.package or crate.repo:match(".+/(.+)$")
+    name = name:gsub("%.git$", "")
     if not installed[name] then
-      table.insert(missing, crate.repo)
+      table.insert(missing, crate)
     end
   end
   return #missing == 0
@@ -31,8 +46,16 @@ end
 
 local install = function(pkg_dir, opts)
   local cmds = {}
-  for _, repo in ipairs(missing) do
-    table.insert(cmds, "cargo install --git " .. repo)
+  for _, crate in ipairs(missing) do
+    if crate.repo then
+      table.insert(cmds, cargo_command() .. " install --git " .. string.format("%q", crate.repo))
+    else
+      local command = cargo_command() .. " install --locked " .. crate.package
+      if crate.version then
+        command = command .. " --version " .. crate.version
+      end
+      table.insert(cmds, command)
+    end
   end
   return table.concat(cmds, " && ")
 end

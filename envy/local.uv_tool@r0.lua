@@ -10,12 +10,21 @@ DEPENDENCIES = { {
 
 local missing = {}
 
+local function uv_command()
+  local res = envy.run("test -x \"$HOME/.local/bin/uv\"", {
+    capture = true,
+    quiet = true,
+    check = false,
+  })
+  return res.exit_code == 0 and '"${HOME}/.local/bin/uv"' or "uv"
+end
+
 local check = function(pkg_dir, opts)
   missing = {}
   -- uv may itself be scheduled for installation by an earlier package.  A
   -- missing executable therefore means all configured tools are missing; it
   -- should not abort Envy while it is still building the install plan.
-  local res = envy.run("uv tool list", {
+  local res = envy.run(uv_command() .. " tool list", {
     capture = true,
     quiet = true,
     check = false,
@@ -38,7 +47,7 @@ end
 local install = function(pkg_dir, opts)
   local cmds = {}
   for _, tool in ipairs(missing) do
-    table.insert(cmds, "uv tool install " .. tool)
+    table.insert(cmds, uv_command() .. " tool install " .. tool)
   end
   return table.concat(cmds, " && ")
 end

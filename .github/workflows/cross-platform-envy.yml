@@ -1,0 +1,56 @@
+name: Cross-platform Envy
+
+on:
+  push:
+    paths:
+      - "envy.lua"
+      - "envy/**"
+      - "setup"
+      - "bin/update"
+      - "tests/**"
+      - ".github/workflows/cross-platform-envy.yml"
+  pull_request:
+    paths:
+      - "envy.lua"
+      - "envy/**"
+      - "setup"
+      - "bin/update"
+      - "tests/**"
+      - ".github/workflows/cross-platform-envy.yml"
+
+jobs:
+  unix:
+    strategy:
+      matrix:
+        include:
+          - runner: ubuntu-24.04
+            profile: ubuntu
+          - runner: macos-14
+            profile: macos
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Syntax checks
+        run: bash -n setup bin/update tests/package_metadata.sh
+      - name: Platform policy tests
+        run: ./bin/envy lua tests/platform_test.lua
+      - name: Safe symlink tests
+        run: ./bin/envy lua tests/symlink_test.lua
+      - name: Native package metadata
+        run: tests/package_metadata.sh "${{ matrix.profile }}"
+
+  arch:
+    runs-on: ubuntu-24.04
+    container: archlinux:latest
+    steps:
+      - name: Install test prerequisites
+        run: pacman -Sy --needed --noconfirm ca-certificates curl git
+      - uses: actions/checkout@v4
+      - name: Syntax checks
+        run: bash -n setup bin/update tests/package_metadata.sh
+      - name: Platform policy tests
+        run: ./bin/envy lua tests/platform_test.lua
+      - name: Safe symlink tests
+        run: ./bin/envy lua tests/symlink_test.lua
+      - name: Native package metadata
+        run: tests/package_metadata.sh arch
