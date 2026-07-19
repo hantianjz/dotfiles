@@ -40,7 +40,9 @@ end
 
 local install = function(pkg_dir, opts)
   require_pacman()
-  return "sudo pacman -S --needed --noconfirm " .. table.concat(missing_packages, " ")
+  envy.run("sudo pacman -S --needed --noconfirm " .. table.concat(missing_packages, " "), {
+    interactive = true,
+  })
 end
 
 SETUP = { packages = { CHECK = check, INSTALL = install } }

@@ -45,7 +45,9 @@ end
 
 local install = function(pkg_dir, opts)
   require_apt()
-  return "sudo apt-get install -y " .. table.concat(missing_packages, " ")
+  envy.run("sudo apt-get install -y " .. table.concat(missing_packages, " "), {
+    interactive = true,
+  })
 end
 
 SETUP = { packages = { CHECK = check, INSTALL = install } }

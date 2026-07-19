@@ -16,16 +16,19 @@ local check = function()
 end
 
 local install = function()
+  local command
   if envy.PLATFORM == "darwin" then
-    return "brew install uv"
+    command = "brew install uv"
   elseif command_exists("pacman") then
-    return "sudo pacman -S --needed --noconfirm uv"
+    command = "sudo pacman -S --needed --noconfirm uv"
   elseif command_exists("apt-get") then
     -- uv is not available in all supported apt repositories.
-    return "curl -LsSf https://astral.sh/uv/install.sh | sh"
+    command = "curl -LsSf https://astral.sh/uv/install.sh | sh"
+  else
+    error("local.uv@r0 requires brew, pacman, or apt-get")
   end
 
-  error("local.uv@r0 requires brew, pacman, or apt-get")
+  envy.run(command, { interactive = true })
 end
 
 SETUP = { uv = { CHECK = check, INSTALL = install } }

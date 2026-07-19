@@ -5,8 +5,11 @@ Declarative development environment setup for macOS and Linux using [envy](https
 ## Fresh Install
 
 ```sh
-envy sync --install-all
+./setup
 ```
+
+This runs the pinned Envy bootstrap and syncs every package and setup task in
+the manifest. Extra arguments are forwarded to `envy sync`.
 
 On Linux, Envy installs system packages with Pacman when available and otherwise uses APT.
 
