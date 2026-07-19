@@ -88,10 +88,27 @@ end
 
 function M.desktop_links(profile, root, home)
   if profile == "arch" then
-    return {
-      { source = root .. "/config/hypr/input.conf", dest = home .. "/.config/hypr/input.conf" },
-      { source = root .. "/config/hypr/bindings.conf", dest = home .. "/.config/hypr/bindings.conf" },
+    local links = {}
+    local hypr_files = {
+      "autostart.conf",
+      "bindings.conf",
+      "envs.conf",
+      "hypridle.conf",
+      "hyprland.conf",
+      "hyprlock.conf",
+      "hyprsunset.conf",
+      "input.conf",
+      "looknfeel.conf",
+      "monitors.conf",
+      "xdph.conf",
     }
+    for _, filename in ipairs(hypr_files) do
+      table.insert(links, {
+        source = root .. "/config/hypr/" .. filename,
+        dest = home .. "/.config/hypr/" .. filename,
+      })
+    end
+    return links
   end
   if profile == "macos" then
     return { {

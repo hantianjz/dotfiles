@@ -8,7 +8,7 @@ Declarative development environment setup using [Envy](https://github.com/charle
 - Ubuntu 24.04 LTS or newer, using APT
 - Arch Linux on x86_64, using Pacman
 
-Shared shell, Neovim, Git, Ghostty, tmux, scripts, and AI-skill links are managed on every platform. Aerospace is linked only on macOS. Hyprland input and binding overrides are linked only on Arch/Omarchy; Ubuntu does not receive either desktop-specific link set.
+Shared shell, Neovim, Git, Ghostty, tmux, scripts, and AI-skill links are managed on every platform. Aerospace is linked only on macOS. The repository's complete Hyprland configuration is linked only on Arch/Omarchy; Ubuntu does not receive either desktop-specific link set.
 
 Ubuntu uses Cargo for portable CLI tools that are unavailable from the standard APT repositories. Ghostty and Lazygit are not automatically installed on Ubuntu.
 
@@ -41,3 +41,5 @@ This updates the active native package manager, Rust and Cargo tools, uv tools, 
 ## Maintenance
 
 See [Cross-platform Envy maintainer guide](docs/envy-cross-platform.md) for the design strategy, package and symlink invariants, testing workflow, troubleshooting steps, and agent handoff checklist.
+
+For the ThinkPad T480s fingerprint reader, see the [Omarchy fingerprint setup runbook](docs/omarchy-t480s-fingerprint.md). It records the legacy Synaptics driver replacement, enrollment workflow, power-management fix, troubleshooting, and rollback steps.

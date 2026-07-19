@@ -64,8 +64,24 @@ local ubuntu_links = platform.desktop_links("ubuntu", "/repo", "/home/test")
 assert_equal(#ubuntu_links, 0)
 
 local arch_links = platform.desktop_links("arch", "/repo", "/home/test")
-assert_equal(#arch_links, 2)
-assert(arch_links[1].dest:match("hypr"))
+local expected_hypr_files = {
+  "autostart.conf",
+  "bindings.conf",
+  "envs.conf",
+  "hypridle.conf",
+  "hyprland.conf",
+  "hyprlock.conf",
+  "hyprsunset.conf",
+  "input.conf",
+  "looknfeel.conf",
+  "monitors.conf",
+  "xdph.conf",
+}
+assert_equal(#arch_links, #expected_hypr_files)
+for index, filename in ipairs(expected_hypr_files) do
+  assert_equal(arch_links[index].source, "/repo/config/hypr/" .. filename)
+  assert_equal(arch_links[index].dest, "/home/test/.config/hypr/" .. filename)
+end
 
 local ok = pcall(function()
   platform.detect("linux", command_set({}))

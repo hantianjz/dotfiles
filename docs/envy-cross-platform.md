@@ -135,7 +135,7 @@ Desktop link invariants:
 
 - Common links apply to all supported profiles.
 - `config/aerospace.toml` is linked only on macOS.
-- `config/hypr/input.conf` and `config/hypr/bindings.conf` are linked only on Arch.
+- Every top-level `.conf` file in `config/hypr/` is linked individually only on Arch, making the repository authoritative while leaving the directory available for files Omarchy may add later.
 - Ubuntu receives neither desktop-specific set.
 
 ## Validation workflow
