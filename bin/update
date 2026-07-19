@@ -78,9 +78,9 @@ else
 fi
 
 # Tmux plugins
-if [ -f "$HOME/.tmux/plugins/tpm/bin/update_plugins" ]; then
+if [ -f "$HOME/.config/tmux/plugins/tpm/bin/update_plugins" ]; then
   section "Updating tmux plugins"
-  run "$HOME/.tmux/plugins/tpm/bin/update_plugins all"
+  run "$HOME/.config/tmux/plugins/tpm/bin/update_plugins all"
 else
   section "Tmux plugins"
   skip

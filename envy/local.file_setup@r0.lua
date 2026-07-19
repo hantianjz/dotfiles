@@ -1,8 +1,10 @@
+-- @envy schema "1"
 IDENTITY = "local.file_setup@r0"
+USER_MANAGED = true
 
 local missing = {}
 
-CHECK = function(tmp_dir, opts)
+local check = function(pkg_dir, opts)
   missing = {}
   for _, path in ipairs(opts.paths) do
     local is_dir = path:sub(-1) == "/"
@@ -15,7 +17,7 @@ CHECK = function(tmp_dir, opts)
   return #missing == 0
 end
 
-INSTALL = function(install_dir, stage_dir, fetch_dir, tmp_dir, opts)
+local install = function(pkg_dir, opts)
   local cmds = {}
   for _, path in ipairs(missing) do
     if path:sub(-1) == "/" then
@@ -31,3 +33,5 @@ INSTALL = function(install_dir, stage_dir, fetch_dir, tmp_dir, opts)
   end
   return table.concat(cmds, " && ")
 end
+
+SETUP = { files = { CHECK = check, INSTALL = install } }

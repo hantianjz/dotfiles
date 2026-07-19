@@ -1,4 +1,6 @@
+-- @envy schema "1"
 IDENTITY = "local.ai_skills_symlink@r0"
+USER_MANAGED = true
 
 local stale_links = {}
 
@@ -42,7 +44,7 @@ local function build_links(opts)
   return links
 end
 
-CHECK = function(tmp_dir, opts)
+local check = function(pkg_dir, opts)
   stale_links = {}
 
   for _, link in ipairs(build_links(opts)) do
@@ -55,7 +57,7 @@ CHECK = function(tmp_dir, opts)
   return #stale_links == 0
 end
 
-INSTALL = function(install_dir, stage_dir, fetch_dir, tmp_dir, opts)
+local install = function(pkg_dir, opts)
   local cmds = {}
 
   for _, link in ipairs(stale_links) do
@@ -68,3 +70,5 @@ INSTALL = function(install_dir, stage_dir, fetch_dir, tmp_dir, opts)
 
   return table.concat(cmds, " && ")
 end
+
+SETUP = { links = { CHECK = check, INSTALL = install } }

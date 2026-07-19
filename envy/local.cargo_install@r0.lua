@@ -1,10 +1,16 @@
+-- @envy schema "1"
 IDENTITY = "local.cargo_install@r0"
+USER_MANAGED = true
 
-DEPENDENCIES = { recipe = "local.rustup_toolchain@r0", source = "local.rustup_toolchain@r0.lua" }
+DEPENDENCIES = { {
+  spec = "local.rustup_toolchain@r0",
+  source = "local.rustup_toolchain@r0.lua",
+  setup = { "toolchain" },
+} }
 
 local missing = {}
 
-CHECK = function(tmp_dir, opts)
+local check = function(pkg_dir, opts)
   missing = {}
   local res = envy.run("cargo install --list", { capture = true, quiet = true })
   local installed = {}
@@ -23,10 +29,12 @@ CHECK = function(tmp_dir, opts)
   return #missing == 0
 end
 
-INSTALL = function(install_dir, stage_dir, fetch_dir, tmp_dir, opts)
+local install = function(pkg_dir, opts)
   local cmds = {}
   for _, repo in ipairs(missing) do
     table.insert(cmds, "cargo install --git " .. repo)
   end
   return table.concat(cmds, " && ")
 end
+
+SETUP = { crates = { CHECK = check, INSTALL = install } }

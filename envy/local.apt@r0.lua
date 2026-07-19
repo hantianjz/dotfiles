@@ -1,8 +1,25 @@
+-- @envy schema "1"
 IDENTITY = "local.apt@r0"
+USER_MANAGED = true
 
 local missing_packages = {}
 
-CHECK = function(tmp_dir, opts)
+local function require_apt()
+  for _, command in ipairs({ "apt-get", "dpkg-query" }) do
+    local res = envy.run("command -v " .. command, {
+      capture = true,
+      quiet = true,
+      check = false,
+    })
+    if res.exit_code ~= 0 then
+      error("local.apt@r0 requires " .. command .. " but it is not available")
+    end
+  end
+end
+
+local check = function(pkg_dir, opts)
+  require_apt()
+
   local cmd = "dpkg-query -W -f='${Package}\n' " .. table.concat(opts.packages, " ")
   local res = envy.run(cmd, { capture = true, quiet = true, check = false })
 
@@ -17,7 +34,7 @@ CHECK = function(tmp_dir, opts)
 
   missing_packages = {}
 
-  for _, pkg in pairs(opts.packages) do
+  for _, pkg in ipairs(opts.packages) do
     if not installed[pkg] then
       table.insert(missing_packages, pkg)
     end
@@ -26,6 +43,9 @@ CHECK = function(tmp_dir, opts)
   return #missing_packages == 0
 end
 
-INSTALL = function(install_dir, stage_dir, fetch_dir, tmp_dir, opts)
+local install = function(pkg_dir, opts)
+  require_apt()
   return "sudo apt-get install -y " .. table.concat(missing_packages, " ")
 end
+
+SETUP = { packages = { CHECK = check, INSTALL = install } }

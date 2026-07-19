@@ -8,6 +8,8 @@ Declarative development environment setup for macOS and Linux using [envy](https
 envy sync --install-all
 ```
 
+On Linux, Envy installs system packages with Pacman when available and otherwise uses APT.
+
 ## Update
 
 ```sh

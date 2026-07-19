@@ -1,8 +1,10 @@
+-- @envy schema "1"
 IDENTITY = "local.symlink@r0"
+USER_MANAGED = true
 
 local stale_links = {}
 
-CHECK = function(tmp_dir, opts)
+local check = function(pkg_dir, opts)
   stale_links = {}
   for _, link in pairs(opts.links) do
     local res = envy.run("readlink " .. link.dest, { capture = true, quiet = true, check = false })
@@ -13,7 +15,7 @@ CHECK = function(tmp_dir, opts)
   return #stale_links == 0
 end
 
-INSTALL = function(install_dir, stage_dir, fetch_dir, tmp_dir, opts)
+local install = function(pkg_dir, opts)
   local cmds = {}
   for _, link in pairs(stale_links) do
     local parent = link.dest:match("(.+)/[^/]+$")
@@ -24,3 +26,5 @@ INSTALL = function(install_dir, stage_dir, fetch_dir, tmp_dir, opts)
   end
   return table.concat(cmds, " && ")
 end
+
+SETUP = { links = { CHECK = check, INSTALL = install } }
