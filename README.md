@@ -37,3 +37,7 @@ update
 ```
 
 This updates the active native package manager, Rust and Cargo tools, uv tools, tmux plugins, and Fisher plugins. On Arch, it performs the required full-system Pacman upgrade.
+
+## Maintenance
+
+See [Cross-platform Envy maintainer guide](docs/envy-cross-platform.md) for the design strategy, package and symlink invariants, testing workflow, troubleshooting steps, and agent handoff checklist.
