@@ -10,10 +10,6 @@ CompileFlags:
     # Force 32-bit long type for ARM target
     - -D__SIZEOF_LONG__=4
     - -D__SIZEOF_POINTER__=4
-    # ARM GCC system includes for stdlib.h and other standard headers
-    - -I/Users/hjz/Library/Caches/hermit/pkg/arm-gnu-toolchain-xpack-13.2.1-1.1/lib/gcc/arm-none-eabi/13.2.1/include
-    - -I/Users/hjz/Library/Caches/hermit/pkg/arm-gnu-toolchain-xpack-13.2.1-1.1/lib/gcc/arm-none-eabi/13.2.1/include-fixed
-    - -I/Users/hjz/Library/Caches/hermit/pkg/arm-gnu-toolchain-xpack-13.2.1-1.1/arm-none-eabi/include
     # Suppress some warnings that might be noisy in the editor
     - -Wno-unknown-warning-option
   Remove:
@@ -24,3 +20,12 @@ Diagnostics:
   # Suppress some common embedded development false positives
   UnusedIncludes: None
   MissingIncludes: None
+---
+If:
+  PathMatch:
+    - test/.*
+    - .*/tests/.*
+    - .*_test\.c
+    - tools/asic-simulator/.*
+CompileFlags:
+  CompilationDatabase: build/host

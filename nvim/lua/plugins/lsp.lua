@@ -65,8 +65,14 @@ return {
       vim.lsp.config('ocamllsp', { on_attach = on_attach })
       vim.lsp.config('clangd',
         {
-          root_markers = { ".git" },
+          root_markers = { ".clangd", ".git" },
           capabilities = caps,
+          before_init = require("clangd_compiler_includes").make_before_init({
+            helper_path = vim.fn.expand("~/.dotfiles/workspace_dotfiles/get-compiler-includes"),
+            target = "arm-none-eabi",
+            timeout = 5000,
+            fallback_compiler = "arm-none-eabi-gcc",
+          }),
           cmd = {
             "clangd",
             "--background-index",

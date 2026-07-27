@@ -48,6 +48,14 @@ vim.api.nvim_create_user_command("LspInfo", function()
     table.insert(lines, "      root:    " .. (c.config.root_dir or "n/a"))
     table.insert(lines, "      cmd:     " .. table.concat(c.config.cmd or {}, " "))
     table.insert(lines, "      filetypes: " .. table.concat(c.config.filetypes or {}, ", "))
+    local includes = c.config._clangd_compiler_includes_status
+    if includes then
+      table.insert(lines, ("      compiler includes: %s; %d paths; %d commands overridden"):format(
+        includes.compiler ~= "" and includes.compiler or "n/a",
+        includes.include_count,
+        includes.command_count
+      ))
+    end
   end
   table.insert(lines, "")
   table.insert(lines, "All active clients (" .. #all_clients .. "):")
