@@ -67,20 +67,15 @@ return {
         {
           root_markers = { ".clangd", ".git" },
           capabilities = caps,
-          before_init = require("clangd_compiler_includes").make_before_init({
-            helper_path = vim.fn.expand("~/.dotfiles/workspace_dotfiles/get-compiler-includes"),
-            target = "arm-none-eabi",
-            timeout = 5000,
-            fallback_compiler = "arm-none-eabi-gcc",
-          }),
           cmd = {
             "clangd",
             "--background-index",
             "--clang-tidy",
             "--header-insertion=iwyu",
             "--completion-style=detailed",
-            "--function-arg-placeholders",
+            "--function-arg-placeholders=true",
             "--fallback-style=llvm",
+            "--query-driver=**/bin/arm-none-eabi-*",
           },
           filetypes = { "c", "cpp" },
           init_options = {
