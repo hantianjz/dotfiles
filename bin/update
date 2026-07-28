@@ -19,6 +19,16 @@ run() {
   fi
 }
 
+update_direct_herdr() {
+  local herdr_bin
+  herdr_bin="$(command -v herdr 2>/dev/null || true)"
+  [[ -n "$herdr_bin" ]] || herdr_bin="$HOME/.local/bin/herdr"
+  if [[ -x "$herdr_bin" ]]; then
+    section "Updating Herdr"
+    run "$herdr_bin" update
+  fi
+}
+
 if command -v brew >/dev/null 2>&1; then
   section "Updating Homebrew packages"
   run brew update
@@ -27,9 +37,11 @@ elif command -v apt-get >/dev/null 2>&1; then
   section "Updating APT packages"
   run sudo apt-get update
   run sudo apt-get upgrade -y
+  update_direct_herdr
 elif command -v pacman >/dev/null 2>&1; then
   section "Updating Pacman packages"
   run sudo pacman -Syu --noconfirm
+  update_direct_herdr
 else
   section "System packages"
   skip

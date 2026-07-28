@@ -63,16 +63,16 @@ function M.packages(profile, manager)
   if profile == "macos" then
     append(packages, {
       "diskus", "eza", "git-delta", "gping", "hexyl", "lazygit",
-      "typos-cli", "yazi",
+      "herdr", "typos-cli", "yazi",
     })
     append(casks, { "ghostty", "aerospace" })
   elseif profile == "arch" then
     append(packages, {
       "diskus", "eza", "git-delta", "ghostty", "gping", "hexyl", "lazygit",
-      "systemd", "typos", "usbutils", "yazi",
+      "systemd", "typos", "usbutils", "wl-clipboard", "yazi",
     })
   elseif profile == "ubuntu" then
-    append(packages, { "libglib2.0-dev", "libudev-dev", "usbutils" })
+    append(packages, { "libglib2.0-dev", "libudev-dev", "usbutils", "wl-clipboard" })
     append(crates, portable_ubuntu_crates)
   else
     error("unknown platform profile: " .. tostring(profile))

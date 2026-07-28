@@ -53,6 +53,8 @@ local SYMLINKS = {
   { source = ROOT .. "/config/gitconfig",           dest = HOME .. "/.gitconfig" },
   { source = ROOT .. "/config/gitignore",           dest = HOME .. "/.gitignore" },
   { source = ROOT .. "/config/ghostty",             dest = HOME .. "/.config/ghostty" },
+  { source = ROOT .. "/config/herdr/config.toml",   dest = HOME .. "/.config/herdr/config.toml" },
+  { source = ROOT .. "/scripts/herdr-tmux-action",   dest = HOME .. "/.config/herdr/herdr-tmux-action" },
   { source = ROOT .. "/tmux",                       dest = HOME .. "/.config/tmux" },
   { source = ROOT .. "/config/gdbinit",             dest = HOME .. "/.gdbinit" },
   { source = ROOT .. "/scripts/batch_find_replace", dest = HOME .. "/bin/batch_find_replace" },
@@ -155,3 +157,15 @@ envy.extend(PACKAGES, {
     },
   },
 })
+
+if PROFILE ~= "macos" then
+  envy.extend(PACKAGES, { {
+    spec = "local.shell@r0",
+    source = "envy/local.shell@r0.lua",
+    setup = { "command" },
+    options = {
+      check = "command -v herdr >/dev/null 2>&1 || test -x " .. quote(HOME .. "/.local/bin/herdr"),
+      install = "curl -fsSL https://herdr.dev/install.sh | sh",
+    },
+  } })
+end

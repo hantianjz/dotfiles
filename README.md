@@ -8,7 +8,7 @@ Declarative development environment setup using [Envy](https://github.com/charle
 - Ubuntu 24.04 LTS or newer, using APT
 - Arch Linux on x86_64, using Pacman
 
-Shared shell, Neovim, Git, Ghostty, tmux, scripts, and AI-skill links are managed on every platform. Aerospace is linked only on macOS. The repository's complete Hyprland configuration is linked only on Arch/Omarchy; Ubuntu does not receive either desktop-specific link set.
+Shared shell, Neovim, Git, Ghostty, tmux, Herdr, scripts, and AI-skill links are managed on every platform. Herdr independently uses the same `Ctrl-a`-prefixed pane and tab bindings as tmux where practical; `Ctrl-a Ctrl-a` sends a literal `Ctrl-a` to the active program. Aerospace is linked only on macOS. The repository's complete Hyprland configuration is linked only on Arch/Omarchy; Ubuntu does not receive either desktop-specific link set.
 
 Ubuntu uses Cargo for portable CLI tools that are unavailable from the standard APT repositories. Ghostty and Lazygit are not automatically installed on Ubuntu.
 

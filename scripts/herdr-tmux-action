@@ -1,0 +1,115 @@
+#!/bin/sh
+
+# Reproduce tmux pane and clipboard actions through Herdr's public CLI.
+# Runtime failures are deliberately quiet: keybindings can race with pane and
+# server teardown, and clipboard tools are not present on every host.
+
+action=${1-}
+pane_id=${2:-${HERDR_ACTIVE_PANE_ID-}}
+herdr_bin=${HERDR_BIN_PATH:-herdr}
+
+case "$action" in
+  rotate | swap-first | paste | copy-cwd) ;;
+  *) exit 0 ;;
+esac
+
+[ -n "$pane_id" ] || exit 0
+command -v jq >/dev/null 2>&1 || exit 0
+
+copy_to_clipboard() {
+  if command -v pbcopy >/dev/null 2>&1; then
+    pbcopy
+  elif command -v wl-copy >/dev/null 2>&1; then
+    wl-copy
+  else
+    return 1
+  fi
+}
+
+read_clipboard() {
+  if command -v pbpaste >/dev/null 2>&1; then
+    pbpaste
+  elif command -v wl-paste >/dev/null 2>&1; then
+    wl-paste --no-newline
+  else
+    return 1
+  fi
+}
+
+pane_layout() {
+  "$herdr_bin" pane layout --pane "$pane_id" 2>/dev/null
+}
+
+visual_panes() {
+  jq -r '
+    (.result // .).panes //
+      empty |
+    sort_by(.rect.y, .rect.x)[] |
+    .pane_id
+  ' 2>/dev/null
+}
+
+swap_panes() {
+  "$herdr_bin" pane swap \
+    --source-pane "$1" \
+    --target-pane "$2" >/dev/null 2>&1
+}
+
+case "$action" in
+  rotate)
+    layout=$(pane_layout) || exit 0
+    pane_count=$(printf '%s\n' "$layout" |
+      jq -r '(.result // .).panes // [] | length' 2>/dev/null) || exit 0
+    [ "$pane_count" -gt 1 ] 2>/dev/null || exit 0
+
+    ordered=$(printf '%s\n' "$layout" | visual_panes) || exit 0
+    focused_index=$(printf '%s\n' "$ordered" |
+      awk -v pane="$pane_id" '$0 == pane { print NR - 1; found = 1 } END { if (!found) exit 1 }'
+    ) || exit 0
+
+    # A pane swap focuses its source pane. Use the pane that will rotate into
+    # the focused cell as a pivot, and make it the source of the final swap.
+    # This rotates visual contents while leaving focus at the same coordinates.
+    pivot_index=$(((focused_index + 1) % pane_count))
+    pivot=$(printf '%s\n' "$ordered" | sed -n "$((pivot_index + 1))p")
+    offset=1
+    while [ "$offset" -lt "$pane_count" ]; do
+      target_index=$(((pivot_index + offset) % pane_count))
+      target=$(printf '%s\n' "$ordered" | sed -n "$((target_index + 1))p")
+      swap_panes "$pivot" "$target" || exit 0
+      offset=$((offset + 1))
+    done
+    ;;
+
+  swap-first)
+    layout=$(pane_layout) || exit 0
+    first=$(printf '%s\n' "$layout" | visual_panes | sed -n '1p') || exit 0
+    [ -n "$first" ] || exit 0
+    [ "$first" != "$pane_id" ] || exit 0
+    swap_panes "$pane_id" "$first" || :
+    ;;
+
+  paste)
+    # The sentinel prevents command substitution from discarding clipboard
+    # trailing newlines. Herdr's send-text treats the resulting argument
+    # literally, including embedded and trailing newlines.
+    clipboard=$({ read_clipboard || exit 1; printf '\001'; }) || exit 0
+    clipboard=${clipboard%?}
+    "$herdr_bin" pane send-text "$pane_id" "$clipboard" >/dev/null 2>&1 || :
+    ;;
+
+  copy-cwd)
+    process_info=$(
+      "$herdr_bin" pane process-info --pane "$pane_id" 2>/dev/null
+    ) || exit 0
+    cwd=$(printf '%s\n' "$process_info" |
+      jq -er '
+        [(.result // .).foreground_processes[]?.cwd |
+          select(type == "string" and length > 0)] |
+        last
+      ' 2>/dev/null) || exit 0
+    printf '%s' "$cwd" | copy_to_clipboard >/dev/null 2>&1 || :
+    ;;
+esac
+
+exit 0

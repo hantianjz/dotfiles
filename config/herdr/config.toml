@@ -1,0 +1,72 @@
+onboarding = false
+# Keep Herdr's multiplexer controls aligned with tmux/tmux.keys.conf.
+#
+# Ctrl-a Ctrl-a sends a literal Ctrl-a to the active program.
+
+[keys]
+prefix = "ctrl+a"
+
+# tmux: R reloads config; r only refreshes its client and has no Herdr analogue.
+reload_config = "prefix+shift+r"
+resize_mode = ""
+
+# tmux opens its command prompt on s, so move Herdr settings out of the way of
+# the matching split binding below.
+settings = ""
+
+# tmux q displays/selects panes, S chooses a session, and d detaches.
+workspace_picker = "prefix+q"
+goto = "prefix+shift+s"
+detach = "prefix+d"
+
+# tmux windows correspond to Herdr tabs.
+new_tab = "prefix+shift+c"
+previous_tab = ["prefix+p", "prefix+ctrl+p"]
+next_tab = ["prefix+n", "prefix+ctrl+n"]
+
+# tmux clients correspond most closely to Herdr workspaces.
+previous_workspace = "prefix+minus"
+next_workspace = "prefix+="
+
+# Pane creation and movement mirror both prefixed tmux variants.
+split_vertical = ["prefix+v", "prefix+ctrl+v"]
+split_horizontal = ["prefix+s", "prefix+ctrl+s"]
+focus_pane_left = ["prefix+h", "prefix+ctrl+h", "ctrl+h"]
+focus_pane_down = ["prefix+j", "prefix+ctrl+j", "ctrl+j"]
+focus_pane_up = ["prefix+k", "prefix+ctrl+k", "ctrl+k"]
+focus_pane_right = ["prefix+l", "prefix+ctrl+l", "ctrl+l"]
+
+last_pane = "prefix+a"
+zoom = "prefix+shift+z"
+copy_mode = "prefix+["
+toggle_sidebar = "prefix+b"
+
+[[keys.command]]
+key = "prefix+ctrl+o"
+type = "shell"
+command = "\"$HOME/.config/herdr/herdr-tmux-action\" rotate \"$HERDR_ACTIVE_PANE_ID\""
+description = "rotate panes in visual order"
+
+[[keys.command]]
+key = "prefix+0"
+type = "shell"
+command = "\"$HOME/.config/herdr/herdr-tmux-action\" swap-first \"$HERDR_ACTIVE_PANE_ID\""
+description = "swap with the first visual pane"
+
+[[keys.command]]
+key = "prefix+]"
+type = "shell"
+command = "\"$HOME/.config/herdr/herdr-tmux-action\" paste \"$HERDR_ACTIVE_PANE_ID\""
+description = "paste the system clipboard"
+
+[[keys.command]]
+key = "prefix+shift+y"
+type = "shell"
+command = "\"$HOME/.config/herdr/herdr-tmux-action\" copy-cwd \"$HERDR_ACTIVE_PANE_ID\""
+description = "copy the pane working directory"
+
+[ui.toast]
+delivery = "terminal"
+
+[ui]
+show_agent_labels_on_pane_borders = true
