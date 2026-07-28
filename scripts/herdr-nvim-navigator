@@ -1,0 +1,41 @@
+#!/bin/sh
+
+# Route Ctrl-h/j/k/l like vim-tmux-navigator. Herdr owns the direct key, so it
+# must forward it when Neovim is the pane's foreground application. Neovim
+# then moves locally or calls `herdr pane focus` when it reaches an edge.
+
+direction=${1-}
+pane_id=${2:-${HERDR_ACTIVE_PANE_ID:-${HERDR_PANE_ID-}}}
+herdr_bin=${HERDR_BIN_PATH:-herdr}
+
+case "$direction" in
+  left) key=ctrl+h ;;
+  down) key=ctrl+j ;;
+  up) key=ctrl+k ;;
+  right) key=ctrl+l ;;
+  *) exit 0 ;;
+esac
+
+[ -n "$pane_id" ] || exit 0
+command -v jq >/dev/null 2>&1 || exit 0
+
+process_info=$(
+  "$herdr_bin" pane process-info --pane "$pane_id" 2>/dev/null
+) || exit 0
+
+if printf '%s\n' "$process_info" |
+  jq -e '
+    [((.result.process_info // .result // .).foreground_processes[]?) |
+      ((.name // .argv0 // "") | split("/") | last) |
+      test("^(n?vim|vi)$"; "i")] |
+    any
+  ' >/dev/null 2>&1
+then
+  "$herdr_bin" pane send-keys "$pane_id" "$key" >/dev/null 2>&1 || :
+else
+  "$herdr_bin" pane focus \
+    --direction "$direction" \
+    --pane "$pane_id" >/dev/null 2>&1 || :
+fi
+
+exit 0

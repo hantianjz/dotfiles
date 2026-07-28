@@ -28,18 +28,44 @@ next_tab = ["prefix+n", "prefix+ctrl+n"]
 previous_workspace = "prefix+minus"
 next_workspace = "prefix+="
 
-# Pane creation and movement mirror both prefixed tmux variants.
+# Pane creation and prefixed movement mirror both tmux variants. Direct
+# Ctrl-h/j/k/l goes through herdr-nvim-navigator so Neovim gets first chance
+# to move between its own windows before crossing a Herdr pane boundary.
 split_vertical = ["prefix+v", "prefix+ctrl+v"]
 split_horizontal = ["prefix+s", "prefix+ctrl+s"]
-focus_pane_left = ["prefix+h", "prefix+ctrl+h", "ctrl+h"]
-focus_pane_down = ["prefix+j", "prefix+ctrl+j", "ctrl+j"]
-focus_pane_up = ["prefix+k", "prefix+ctrl+k", "ctrl+k"]
-focus_pane_right = ["prefix+l", "prefix+ctrl+l", "ctrl+l"]
+focus_pane_left = ["prefix+h", "prefix+ctrl+h"]
+focus_pane_down = ["prefix+j", "prefix+ctrl+j"]
+focus_pane_up = ["prefix+k", "prefix+ctrl+k"]
+focus_pane_right = ["prefix+l", "prefix+ctrl+l"]
 
 last_pane = "prefix+a"
 zoom = "prefix+shift+z"
 copy_mode = "prefix+["
 toggle_sidebar = "prefix+b"
+
+[[keys.command]]
+key = "ctrl+h"
+type = "shell"
+command = "\"$HOME/.config/herdr/herdr-nvim-navigator\" left \"$HERDR_ACTIVE_PANE_ID\""
+description = "navigate left through Neovim or Herdr panes"
+
+[[keys.command]]
+key = "ctrl+j"
+type = "shell"
+command = "\"$HOME/.config/herdr/herdr-nvim-navigator\" down \"$HERDR_ACTIVE_PANE_ID\""
+description = "navigate down through Neovim or Herdr panes"
+
+[[keys.command]]
+key = "ctrl+k"
+type = "shell"
+command = "\"$HOME/.config/herdr/herdr-nvim-navigator\" up \"$HERDR_ACTIVE_PANE_ID\""
+description = "navigate up through Neovim or Herdr panes"
+
+[[keys.command]]
+key = "ctrl+l"
+type = "shell"
+command = "\"$HOME/.config/herdr/herdr-nvim-navigator\" right \"$HERDR_ACTIVE_PANE_ID\""
+description = "navigate right through Neovim or Herdr panes"
 
 [[keys.command]]
 key = "prefix+ctrl+o"

@@ -43,26 +43,27 @@ do
   assert_config_has "$chord"
 done
 
-# Direct navigation must use Herdr's native focus actions, not a cross-process
-# router. Keep all three variants together so prefixed and direct parity cannot
-# drift independently.
+# Prefixed navigation remains native. Direct navigation must use the
+# process-aware router so Neovim can consume the key before crossing an edge.
 for binding in \
-  'focus_pane_left = ["prefix+h", "prefix+ctrl+h", "ctrl+h"]' \
-  'focus_pane_down = ["prefix+j", "prefix+ctrl+j", "ctrl+j"]' \
-  'focus_pane_up = ["prefix+k", "prefix+ctrl+k", "ctrl+k"]' \
-  'focus_pane_right = ["prefix+l", "prefix+ctrl+l", "ctrl+l"]'
+  'focus_pane_left = ["prefix+h", "prefix+ctrl+h"]' \
+  'focus_pane_down = ["prefix+j", "prefix+ctrl+j"]' \
+  'focus_pane_up = ["prefix+k", "prefix+ctrl+k"]' \
+  'focus_pane_right = ["prefix+l", "prefix+ctrl+l"]'
 do
   grep -Fqx "$binding" "$herdr_config" ||
     fail "Herdr native navigation binding changed: $binding"
 done
 
-if grep -R --exclude=herdr_tmux_parity_test.sh -Fq "smart-pane-navigate" \
-  "$repo_root/config" "$repo_root/docs" "$repo_root/envy.lua" \
-  "$repo_root/nvim" "$repo_root/scripts" "$repo_root/tests" \
-  "$repo_root/tmux" "$repo_root/.github"
-then
-  fail "removed smart-pane-navigate router is still referenced"
-fi
+for command in \
+  'herdr-nvim-navigator\" left' \
+  'herdr-nvim-navigator\" down' \
+  'herdr-nvim-navigator\" up' \
+  'herdr-nvim-navigator\" right'
+do
+  grep -Fq "$command" "$herdr_config" ||
+    fail "Herdr process-aware navigation command is missing: $command"
+done
 
 # Double-prefix literal forwarding is built into Herdr. These tmux cases deliberately
 # have no Herdr binding: command prompt, refresh, clear history, and layouts.

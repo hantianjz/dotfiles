@@ -1,11 +1,13 @@
----@mod plugins.tmux Tmux navigation integration
+---@mod plugins.tmux Multiplexer navigation integration
 ---
---- Configures vim-tmux-navigator for seamless navigation between
---- Neovim splits and Tmux panes using Ctrl + hjkl.
+--- Selects the navigator for the multiplexer that launched Neovim.
 
 ---@type LazySpec
-return {
+local tmux_navigator = {
   'christoomey/vim-tmux-navigator',
+  cond = function()
+    return vim.env.TMUX ~= nil
+  end,
   keys = {
     {
       "<C-h>",
@@ -39,3 +41,17 @@ return {
     vim.keymap.set('t', '<C-h>', '<C-\\><C-n>:TmuxNavigateLeft<CR>', { noremap = true, silent = true })
   end,
 }
+
+if vim.env.HERDR_ENV == "1"
+    and vim.env.HERDR_PANE_ID
+    and vim.env.HERDR_SOCKET_PATH then
+  return {
+    name = "herdr-nvim-navigator",
+    dir = vim.fn.stdpath("config"),
+    config = function()
+      require("herdr_navigator").setup()
+    end,
+  }
+end
+
+return tmux_navigator

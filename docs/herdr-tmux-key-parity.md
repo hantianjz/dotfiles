@@ -10,10 +10,17 @@ tmux-sensible's last-window binding. Herdr and tmux are configured as
 independent multiplexers and are not intended to be nested. Herdr's built-in
 double-prefix behavior sends a literal `Ctrl-a` to the active program.
 
-Direct `Ctrl-h/j/k/l` uses each multiplexer's native pane focus behavior.
-tmux remains process-aware so Neovim can use `vim-tmux-navigator` to cross a
-tmux pane edge. Under Herdr, those keys focus Herdr panes unless Neovim consumes
-them; Neovim navigation therefore stays within its own splits.
+Direct `Ctrl-h/j/k/l` is process-aware in both multiplexers. tmux uses
+`vim-tmux-navigator`; Herdr uses `scripts/herdr-nvim-navigator` plus the local
+`nvim/lua/herdr_navigator.lua` module. The Herdr router forwards the key when
+Neovim is in the foreground and otherwise focuses the neighboring Herdr pane.
+Inside Neovim, the local navigator moves between windows first and invokes
+`herdr pane focus` only at an outer edge.
+
+The Lazy plugin spec selects the integration from the session environment:
+`HERDR_ENV`, `HERDR_PANE_ID`, and `HERDR_SOCKET_PATH` load the local Herdr
+navigator; other sessions keep `christoomey/vim-tmux-navigator`. Herdr takes
+precedence if stale or nested tmux environment variables are also present.
 
 The following bindings remain tmux-only:
 
