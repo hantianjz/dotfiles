@@ -55,7 +55,6 @@ local SYMLINKS = {
   { source = ROOT .. "/config/ghostty",             dest = HOME .. "/.config/ghostty" },
   { source = ROOT .. "/config/herdr/config.toml",   dest = HOME .. "/.config/herdr/config.toml" },
   { source = ROOT .. "/scripts/herdr-tmux-action",  dest = HOME .. "/.config/herdr/herdr-tmux-action" },
-  { source = ROOT .. "/scripts/herdr-nvim-navigator", dest = HOME .. "/.config/herdr/herdr-nvim-navigator" },
   { source = ROOT .. "/tmux",                       dest = HOME .. "/.config/tmux" },
   { source = ROOT .. "/config/gdbinit",             dest = HOME .. "/.gdbinit" },
   { source = ROOT .. "/scripts/batch_find_replace", dest = HOME .. "/bin/batch_find_replace" },
@@ -169,4 +168,20 @@ if PROFILE ~= "macos" then
       install = "curl -fsSL https://herdr.dev/install.sh | sh",
     },
   } })
+end
+
+local HERDR_BIN = command_exists("herdr") and "herdr" or quote(HOME .. "/.local/bin/herdr")
+for plugin in io.lines(ROOT .. "/config/herdr/plugins") do
+  if plugin ~= "" and plugin:sub(1, 1) ~= "#" then
+    local plugin_id = assert(plugin:match("/([^/]+)$"), "invalid Herdr plugin: " .. plugin)
+    envy.extend(PACKAGES, { {
+      spec = "local.shell@r0",
+      source = "envy/local.shell@r0.lua",
+      setup = { "command" },
+      options = {
+        check = HERDR_BIN .. " plugin list 2>/dev/null | grep -Fq " .. quote(plugin_id),
+        install = HERDR_BIN .. " plugin install " .. quote(plugin) .. " -y",
+      },
+    } })
+  end
 end

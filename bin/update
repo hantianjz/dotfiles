@@ -5,6 +5,7 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 NC='\033[0m'
+DOTFILES_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 section() { echo -e "\n${BLUE}==> $1${NC}"; }
 success() { echo -e "${GREEN}    done${NC}"; }
@@ -29,6 +30,19 @@ update_direct_herdr() {
   fi
 }
 
+update_herdr_plugins() {
+  local herdr_bin plugin
+  herdr_bin="$(command -v herdr 2>/dev/null || true)"
+  [[ -n "$herdr_bin" ]] || herdr_bin="$HOME/.local/bin/herdr"
+  [[ -x "$herdr_bin" ]] || return
+
+  section "Updating Herdr plugins"
+  while IFS= read -r plugin; do
+    [[ -n "$plugin" && "$plugin" != \#* ]] || continue
+    run "$herdr_bin" plugin install "$plugin" -y
+  done <"$DOTFILES_ROOT/config/herdr/plugins"
+}
+
 if command -v brew >/dev/null 2>&1; then
   section "Updating Homebrew packages"
   run brew update
@@ -46,6 +60,8 @@ else
   section "System packages"
   skip
 fi
+
+update_herdr_plugins
 
 rustup_bin="$(command -v rustup 2>/dev/null || true)"
 [[ -n "$rustup_bin" ]] || rustup_bin="$HOME/.cargo/bin/rustup"

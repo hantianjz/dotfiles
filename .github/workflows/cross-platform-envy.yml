@@ -39,12 +39,11 @@ jobs:
       - name: Syntax checks
         run: >-
           bash -n setup bin/update scripts/herdr-tmux-action
-          scripts/herdr-nvim-navigator
           tests/*.sh
       - name: Herdr key parity
         run: |
+          tests/herdr_plugins_test.sh
           tests/herdr_tmux_action_test.sh
-          tests/herdr_nvim_navigator_test.sh
           tests/herdr_tmux_parity_test.sh
       - name: Platform policy tests
         run: ./bin/envy lua tests/platform_test.lua
@@ -63,12 +62,11 @@ jobs:
       - name: Syntax checks
         run: >-
           bash -n setup bin/update scripts/herdr-tmux-action
-          scripts/herdr-nvim-navigator
           tests/*.sh
       - name: Herdr key parity
         run: |
+          tests/herdr_plugins_test.sh
           tests/herdr_tmux_action_test.sh
-          tests/herdr_nvim_navigator_test.sh
           tests/herdr_tmux_parity_test.sh
       - name: Platform policy tests
         run: ./bin/envy lua tests/platform_test.lua

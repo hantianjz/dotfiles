@@ -56,14 +56,17 @@ do
 done
 
 for command in \
-  'herdr-nvim-navigator\" left' \
-  'herdr-nvim-navigator\" down' \
-  'herdr-nvim-navigator\" up' \
-  'herdr-nvim-navigator\" right'
+  'command = "vim-herdr-navigation.left"' \
+  'command = "vim-herdr-navigation.down"' \
+  'command = "vim-herdr-navigation.up"' \
+  'command = "vim-herdr-navigation.right"'
 do
   grep -Fq "$command" "$herdr_config" ||
     fail "Herdr process-aware navigation command is missing: $command"
 done
+
+[ "$(grep -Fc 'type = "plugin_action"' "$herdr_config")" -eq 4 ] ||
+  fail "Herdr navigation must use four plugin actions"
 
 # Double-prefix literal forwarding is built into Herdr. These tmux cases deliberately
 # have no Herdr binding: command prompt, refresh, clear history, and layouts.

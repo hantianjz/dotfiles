@@ -63,7 +63,7 @@ function M.packages(profile, manager)
   if profile == "macos" then
     append(packages, {
       "diskus", "eza", "git-delta", "gping", "hexyl", "lazygit",
-      "herdr", "typos-cli", "yazi",
+      "herdr", "tuicr", "typos-cli", "yazi",
     })
     append(casks, { "ghostty", "aerospace" })
   elseif profile == "arch" then
@@ -81,7 +81,7 @@ function M.packages(profile, manager)
   return {
     packages = packages,
     casks = casks,
-    taps = profile == "macos" and { "nikitabobko/tap" } or {},
+    taps = profile == "macos" and { "agavra/tap", "nikitabobko/tap" } or {},
     crates = crates,
   }
 end

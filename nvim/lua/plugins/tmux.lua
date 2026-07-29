@@ -42,16 +42,16 @@ local tmux_navigator = {
   end,
 }
 
-if vim.env.HERDR_ENV == "1"
-    and vim.env.HERDR_PANE_ID
-    and vim.env.HERDR_SOCKET_PATH then
-  return {
-    name = "herdr-nvim-navigator",
-    dir = vim.fn.stdpath("config"),
-    config = function()
-      require("herdr_navigator").setup()
-    end,
-  }
-end
+local herdr_navigator = {
+  "paulbkim-dev/vim-herdr-navigation",
+  cond = function()
+    return vim.env.HERDR_ENV == "1"
+        and vim.env.HERDR_PANE_ID ~= nil
+        and vim.env.HERDR_SOCKET_PATH ~= nil
+  end,
+  config = function(plugin)
+    dofile(plugin.dir .. "/editor/nvim.lua")
+  end,
+}
 
-return tmux_navigator
+return { tmux_navigator, herdr_navigator }

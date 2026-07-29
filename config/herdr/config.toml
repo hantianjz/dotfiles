@@ -25,11 +25,11 @@ previous_tab = ["prefix+p", "prefix+ctrl+p"]
 next_tab = ["prefix+n", "prefix+ctrl+n"]
 
 # tmux clients correspond most closely to Herdr workspaces.
-previous_workspace = "prefix+minus"
-next_workspace = "prefix+="
+previous_workspace = "prefix+="
+next_workspace = "prefix+minus"
 
 # Pane creation and prefixed movement mirror both tmux variants. Direct
-# Ctrl-h/j/k/l goes through herdr-nvim-navigator so Neovim gets first chance
+# Ctrl-h/j/k/l goes through vim-herdr-navigation so Neovim gets first chance
 # to move between its own windows before crossing a Herdr pane boundary.
 split_vertical = ["prefix+v", "prefix+ctrl+v"]
 split_horizontal = ["prefix+s", "prefix+ctrl+s"]
@@ -38,61 +38,41 @@ focus_pane_down = ["prefix+j", "prefix+ctrl+j"]
 focus_pane_up = ["prefix+k", "prefix+ctrl+k"]
 focus_pane_right = ["prefix+l", "prefix+ctrl+l"]
 
-last_pane = "prefix+a"
 zoom = "prefix+shift+z"
 copy_mode = "prefix+["
 toggle_sidebar = "prefix+b"
 
+switch_workspace = "ctrl+1..9"
+focus_agent = "prefix+1..9"
+
 [[keys.command]]
 key = "ctrl+h"
-type = "shell"
-command = "\"$HOME/.config/herdr/herdr-nvim-navigator\" left \"$HERDR_ACTIVE_PANE_ID\""
+type = "plugin_action"
+command = "vim-herdr-navigation.left"
 description = "navigate left through Neovim or Herdr panes"
 
 [[keys.command]]
 key = "ctrl+j"
-type = "shell"
-command = "\"$HOME/.config/herdr/herdr-nvim-navigator\" down \"$HERDR_ACTIVE_PANE_ID\""
+type = "plugin_action"
+command = "vim-herdr-navigation.down"
 description = "navigate down through Neovim or Herdr panes"
 
 [[keys.command]]
 key = "ctrl+k"
-type = "shell"
-command = "\"$HOME/.config/herdr/herdr-nvim-navigator\" up \"$HERDR_ACTIVE_PANE_ID\""
+type = "plugin_action"
+command = "vim-herdr-navigation.up"
 description = "navigate up through Neovim or Herdr panes"
 
 [[keys.command]]
 key = "ctrl+l"
-type = "shell"
-command = "\"$HOME/.config/herdr/herdr-nvim-navigator\" right \"$HERDR_ACTIVE_PANE_ID\""
+type = "plugin_action"
+command = "vim-herdr-navigation.right"
 description = "navigate right through Neovim or Herdr panes"
-
-[[keys.command]]
-key = "prefix+ctrl+o"
-type = "shell"
-command = "\"$HOME/.config/herdr/herdr-tmux-action\" rotate \"$HERDR_ACTIVE_PANE_ID\""
-description = "rotate panes in visual order"
-
-[[keys.command]]
-key = "prefix+0"
-type = "shell"
-command = "\"$HOME/.config/herdr/herdr-tmux-action\" swap-first \"$HERDR_ACTIVE_PANE_ID\""
-description = "swap with the first visual pane"
-
-[[keys.command]]
-key = "prefix+]"
-type = "shell"
-command = "\"$HOME/.config/herdr/herdr-tmux-action\" paste \"$HERDR_ACTIVE_PANE_ID\""
-description = "paste the system clipboard"
-
-[[keys.command]]
-key = "prefix+shift+y"
-type = "shell"
-command = "\"$HOME/.config/herdr/herdr-tmux-action\" copy-cwd \"$HERDR_ACTIVE_PANE_ID\""
-description = "copy the pane working directory"
 
 [ui.toast]
 delivery = "terminal"
 
 [ui]
 show_agent_labels_on_pane_borders = true
+prompt_new_tab_name = false
+agent_panel_sort = "spaces"
