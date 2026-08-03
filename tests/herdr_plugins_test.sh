@@ -3,9 +3,13 @@ set -eu
 
 repo_root=$(CDPATH= cd -- "$(dirname "$0")/.." && pwd)
 manifest="$repo_root/config/herdr/plugins"
+automatic_rename_config="$repo_root/config/herdr-automatic-rename/config.sh"
 
 grep -Fq 'io.lines(ROOT .. "/config/herdr/plugins")' "$repo_root/envy.lua"
 grep -Fq 'done <"$DOTFILES_ROOT/config/herdr/plugins"' "$repo_root/bin/update"
+grep -Fq 'ROOT .. "/config/herdr-automatic-rename/config.sh"' "$repo_root/envy.lua"
+grep -Fq 'HOME .. "/.config/herdr-automatic-rename/config.sh"' "$repo_root/envy.lua"
+test -f "$automatic_rename_config"
 
 duplicates=$(sort "$manifest" | uniq -d)
 [ -z "$duplicates" ] || {

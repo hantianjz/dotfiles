@@ -55,6 +55,8 @@ local SYMLINKS = {
   { source = ROOT .. "/config/ghostty",             dest = HOME .. "/.config/ghostty" },
   { source = ROOT .. "/config/herdr/config.toml",   dest = HOME .. "/.config/herdr/config.toml" },
   { source = ROOT .. "/scripts/herdr-tmux-action",  dest = HOME .. "/.config/herdr/herdr-tmux-action" },
+  { source = ROOT .. "/config/herdr-automatic-rename/config.sh",
+    dest = HOME .. "/.config/herdr-automatic-rename/config.sh" },
   { source = ROOT .. "/tmux",                       dest = HOME .. "/.config/tmux" },
   { source = ROOT .. "/config/gdbinit",             dest = HOME .. "/.gdbinit" },
   { source = ROOT .. "/scripts/batch_find_replace", dest = HOME .. "/bin/batch_find_replace" },
