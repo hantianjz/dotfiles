@@ -12,3 +12,5 @@ source ${CURR_FILE_DIR}/shellrc.bash
 unset CURR_FILE_DIR
 
 . "$HOME/.cargo/env"
+
+export STM32_PRG_PATH=/home/hjz/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin

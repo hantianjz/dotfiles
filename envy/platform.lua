@@ -20,8 +20,7 @@ local portable_ubuntu_crates = {
   { package = "gping" },
   { package = "hexyl" },
   { package = "typos-cli", binary = "typos" },
-  { package = "yazi-fm", binary = "yazi" },
-  { package = "yazi-cli", binary = "ya" },
+  { package = "yazi-build", force = true },
 }
 
 local function append(target, values)

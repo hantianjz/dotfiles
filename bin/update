@@ -81,9 +81,10 @@ if [[ -x "$cargo_bin" ]]; then
   run "$cargo_bin" install --git https://github.com/hantianjz/rr_cli
 
   if command -v apt-get >/dev/null 2>&1; then
-    for crate in diskus eza git-delta gping hexyl typos-cli yazi-fm yazi-cli; do
+    for crate in diskus eza git-delta gping hexyl typos-cli; do
       run "$cargo_bin" install --locked "$crate"
     done
+    run "$cargo_bin" install --force --locked yazi-build
   fi
 else
   section "Cargo"

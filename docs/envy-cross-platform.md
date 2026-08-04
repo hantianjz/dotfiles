@@ -115,7 +115,7 @@ The last row is an important regression case. The initial Arch profile used `typ
 
 ### Ubuntu fallbacks
 
-Ubuntu currently installs `diskus`, `eza`, `git-delta`, `gping`, `hexyl`, `typos-cli`, `yazi-fm`, and `yazi-cli` through Cargo. Ghostty and Lazygit are not automatically installed on Ubuntu. Reconsider these choices only when Ubuntu's supported baseline provides a reliable native package or the upstream installation model changes.
+Ubuntu currently installs `diskus`, `eza`, `git-delta`, `gping`, `hexyl`, `typos-cli`, and `yazi-build` through Cargo. The `yazi-build` installer provides both `yazi-fm` and `yazi-cli` and requires Cargo's `--force` flag. Ghostty and Lazygit are not automatically installed on Ubuntu. Reconsider these choices only when Ubuntu's supported baseline provides a reliable native package or the upstream installation model changes.
 
 ## Symlink safety contract
 
@@ -144,6 +144,7 @@ Run the non-mutating checks before a full setup:
 
 ```sh
 ./bin/envy lua tests/platform_test.lua
+./bin/envy lua tests/local_specs_test.lua
 ./bin/envy lua tests/symlink_test.lua
 bash -n setup bin/update tests/package_metadata.sh
 ./bin/envy lua envy.lua

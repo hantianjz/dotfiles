@@ -18,6 +18,14 @@ local function contains(values, wanted)
   return false
 end
 
+local function find_package(values, wanted)
+  for _, value in ipairs(values) do
+    if value.package == wanted then
+      return value
+    end
+  end
+end
+
 local function command_set(commands)
   return function(command)
     return commands[command] == true
@@ -51,7 +59,11 @@ assert(contains(ubuntu.packages, "fd-find"))
 assert(contains(ubuntu.packages, "wl-clipboard"))
 assert(not contains(ubuntu.packages, "ghostty"))
 assert(not contains(ubuntu.packages, "lazygit"))
-assert_equal(#ubuntu.crates, 8)
+assert_equal(#ubuntu.crates, 7)
+local yazi = assert(find_package(ubuntu.crates, "yazi-build"))
+assert(yazi.force, "yazi-build must be installed with --force")
+assert(not find_package(ubuntu.crates, "yazi-fm"))
+assert(not find_package(ubuntu.crates, "yazi-cli"))
 
 local arch = platform.packages("arch", "pacman")
 assert(contains(arch.packages, "github-cli"))

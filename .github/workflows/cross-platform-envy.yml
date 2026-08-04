@@ -47,6 +47,8 @@ jobs:
           tests/herdr_tmux_parity_test.sh
       - name: Platform policy tests
         run: ./bin/envy lua tests/platform_test.lua
+      - name: Local spec tests
+        run: ./bin/envy lua tests/local_specs_test.lua
       - name: Safe symlink tests
         run: ./bin/envy lua tests/symlink_test.lua
       - name: Native package metadata
@@ -70,6 +72,8 @@ jobs:
           tests/herdr_tmux_parity_test.sh
       - name: Platform policy tests
         run: ./bin/envy lua tests/platform_test.lua
+      - name: Local spec tests
+        run: ./bin/envy lua tests/local_specs_test.lua
       - name: Safe symlink tests
         run: ./bin/envy lua tests/symlink_test.lua
       - name: Native package metadata

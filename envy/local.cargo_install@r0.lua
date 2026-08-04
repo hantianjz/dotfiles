@@ -51,6 +51,9 @@ local install = function(pkg_dir, opts)
       table.insert(cmds, cargo_command() .. " install --git " .. string.format("%q", crate.repo))
     else
       local command = cargo_command() .. " install --locked " .. crate.package
+      if crate.force then
+        command = cargo_command() .. " install --force --locked " .. crate.package
+      end
       if crate.version then
         command = command .. " --version " .. crate.version
       end
