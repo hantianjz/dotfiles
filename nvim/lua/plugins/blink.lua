@@ -1,8 +1,7 @@
 ---@mod plugins.completion Completion engine configuration
 ---
 --- Configures blink.cmp, a fast completion engine written in Rust.
---- Includes support for various completion sources including LSP,
---- Copilot, snippets, and more.
+--- Includes LSP, path, snippet, and buffer completion sources.
 
 ---@type LazySpec[]
 return {
@@ -12,7 +11,6 @@ return {
     version = '*',
     dependencies = {
       -- Snippet Engine
-      { "fang2hou/blink-copilot" },
       {
 
         'L3MON4D3/LuaSnip',
@@ -54,21 +52,11 @@ return {
       -- Completion Sources Configuration
       sources = {
         -- Default sources for all filetypes
-        default = { 'copilot', 'lsp', 'path', 'snippets', 'buffer' },
+        default = { 'lsp', 'path', 'snippets', 'buffer' },
 
         -- Filetype-specific sources
         per_filetype = {
           oil = { 'path' },
-        },
-
-        -- Provider-specific configurations
-        providers = {
-          copilot = {
-            name = "copilot",
-            module = "blink-copilot",
-            score_offset = 100,
-            async = true,
-          },
         },
       },
 

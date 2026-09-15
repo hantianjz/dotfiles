@@ -36,7 +36,14 @@ local check = function(pkg_dir, opts)
         table.insert(stale_links, link)
       end
     elseif run_test("test -e " .. quote(link.dest)) then
-      warn_conflict(link)
+      if run_test("test -f " .. quote(link.source) .. " && test -f " .. quote(link.dest) ..
+          " && cmp -s " .. quote(link.source) .. " " .. quote(link.dest)) then
+        -- A copied file with identical contents is safe to adopt as a managed
+        -- symlink. Different user-owned files and directories stay untouched.
+        table.insert(stale_links, link)
+      else
+        warn_conflict(link)
+      end
     else
       table.insert(stale_links, link)
     end

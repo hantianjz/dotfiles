@@ -11,6 +11,7 @@ if ROOT:sub(1, 1) ~= "/" then
 end
 local HOME = assert(os.getenv("HOME"), "HOME is not set")
 local TMUX_PLUGIN_DIR = HOME .. "/.config/tmux/plugins"
+local HERDR_PLUGIN_DIR = HOME .. "/.config/herdr/plugins/github"
 local platform = dofile(ROOT .. "/envy/platform.lua")
 
 PACKAGES = {}
@@ -181,7 +182,11 @@ for plugin in io.lines(ROOT .. "/config/herdr/plugins") do
       source = "envy/local.shell@r0.lua",
       setup = { "command" },
       options = {
-        check = HERDR_BIN .. " plugin list 2>/dev/null | grep -Fq " .. quote(plugin_id),
+        -- `herdr plugin list` talks to the running server. Checking the local
+        -- install directory avoids protocol errors when the CLI was upgraded
+        -- before an older server was restarted.
+        check = "find " .. quote(HERDR_PLUGIN_DIR) .. " -mindepth 1 -maxdepth 1 -type d -name " ..
+          quote(plugin_id .. "-*") .. " -print -quit 2>/dev/null | grep -q .",
         install = HERDR_BIN .. " plugin install " .. quote(plugin) .. " -y",
       },
     } })
