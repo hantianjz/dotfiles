@@ -6,9 +6,45 @@ This runbook reproduces the working fingerprint configuration for the Lenovo Thi
 
 The reader is not handled by standard `libfprint`, including the `libfprint-git` package installed by Omarchy. It needs the AUR `python-validity` driver and `open-fprintd` daemon. This driver extracts and uses a proprietary firmware component, so this is intentionally a machine-specific setup rather than part of the cross-platform Envy manifest.
 
-Validated locally on Arch/Omarchy on 2026-07-18. Package versions will change; use the current AUR packages rather than pinning the versions recorded by an old installation.
+The original driver/enrollment procedure below was validated locally on Arch/Omarchy on 2026-07-18, before Omarchy 4. Package versions will change; the historical setup/removal commands are not a v4 migration procedure.
 
-## Setup overview
+## Omarchy v4 lock migration
+
+Keep the existing `python-validity` / `open-fprintd` / `fprintd-clients-git` stack, enrollment, USB power override, and sudo/Polkit PAM integration. **Do not rerun `omarchy setup security fingerprint` on this custom stack**: the generic setup attempts conflicting standard packages. No authentication packages are installed or removed by the dotfiles migration.
+
+Quickshell now owns locking. `hyprlock.conf` and its `fingerprint:enabled` setting are retired; fingerprint support is not a Lua or TOML option. The [v4.0.4 lock helper](https://raw.githubusercontent.com/omacom/omarchy/v4.0.4/bin/omarchy-apply-lock) creates `/etc/pam.d/omarchy-lock-password` and creates `/etc/pam.d/omarchy-lock-fingerprint` when `/usr/bin/fprintd-list "$USER"` reports enrolled prints. The supported upgrade normally invokes it.
+
+On an upgraded target, first inspect enrollment and shell status as the desktop user:
+
+```sh
+/usr/bin/fprintd-list "$USER"
+omarchy-shell lock status
+```
+
+If enrollment exists but either new PAM file is missing, back up both paths before invoking the helper. Run this Bash subshell only after confirming enrollment; it records absent paths as well as preserving existing files and stops on backup errors:
+
+```sh
+(
+  set -eu
+  backup=$(mktemp -d "$HOME/omarchy-pam-backup.XXXXXX")
+  printf 'Keep this PAM backup: %s\n' "$backup"
+  for name in omarchy-lock-password omarchy-lock-fingerprint; do
+    path="/etc/pam.d/$name"
+    if sudo test -e "$path" || sudo test -L "$path"; then
+      sudo cp -a -- "$path" "$backup/$name"
+    else
+      printf '%s was absent\n' "$path" >> "$backup/absent"
+    fi
+  done
+  OMARCHY_INSTALL_USER="$USER" omarchy-apply-lock
+)
+```
+
+The helper handles privilege escalation. Do not run it as a substitute for diagnosing a missing enrollment or failed reader: report that hardware/enrollment prerequisite instead. Never disable password authentication. Confirm both password and fingerprint unlock through `omarchy system lock` on the physical machine; Lua smoke checks cannot establish authentication success. Live v4 lock/fingerprint verification was not performed on the macOS development workstation.
+
+For the configuration backup, deployment, and rollback boundaries, see the [Omarchy cutover procedure](envy-cross-platform.md#omarchy-v404-cutover).
+
+## Historical pre-v4 setup overview
 
 ```mermaid
 flowchart TB
@@ -42,7 +78,7 @@ If the device is absent from `lsusb`, userspace drivers cannot fix the problem. 
 
 ## 2. Apply Omarchy's authentication integration
 
-Run Omarchy's supported setup once:
+The original pre-v4 fresh-install procedure ran Omarchy's supported setup once. This is historical context, **not an instruction to rerun it during a v4 migration**:
 
 ```sh
 omarchy setup security fingerprint
@@ -202,7 +238,7 @@ journalctl -b -u open-fprintd.service -u python3-validity.service --no-pager
 
 ## Rollback
 
-To remove fingerprint authentication and the legacy driver stack:
+The historical pre-v4 removal procedure below removes fingerprint authentication and the legacy driver stack. It is not a configuration-migration rollback; use the bounded restore procedure linked above for that.
 
 ```sh
 omarchy remove security fingerprint

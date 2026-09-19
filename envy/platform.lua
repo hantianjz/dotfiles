@@ -89,16 +89,13 @@ function M.desktop_links(profile, root, home)
   if profile == "arch" then
     local links = {}
     local hypr_files = {
-      "autostart.conf",
-      "bindings.conf",
-      "envs.conf",
-      "hypridle.conf",
-      "hyprland.conf",
-      "hyprlock.conf",
+      "autostart.lua",
+      "bindings.lua",
+      "hyprland.lua",
       "hyprsunset.conf",
-      "input.conf",
-      "looknfeel.conf",
-      "monitors.conf",
+      "input.lua",
+      "looknfeel.lua",
+      "monitors.lua",
       "xdph.conf",
     }
     for _, filename in ipairs(hypr_files) do

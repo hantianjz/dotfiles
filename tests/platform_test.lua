@@ -80,24 +80,31 @@ assert(mac_links[1].dest:match("aerospace"))
 local ubuntu_links = platform.desktop_links("ubuntu", "/repo", "/home/test")
 assert_equal(#ubuntu_links, 0)
 
-local arch_links = platform.desktop_links("arch", "/repo", "/home/test")
-local expected_hypr_files = {
-  "autostart.conf",
-  "bindings.conf",
-  "envs.conf",
-  "hypridle.conf",
-  "hyprland.conf",
-  "hyprlock.conf",
-  "hyprsunset.conf",
-  "input.conf",
-  "looknfeel.conf",
-  "monitors.conf",
-  "xdph.conf",
-}
-assert_equal(#arch_links, #expected_hypr_files)
-for index, filename in ipairs(expected_hypr_files) do
-  assert_equal(arch_links[index].source, "/repo/config/hypr/" .. filename)
-  assert_equal(arch_links[index].dest, "/home/test/.config/hypr/" .. filename)
+local arch_links = platform.desktop_links("arch", root, "/home/test")
+local expected_destinations = {}
+for _, filename in ipairs({
+  "autostart.lua", "bindings.lua", "hyprland.lua", "hyprsunset.conf",
+  "input.lua", "looknfeel.lua", "monitors.lua", "xdph.conf",
+}) do
+  expected_destinations["/home/test/.config/hypr/" .. filename] = true
+end
+local seen = {}
+for _, link in ipairs(arch_links) do
+  assert(expected_destinations[link.dest], "unexpected managed destination: " .. link.dest)
+  assert(not seen[link.dest], "duplicate managed destination: " .. link.dest)
+  seen[link.dest] = true
+  local source = assert(io.open(link.source, "r"), "missing managed source: " .. link.source)
+  source:close()
+end
+for dest in pairs(expected_destinations) do
+  assert(seen[dest], "missing managed destination: " .. dest)
+end
+for _, basename in ipairs({
+  "autostart", "bindings", "envs", "hypridle", "hyprland",
+  "hyprlock", "input", "looknfeel", "monitors",
+}) do
+  assert(not seen["/home/test/.config/hypr/" .. basename .. ".conf"],
+    "retired destination must not be managed: " .. basename)
 end
 
 local ok = pcall(function()

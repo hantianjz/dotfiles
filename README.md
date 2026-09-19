@@ -8,7 +8,7 @@ Declarative development environment setup using [Envy](https://github.com/charle
 - Ubuntu 24.04 LTS or newer, using APT
 - Arch Linux on x86_64, using Pacman
 
-Shared shell, Neovim, Git, Ghostty, tmux, Herdr, scripts, and AI-skill links are managed on every platform. Herdr independently uses the same `Ctrl-a`-prefixed pane and tab bindings as tmux where practical; `Ctrl-a Ctrl-a` sends a literal `Ctrl-a` to the active program. Aerospace is linked only on macOS. The repository's complete Hyprland configuration is linked only on Arch/Omarchy; Ubuntu does not receive either desktop-specific link set.
+Shared shell, Neovim, Git, Ghostty, tmux, Herdr, scripts, and AI-skill links are managed on every platform. Herdr independently uses the same `Ctrl-a`-prefixed pane and tab bindings as tmux where practical; `Ctrl-a Ctrl-a` sends a literal `Ctrl-a` to the active program. Aerospace is linked only on macOS. Personal Hyprland overrides target Omarchy v4.0.4 and are linked individually only on Arch; Ubuntu does not receive either desktop-specific link set. Existing Omarchy installations must follow the [bounded migration procedure](docs/envy-cross-platform.md#omarchy-v404-cutover) before deploying the Lua configuration.
 
 Ubuntu uses Cargo for portable CLI tools that are unavailable from the standard APT repositories. Ghostty and Lazygit are not automatically installed on Ubuntu.
 
@@ -26,7 +26,7 @@ APT and Pacman are expected to be provided by their operating systems. Setup may
 
 ## Existing dotfiles
 
-Envy never replaces a real file or directory at a symlink destination. It warns, preserves the existing destination, and continues with other links. Correct links are left alone, while stale or broken symlinks are replaced.
+Envy preserves differing real files and directories at symlink destinations: it warns and continues with other links. A regular file identical to its source can be adopted as a managed symlink. Correct links are left alone, while stale or broken symlinks are replaced.
 
 If an older setup accidentally created a link inside an existing destination directory, the warning identifies the possible nested link. Remove or relocate that content manually before running `./setup` again.
 

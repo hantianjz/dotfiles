@@ -1,0 +1,1 @@
+-- Personal appearance overrides go here; inherit Omarchy defaults.

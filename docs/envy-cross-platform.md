@@ -14,7 +14,7 @@ This guide records the strategy and invariants established during the cross-plat
 | Ubuntu 24.04+ | Linux with `apt-get` and `dpkg-query` | APT | None | Selected Rust tools through Cargo |
 | Arch Linux x86_64 | Linux with `pacman` | Pacman | Hyprland/Omarchy overrides | None currently |
 
-Pacman takes precedence if both Pacman and APT commands are visible. Other Linux distributions and Windows are deliberately unsupported. Arch-specific configuration must remain in user-owned `~/.config` paths; never modify Omarchy source under `~/.local/share/omarchy`.
+Pacman takes precedence if both Pacman and APT commands are visible. Other Linux distributions and Windows are deliberately unsupported. Arch-specific configuration must remain in user-owned `~/.config` paths; never modify packaged Omarchy source under `/usr/share/omarchy` (or the older `~/.local/share/omarchy` location).
 
 ## Goals and non-goals
 
@@ -126,7 +126,7 @@ Regular dotfiles and generated AI-skill links go through the same recipe. A futu
 | Missing | Create its parent and the symlink. |
 | Correct symlink | Treat as satisfied. |
 | Stale or broken symlink | Replace it safely. |
-| Real file | Warn, preserve it, and continue. |
+| Real file | Adopt an identical copy as a symlink; warn and preserve a differing file. |
 | Real directory | Warn, preserve it, and continue; never link the source inside it. |
 
 All shell paths must be quoted. Conflicts intentionally do not fail the entire sync because unrelated links and packages should still converge. If an older run created a nested link inside a real directory, the warning points out the possible nested path but does not remove it.
@@ -135,8 +135,86 @@ Desktop link invariants:
 
 - Common links apply to all supported profiles.
 - `config/aerospace.toml` is linked only on macOS.
-- Every top-level `.conf` file in `config/hypr/` is linked individually only on Arch, making the repository authoritative while leaving the directory available for files Omarchy may add later.
+- The eight explicitly managed Hyprland files are linked individually only on Arch: `autostart.lua`, `bindings.lua`, `hyprland.lua`, `hyprsunset.conf`, `input.lua`, `looknfeel.lua`, `monitors.lua`, and `xdph.conf`. The directory remains available for files Omarchy may add later.
 - Ubuntu receives neither desktop-specific set.
+
+### Omarchy v4.0.4 cutover
+
+The repository targets [Omarchy v4.0.4](https://github.com/omacom/omarchy/releases/tag/v4.0.4). Hyprland loads its packaged Lua bootstrap and defaults before personal modules; missing release modules are errors, not a reason to fall back to `.conf`. Quickshell replaces Waybar, Walker, hypridle, and hyprlock. The old Waybar/Walker files are not deployed. `hyprsunset.conf` and `xdph.conf` retain their native syntax.
+
+The native idle defaults are 150 seconds to screensaver and 300 seconds to lock, both measured from the last activity. No `shell.json` override or old 152-second workaround is needed. The native lock screen replaces the old hyprlock appearance. Preserve fingerprint enrollment, drivers, and PAM; see the [v4 fingerprint migration guidance](omarchy-t480s-fingerprint.md#omarchy-v4-lock-migration).
+
+**Target-only procedure, not executed on the macOS development workstation.** Repository tests and isolated Lua exercises do not validate a compositor, physical keys, display hardware, or authentication.
+
+1. Run `omarchy version` as the desktop user in the running target session. Proceed only on v4.0.4 after its supported upgrade/reboot. Do not launch an OS upgrade, package sync, or reboot as part of this configuration check. On Omarchy 3, first back up and detach repository-owned links into equivalent regular copies before the separate supported Quattro upgrade: its upgrader can otherwise write through links into tracked files. Do not reload the Lua configuration into an old session.
+2. **Before updating this checkout or moving any destination**, create a backup. Run these commands in a Bash subshell on the target; any copy error aborts:
+
+   ```sh
+   (
+     set -eu
+     backup=$(mktemp -d "$HOME/omarchy-config-backup.XXXXXX")
+     printf 'Keep this backup path: %s\n' "$backup"
+     cp -a -- "$HOME/.config/hypr" "$backup/hypr-links"
+     cp -aL -- "$HOME/.config/hypr" "$backup/hypr-resolved"
+   )
+   ```
+
+   `hypr-links` records original per-file symlink targets and regular files; `hypr-resolved` saves dereferenced contents. If an old source is already missing, the first copy preserves its dangling-link metadata and the second reports the unavailable path and fails. Stop there: the resolved backup is incomplete, not proof that those bytes were saved. Recover missing content before starting a fresh backup/cutover. Keep the printed backup path for the remaining steps.
+3. Update the target checkout only after the backup succeeds. From its root, preflight **all eight** destinations under `~/.config/hypr` before moving any. Stop and report the exact path if any is a real directory; do not delete it. Confirm all eight sources exist. Preserve symlinks already pointing exactly to this checkout's intended source. Create `displaced` inside the backup and move every differing regular file or differing symlink there under its original basename. Stop on an unexpected destination type or a move error. Do not run general setup to bypass these conflicts.
+4. Save this temporary runner as an absolute path, such as `/tmp/omarchy-config-deploy.lua`. From the repository root invoke `./bin/envy lua /tmp/omarchy-config-deploy.lua`. `PWD` must be that checkout's absolute root and `HOME` the desktop user's home.
+
+   ```lua
+   local ROOT = assert(os.getenv("PWD"))
+   local HOME = assert(os.getenv("HOME"))
+   local platform = dofile(ROOT .. "/envy/platform.lua")
+   local links = platform.desktop_links("arch", ROOT, HOME)
+   for index, link in ipairs(links) do
+     if link.dest == HOME .. "/.config/hypr/hyprland.lua" then
+       table.insert(links, table.remove(links, index))
+       break
+     end
+   end
+   dofile(ROOT .. "/envy/local.symlink@r0.lua")
+   if not SETUP.links.CHECK(nil, { links = links }) then
+     envy.run(SETUP.links.INSTALL(nil, { links = links }))
+   end
+   for _, link in ipairs(links) do
+     local result = envy.run("readlink " .. string.format("%q", link.dest),
+       { capture = true, quiet = true })
+     assert(result.stdout:gsub("%s+$", "") == link.source,
+       "destination not adopted: " .. link.dest)
+     assert(io.open(link.source, "r"), "missing source: " .. link.source):close()
+     assert(io.open(link.dest, "r"), "unreadable destination: " .. link.dest):close()
+   end
+   ```
+
+   This installs dependencies before the entrypoint using the unchanged symlink recipe. A warning-only successful check is not proof of adoption; the final per-file assertions are required.
+5. Run the live checks below. If installation or compositor validation fails, stop and restore **only the eight managed destinations** from the backup: remove newly created links for paths that were originally absent, restore displaced originals, and restore original links only when their targets still contain the saved bytes. If updating the checkout changed a saved link's target contents, restore that destination as a regular copy from `hypr-resolved` instead. Never write the old bytes through a symlink into the updated checkout. Do not replace the entire Hypr directory or touch unrelated files. Reload the restored configuration only in a compatible session; retain the backup and error output.
+6. Only after successful new-entrypoint validation, remove retired `.conf` symlinks for these nine basenames: `autostart`, `bindings`, `envs`, `hypridle`, `hyprland`, `hyprlock`, `input`, `looknfeel`, `monitors`. Remove a link only if `readlink` equals this checkout's exact corresponding `config/hypr/<basename>.conf` path. Leave foreign links and user-owned regular files untouched; the Lua entrypoint does not source them. Keep the backup and remove the temporary runner.
+
+### Live Omarchy verification
+
+Run as the desktop user, with the running v4.0.4 session's IPC environment:
+
+```sh
+omarchy version
+hyprctl reload
+hyprctl configerrors
+hyprctl -j binds
+hyprctl -j monitors
+hyprctl getoption input.kb_options
+hyprctl getoption input.repeat_delay
+hyprctl getoption input.touchpad.scroll_factor
+omarchy toggle idle status
+fprintd-list "$USER"
+omarchy-shell lock status
+```
+
+Require no configuration errors, one root-menu action and no Display action on Super+Ctrl+D, and no bindings on Super+Space, Super+Alt+Space, Super+K, or Super+W. The connected `eDP-1` must report scale 1.25. Input values must be `ctrl:nocaps,altwin:swap_alt_win`, `600`, and `0.1`. Idle timers must report 150/300 unless an existing machine-level override explicitly changes them.
+
+Manually verify Super+Return opens one terminal in the active terminal's directory; Super+Shift+O launches/focuses Obsidian with `-disable-gpu --enable-wayland-ime`; Super+Ctrl+D opens only the root menu; Super+Q closes a disposable focused window. Verify physical Alt/Win swapping and Caps-as-Control. Reload a second time and check that bindings do not multiply. Use `omarchy system lock` and verify password access and the existing enrolled fingerprint on hardware where it worked previously.
+
+Never run `omarchy refresh hyprland` as validation: v4.0.4 overwrites personal Lua files with defaults. Never use `./setup` for a config-only smoke check.
 
 ## Validation workflow
 
