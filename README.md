@@ -20,7 +20,15 @@ Clone the repository and run:
 ./setup
 ```
 
-The setup script initializes submodules, bootstraps Homebrew when it is missing on macOS, downloads the pinned Envy release, and syncs the complete manifest. Extra arguments are forwarded to `envy sync`.
+The setup script asks for a machine profile on the first full sync, stores it in `~/.dotfiles_profile`, initializes submodules, bootstraps Homebrew when it is missing on macOS, downloads the pinned Envy release, and syncs the complete manifest. Extra arguments are forwarded to `envy sync`.
+For non-interactive setup, pass the profile explicitly:
+
+```sh
+./setup --profile work
+./setup --profile personal
+```
+
+The `work` profile writes `user.email = hjz@block.xyz` to `~/.gitconfig_local`; the `personal` profile writes `user.email = hjz@hackjumpzero.ca`. Other settings in `~/.gitconfig_local` are preserved.
 
 APT and Pacman are expected to be provided by their operating systems. Setup may ask for `sudo` when it installs system packages.
 

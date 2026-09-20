@@ -31,6 +31,48 @@ end
 local PROFILE, PACKAGE_MANAGER = platform.detect(envy.PLATFORM, command_exists)
 local PACKAGE_PROFILE = platform.packages(PROFILE, PACKAGE_MANAGER)
 
+local MACHINE_PROFILE_EMAILS = {
+  personal = "hjz@hackjumpzero.ca",
+  work = "hjz@block.xyz",
+}
+local MACHINE_PROFILE_PATH = HOME .. "/.dotfiles_profile"
+
+local function read_machine_profile(path)
+  local file = io.open(path, "r")
+  if not file then
+    return nil
+  end
+  local line = file:read("*l")
+  file:close()
+  if line == "" then
+    return nil
+  end
+  return line
+end
+
+local MACHINE_PROFILE = os.getenv("DOTFILES_PROFILE")
+if not MACHINE_PROFILE or MACHINE_PROFILE == "" then
+  MACHINE_PROFILE = read_machine_profile(MACHINE_PROFILE_PATH)
+end
+local MACHINE_PROFILE_EMAIL = MACHINE_PROFILE and MACHINE_PROFILE_EMAILS[MACHINE_PROFILE] or nil
+if MACHINE_PROFILE and not MACHINE_PROFILE_EMAIL then
+  error("unknown dotfiles profile '" .. MACHINE_PROFILE .. "' (expected personal or work)")
+end
+
+if MACHINE_PROFILE_EMAIL then
+  envy.extend(PACKAGES, { {
+    spec = "local.profile@r0",
+    source = "envy/local.profile@r0.lua",
+    setup = { "profile" },
+    options = {
+      profile = MACHINE_PROFILE,
+      profile_path = MACHINE_PROFILE_PATH,
+      gitconfig_path = HOME .. "/.gitconfig_local",
+      git_user_email = MACHINE_PROFILE_EMAIL,
+    },
+  } })
+end
+
 envy.extend(PACKAGES, { {
   spec = "local.file_setup@r0",
   source = "envy/local.file_setup@r0.lua",

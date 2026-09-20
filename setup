@@ -4,14 +4,97 @@ set -euo pipefail
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 
 CONFIG_ONLY=false
-if [[ ${1:-} == --omarchy-config ]]; then
-  CONFIG_ONLY=true
+REQUESTED_PROFILE="${DOTFILES_PROFILE:-}"
+ENVY_ARGS=()
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --omarchy-config)
+      CONFIG_ONLY=true
+      ;;
+    --profile)
+      shift
+      if [[ $# -eq 0 ]]; then
+        echo "ERROR: --profile requires work or personal" >&2
+        exit 1
+      fi
+      REQUESTED_PROFILE="$1"
+      ;;
+    --profile=*)
+      REQUESTED_PROFILE="${1#--profile=}"
+      ;;
+    --)
+      shift
+      ENVY_ARGS+=("$@")
+      break
+      ;;
+    *)
+      ENVY_ARGS+=("$1")
+      ;;
+  esac
   shift
-  if [[ $# -ne 0 ]]; then
-    echo "ERROR: --omarchy-config does not accept envy sync arguments" >&2
+done
+set -- "${ENVY_ARGS[@]}"
+
+normalize_dotfiles_profile() {
+  case "$1" in
+    personal|1) printf '%s\n' personal ;;
+    work|2) printf '%s\n' work ;;
+    *) return 1 ;;
+  esac
+}
+
+select_dotfiles_profile() {
+  local profile normalized
+
+  if [[ -n "$REQUESTED_PROFILE" ]]; then
+    if normalized="$(normalize_dotfiles_profile "$REQUESTED_PROFILE")"; then
+      printf '%s\n' "$normalized"
+      return
+    fi
+    echo "ERROR: unknown dotfiles profile '$REQUESTED_PROFILE' (expected work or personal)" >&2
     exit 1
   fi
-fi
+
+  if [[ -r "$HOME/.dotfiles_profile" ]]; then
+    IFS= read -r profile < "$HOME/.dotfiles_profile" || true
+    if [[ -n "$profile" ]]; then
+      if normalized="$(normalize_dotfiles_profile "$profile")"; then
+        printf '%s\n' "$normalized"
+        return
+      fi
+      echo "ERROR: unknown saved dotfiles profile '$profile' in $HOME/.dotfiles_profile" >&2
+      exit 1
+    fi
+  fi
+
+  if [[ -t 0 && -t 1 ]]; then
+    while true; do
+      printf 'Select dotfiles profile [personal/work] (default: personal): ' >&2
+      IFS= read -r profile
+      profile="${profile:-personal}"
+      if normalized="$(normalize_dotfiles_profile "$profile")"; then
+        printf '%s\n' "$normalized"
+        return
+      fi
+      echo "ERROR: enter personal or work" >&2
+    done
+  fi
+
+  echo "ERROR: choose a dotfiles profile with --profile work|personal" >&2
+  exit 1
+}
+
+profile_selection_required() {
+  if $CONFIG_ONLY; then
+    return 1
+  fi
+  for arg in "$@"; do
+    case "$arg" in
+      -h|--help|help|--version|version) return 1 ;;
+    esac
+  done
+  return 0
+}
 
 OS="$(uname -s)"
 OMARCHY=false
@@ -41,6 +124,11 @@ if [[ $OS == Linux ]] && command -v pacman >/dev/null 2>&1; then
 elif $CONFIG_ONLY; then
   echo "ERROR: --omarchy-config requires an Arch/Omarchy desktop" >&2
   exit 1
+fi
+
+if profile_selection_required "$@"; then
+  export DOTFILES_PROFILE
+  DOTFILES_PROFILE="$(select_dotfiles_profile)"
 fi
 
 # Config-only mode must not bootstrap packages or synchronize submodules.

@@ -51,6 +51,8 @@ jobs:
         run: ./bin/envy lua tests/platform_test.lua
       - name: Local spec tests
         run: ./bin/envy lua tests/local_specs_test.lua
+      - name: Profile setup tests
+        run: ./bin/envy lua tests/profile_setup_test.lua
       - name: Safe symlink tests
         run: ./bin/envy lua tests/symlink_test.lua
       - name: Omarchy deployment safety
@@ -80,6 +82,8 @@ jobs:
         run: ./bin/envy lua tests/platform_test.lua
       - name: Local spec tests
         run: ./bin/envy lua tests/local_specs_test.lua
+      - name: Profile setup tests
+        run: ./bin/envy lua tests/profile_setup_test.lua
       - name: Safe symlink tests
         run: ./bin/envy lua tests/symlink_test.lua
       - name: Omarchy deployment safety
