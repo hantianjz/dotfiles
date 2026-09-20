@@ -24,6 +24,22 @@ The setup script initializes submodules, bootstraps Homebrew when it is missing 
 
 APT and Pacman are expected to be provided by their operating systems. Setup may ask for `sudo` when it installs system packages.
 
+### Omarchy 4.0+
+
+Run setup as your desktop user **inside the upgraded Hyprland session**, not with `sudo`. Plain `./setup` backs up and adopts the personal Hyprland configuration before running the normal package/tool setup.
+
+For configuration only, without package installation or submodule updates:
+
+```sh
+./setup --omarchy-config
+```
+
+The cutover preserves original files and symlink targets under `~/omarchy-config-backup.*`, installs the eight managed files, reloads Hyprland, and checks configuration errors. Installation or parser failure restores displaced destinations; unrelated files are untouched. Missing content behind an already dangling link is reported, not claimed as backed up. Password/fingerprint setup is not changed.
+
+Omarchy 3 and unknown/development version strings are rejected. Complete the supported upgrade separately; back up and detach repository-owned links **before upgrading Omarchy or updating this checkout**. The setup-time backup cannot recover bytes already changed or removed by either update. See the [cutover and live checks](docs/envy-cross-platform.md#omarchy-v404-cutover).
+
+Explicit Envy arguments, such as `./setup --strict`, are forwarded without the automatic cutover. Run `./setup --omarchy-config` separately when adopting generated Omarchy files. `--omarchy-config` takes no additional arguments.
+
 ## Existing dotfiles
 
 Envy preserves differing real files and directories at symlink destinations: it warns and continues with other links. A regular file identical to its source can be adopted as a managed symlink. Correct links are left alone, while stale or broken symlinks are replaced.

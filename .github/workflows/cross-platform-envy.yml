@@ -6,6 +6,7 @@ on:
       - "envy.lua"
       - "envy/**"
       - "config/herdr/**"
+      - "config/hypr/**"
       - "scripts/herdr-tmux-action"
       - "tmux/tmux.keys.conf"
       - "setup"
@@ -17,6 +18,7 @@ on:
       - "envy.lua"
       - "envy/**"
       - "config/herdr/**"
+      - "config/hypr/**"
       - "scripts/herdr-tmux-action"
       - "tmux/tmux.keys.conf"
       - "setup"
@@ -51,6 +53,8 @@ jobs:
         run: ./bin/envy lua tests/local_specs_test.lua
       - name: Safe symlink tests
         run: ./bin/envy lua tests/symlink_test.lua
+      - name: Omarchy deployment safety
+        run: ./bin/envy lua tests/omarchy_setup_test.lua
       - name: Native package metadata
         run: tests/package_metadata.sh "${{ matrix.profile }}"
 
@@ -76,5 +80,7 @@ jobs:
         run: ./bin/envy lua tests/local_specs_test.lua
       - name: Safe symlink tests
         run: ./bin/envy lua tests/symlink_test.lua
+      - name: Omarchy deployment safety
+        run: ./bin/envy lua tests/omarchy_setup_test.lua
       - name: Native package metadata
         run: tests/package_metadata.sh arch

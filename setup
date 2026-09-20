@@ -3,6 +3,51 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 
+CONFIG_ONLY=false
+if [[ ${1:-} == --omarchy-config ]]; then
+  CONFIG_ONLY=true
+  shift
+  if [[ $# -ne 0 ]]; then
+    echo "ERROR: --omarchy-config does not accept envy sync arguments" >&2
+    exit 1
+  fi
+fi
+
+OS="$(uname -s)"
+OMARCHY=false
+if [[ $OS == Linux ]] && command -v pacman >/dev/null 2>&1; then
+  OMARCHY=true
+  if [[ $EUID -eq 0 ]]; then
+    echo "ERROR: run setup as the Omarchy desktop user, not root" >&2
+    exit 1
+  fi
+  if ! command -v omarchy >/dev/null 2>&1; then
+    echo "ERROR: Arch desktop setup requires Omarchy 4.0+ with Lua Hyprland configuration" >&2
+    exit 1
+  fi
+  VERSION="$(omarchy version)"
+  if [[ ! $VERSION =~ ^v?([0-9]+)\.[0-9]+ ]] || (( BASH_REMATCH[1] < 4 )); then
+    echo "ERROR: Omarchy 4.0+ is required (found $VERSION); back up/detach old links before the supported upgrade" >&2
+    exit 1
+  fi
+  if [[ ! -r ${OMARCHY_PATH:-/usr/share/omarchy}/default/hypr/bootstrap.lua ]]; then
+    echo "ERROR: Omarchy's Lua bootstrap is missing; finish the supported upgrade first" >&2
+    exit 1
+  fi
+  if ! command -v hyprctl >/dev/null 2>&1 || ! hyprctl version >/dev/null 2>&1; then
+    echo "ERROR: run setup inside the upgraded Hyprland session as its desktop user" >&2
+    exit 1
+  fi
+elif $CONFIG_ONLY; then
+  echo "ERROR: --omarchy-config requires an Arch/Omarchy desktop" >&2
+  exit 1
+fi
+
+# Config-only mode must not bootstrap packages or synchronize submodules.
+if $CONFIG_ONLY; then
+  exec "$SCRIPT_DIR/bin/envy" lua "$SCRIPT_DIR/envy/omarchy_setup.lua"
+fi
+
 bootstrap_linux_curl() {
   if command -v curl >/dev/null 2>&1; then
     return
@@ -19,7 +64,7 @@ bootstrap_linux_curl() {
   fi
 }
 
-case "$(uname -s)" in
+case "$OS" in
   Darwin)
     if ! command -v brew >/dev/null 2>&1; then
       echo "Installing Homebrew..." >&2
@@ -51,6 +96,11 @@ for command in curl tar git; do
     exit 1
   fi
 done
+
+# Explicit Envy arguments retain their original semantics (help, package queries).
+if $OMARCHY && [[ $# -eq 0 ]]; then
+  "$SCRIPT_DIR/bin/envy" lua "$SCRIPT_DIR/envy/omarchy_setup.lua"
+fi
 
 if git -C "$SCRIPT_DIR" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   git -C "$SCRIPT_DIR" submodule sync --recursive
