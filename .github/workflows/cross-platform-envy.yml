@@ -55,6 +55,8 @@ jobs:
         run: ./bin/envy lua tests/symlink_test.lua
       - name: Omarchy deployment safety
         run: ./bin/envy lua tests/omarchy_setup_test.lua
+      - name: Tmux setup ownership
+        run: ./bin/envy lua tests/tmux_setup_test.lua
       - name: Native package metadata
         run: tests/package_metadata.sh "${{ matrix.profile }}"
 
@@ -82,5 +84,7 @@ jobs:
         run: ./bin/envy lua tests/symlink_test.lua
       - name: Omarchy deployment safety
         run: ./bin/envy lua tests/omarchy_setup_test.lua
+      - name: Tmux setup ownership
+        run: ./bin/envy lua tests/tmux_setup_test.lua
       - name: Native package metadata
         run: tests/package_metadata.sh arch

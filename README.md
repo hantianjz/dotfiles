@@ -46,6 +46,8 @@ Envy preserves differing real files and directories at symlink destinations: it 
 
 If an older setup accidentally created a link inside an existing destination directory, the warning identifies the possible nested link. Remove or relocate that content manually before running `./setup` again.
 
+Tmux plugin setup waits for native packages and symlink setup. If `~/.config/tmux` is preserved as a user-owned directory, repository plugin installation is skipped with a warning rather than running a missing TPM script or changing that configuration. To adopt the repository's tmux configuration, back up and move the existing directory aside, then rerun `./setup`. For an already managed tmux directory, missing TPM submodules or installer failures remain errors.
+
 ## Update
 
 ```sh

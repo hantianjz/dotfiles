@@ -10,7 +10,6 @@ if ROOT:sub(1, 1) ~= "/" then
   ROOT = ROOT == "." and cwd or cwd .. "/" .. ROOT
 end
 local HOME = assert(os.getenv("HOME"), "HOME is not set")
-local TMUX_PLUGIN_DIR = HOME .. "/.config/tmux/plugins"
 local HERDR_PLUGIN_DIR = HOME .. "/.config/herdr/plugins/github"
 local platform = dofile(ROOT .. "/envy/platform.lua")
 
@@ -135,18 +134,13 @@ envy.extend(PACKAGES, { {
 
 envy.extend(PACKAGES, {
   {
-    spec = "local.shell@r0",
-    source = "envy/local.shell@r0.lua",
-    setup = { "command" },
+    spec = "local.tmux_plugins@r0",
+    source = "envy/local.tmux_plugins@r0.lua",
+    setup = { "plugins" },
     options = {
-      check = table.concat({
-        "test -d " .. quote(TMUX_PLUGIN_DIR .. "/tmux-sensible"),
-        "test -d " .. quote(TMUX_PLUGIN_DIR .. "/tmux-yank"),
-        "test -d " .. quote(TMUX_PLUGIN_DIR .. "/tmux-resurrect"),
-        "test -d " .. quote(TMUX_PLUGIN_DIR .. "/tmux-open-nvim"),
-        "test -d " .. quote(TMUX_PLUGIN_DIR .. "/tmux-cpu"),
-      }, " && "),
-      install = quote(TMUX_PLUGIN_DIR .. "/tpm/scripts/install_plugins.sh"),
+      source = ROOT .. "/tmux",
+      dest = HOME .. "/.config/tmux",
+      plugins = { "tmux-sensible", "tmux-yank", "tmux-resurrect", "tmux-open-nvim", "tmux-cpu" },
     },
   },
   {

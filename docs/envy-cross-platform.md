@@ -131,6 +131,8 @@ Regular dotfiles and generated AI-skill links go through the same recipe. A futu
 
 All shell paths must be quoted. Conflicts intentionally do not fail the entire sync because unrelated links and packages should still converge. If an older run created a nested link inside a real directory, the warning points out the possible nested path but does not remove it.
 
+`local.tmux_plugins@r0` depends on the manifest's native-package and symlink setup pairs. Its plugin work applies only when `~/.config/tmux` is a symlink resolving to this checkout's `tmux` directory. A preserved user-owned destination is reported and left alone, including its plugins. This is not a successful deployment of the repository's tmux settings: adopting them requires backing up and moving the conflicting destination aside, then rerunning setup. For managed destinations, the recipe invokes the checkout's TPM command-line installer; an uninitialized TPM submodule is an actionable error, not a reason to silently skip installation.
+
 Desktop link invariants:
 
 - Common links apply to all supported profiles.
@@ -202,6 +204,7 @@ Run the non-mutating checks before a full setup:
 ./bin/envy lua tests/local_specs_test.lua
 ./bin/envy lua tests/symlink_test.lua
 ./bin/envy lua tests/omarchy_setup_test.lua
+./bin/envy lua tests/tmux_setup_test.lua
 bash -n setup bin/update tests/package_metadata.sh
 ./bin/envy lua envy.lua
 git diff --check
