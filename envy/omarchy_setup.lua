@@ -19,8 +19,9 @@ local function target(path)
 end
 local function validate()
   run("hyprctl reload")
-  local errors = run("hyprctl -j configerrors").stdout
-  assert(errors:match("^%s*%[%s*%]%s*$"), "Hyprland configuration errors: " .. errors)
+  -- Read diagnostic text: JSON can encode no errors as either [] or [""].
+  local errors = run("hyprctl configerrors").stdout
+  assert(not errors:find("%S"), "Hyprland configuration errors: " .. errors)
 end
 
 -- Do not resolve a directory-wide link and mutate an unexpected tree.

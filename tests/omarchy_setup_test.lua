@@ -21,8 +21,13 @@ local function scenario(name, mode, prepare, verify)
     if command == "hyprctl reload" then
       reloads = reloads + 1
       return { exit_code = 0, stdout = "ok\n" }
-    elseif command == "hyprctl -j configerrors" then
-      return { exit_code = 0, stdout = mode == "parse-error" and reloads == 1 and '["invalid config"]' or "[]\n" }
+    elseif command == "hyprctl -j configerrors" or command == "hyprctl configerrors" then
+      if mode == "ipc-error" and reloads == 1 then error("hyprctl IPC unavailable") end
+      local message = mode == "parse-error" and reloads == 1 and "invalid config" or ""
+      -- Hyprland splits even an empty error buffer into one diagnostic line.
+      local response = command == "hyprctl -j configerrors"
+        and ('[\n  "' .. message .. '"\n]\n') or ("\n" .. message .. "\n")
+      return { exit_code = 0, stdout = response }
     elseif mode == "install-error" and command:find("ln -sfn", 1, true) then
       -- Actually install the first link, then fail before the rest.
       run(assert(command:match("^(.- && .-) && ")))
@@ -64,8 +69,9 @@ local ok, err = pcall(function()
     run("test -L " .. quote(backup .. "/retired/autostart.conf"))
     -- Re-run with only the compositor boundary simulated: no second backup.
     envy.run = function(command, options)
-      if command == "hyprctl reload" or command == "hyprctl -j configerrors" then
-        return { exit_code = 0, stdout = command == "hyprctl reload" and "ok\n" or "[]\n" }
+      if command == "hyprctl reload" or command == "hyprctl configerrors" or command == "hyprctl -j configerrors" then
+        local response = command == "hyprctl -j configerrors" and '[\n  ""\n]\n' or "\n"
+        return { exit_code = 0, stdout = command == "hyprctl reload" and "ok\n" or response }
       end
       return original_run(command, options)
     end
@@ -75,7 +81,7 @@ local ok, err = pcall(function()
     assert(run("find " .. quote(home) .. " -maxdepth 1 -name 'omarchy-config-backup.*'").stdout == backup .. "\n")
   end)
 
-  for _, mode in ipairs({ "parse-error", "install-error", "backup-error", "directory" }) do
+  for _, mode in ipairs({ "parse-error", "ipc-error", "install-error", "backup-error", "directory" }) do
     scenario(mode, mode, function(hypr)
       put(hypr .. "/input.lua", "-- original\n")
       put(hypr .. "/unrelated", "untouched\n")
