@@ -1,6 +1,6 @@
 # dotfiles
 
-Declarative development environment setup using [Envy](https://github.com/charlesnicholson/envy).
+Declarative development environment setup using [Envy](https://github.com/envy-package-manager/envy).
 
 ## Supported platforms
 

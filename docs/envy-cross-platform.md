@@ -37,7 +37,7 @@ The manifest is intentionally an orchestrator. Platform decisions live in one po
 flowchart TB
     User[User runs setup] --> Bootstrap[Bootstrap prerequisites]
     Bootstrap --> Submodules[Sync HTTPS submodules]
-    Submodules --> Envy[Pinned Envy 0.0.64]
+    Submodules --> Envy[Pinned Envy 0.4.1]
     Envy --> Manifest[envy.lua orchestration]
     Manifest --> Policy[Platform policy]
     Policy -->|macOS| Brew[Homebrew formulas and casks]

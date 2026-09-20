@@ -1,5 +1,5 @@
 -- envy.lua - Project manifest
--- @envy version "0.0.64"
+-- @envy version "0.4.1"
 -- @envy bin "bin"
 -- @envy deploy "true"
 
