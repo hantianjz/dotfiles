@@ -88,6 +88,7 @@ for _, filename in ipairs({
 }) do
   expected_destinations["/home/test/.config/hypr/" .. filename] = true
 end
+expected_destinations["/home/test/.config/omarchy/shell.json"] = true
 local seen = {}
 for _, link in ipairs(arch_links) do
   assert(expected_destinations[link.dest], "unexpected managed destination: " .. link.dest)

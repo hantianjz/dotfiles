@@ -1,6 +1,5 @@
 [user]
 	name = H. James Zhao
-	email = hjz@block.xyz
 [status]
   showUntrackedFiles = all
   submoduleSummary = true

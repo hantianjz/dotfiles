@@ -104,6 +104,10 @@ function M.desktop_links(profile, root, home)
         dest = home .. "/.config/hypr/" .. filename,
       })
     end
+    table.insert(links, {
+      source = root .. "/config/omarchy/shell.json",
+      dest = home .. "/.config/omarchy/shell.json",
+    })
     return links
   end
   if profile == "macos" then
