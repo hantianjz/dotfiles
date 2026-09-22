@@ -1,5 +1,6 @@
 -- envy.lua - Project manifest
--- @envy version "0.4.1"
+-- @envy version "0.4.8"
+-- @envy sha256sums "a8e360bb97b0d83cb5595c57c202e5ab680f7c4a74b9d379a7fb91824229a409"
 -- @envy bin "bin"
 -- @envy deploy "true"
 
@@ -157,12 +158,14 @@ envy.extend(PACKAGES, { {
   options = { toolchain = "stable" },
 } })
 
-local CARGO_PACKAGES = {
-  { repo = "https://github.com/hantianjz/tmx" },
-}
+local CARGO_PACKAGES = {}
 envy.extend(CARGO_PACKAGES, PACKAGE_PROFILE.crates)
 
 envy.extend(PACKAGES, { {
+  spec = "local.cargo_github_tmx@r0",
+  source = "envy/local.cargo_github_tmx@r0.lua",
+  setup = { "tool" },
+}, {
   spec = "local.cargo_install@r0",
   source = "envy/local.cargo_install@r0.lua",
   setup = { "crates" },

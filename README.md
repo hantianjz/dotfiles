@@ -10,7 +10,7 @@ Declarative development environment setup using [Envy](https://github.com/envy-p
 
 Shared shell, Neovim, Git, Ghostty, tmux, Herdr, scripts, and AI-skill links are managed on every platform. Herdr independently uses the same `Ctrl-a`-prefixed pane and tab bindings as tmux where practical; `Ctrl-a Ctrl-a` sends a literal `Ctrl-a` to the active program. Aerospace is linked only on macOS. Personal Hyprland overrides target Omarchy v4.0.4 and are linked individually only on Arch; Ubuntu does not receive either desktop-specific link set. Existing Omarchy installations must follow the [bounded migration procedure](docs/envy-cross-platform.md#omarchy-v404-cutover) before deploying the Lua configuration.
 
-Ubuntu uses Cargo for portable CLI tools that are unavailable from the standard APT repositories. Ghostty and Lazygit are not automatically installed on Ubuntu.
+Ubuntu uses Cargo for portable CLI tools that are unavailable from the standard APT repositories. GitHub-sourced Cargo tools are cloned through Envy's first-party GitHub spec at pinned commits before Cargo installs them. Ghostty and Lazygit are not automatically installed on Ubuntu.
 
 ## Fresh install
 

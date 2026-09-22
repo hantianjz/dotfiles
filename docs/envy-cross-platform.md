@@ -37,14 +37,15 @@ The manifest is intentionally an orchestrator. Platform decisions live in one po
 flowchart TB
     User[User runs setup] --> Bootstrap[Bootstrap prerequisites]
     Bootstrap --> Submodules[Sync HTTPS submodules]
-    Submodules --> Envy[Pinned Envy 0.4.1]
+    Submodules --> Envy[Pinned Envy 0.4.8]
     Envy --> Manifest[envy.lua orchestration]
     Manifest --> Policy[Platform policy]
+    Manifest --> GitHub[First-party GitHub source pins]
     Policy -->|macOS| Brew[Homebrew formulas and casks]
     Policy -->|Ubuntu| Apt[APT and Cargo fallbacks]
     Policy -->|Arch| Pacman[Pacman and Omarchy links]
     Manifest --> Links[Safe symlink recipe]
-    Manifest --> Tools[Rustup, Cargo, uv tools]
+    Manifest --> Tools[Rustup, pinned Cargo tools, uv tools]
     Manifest --> Plugins[Tmux and Fisher plugins]
 ```
 
@@ -58,7 +59,8 @@ flowchart TB
 | `envy/platform.lua` | Detects the profile and returns native packages, casks, taps, Cargo fallbacks, and desktop-specific links. This is the source of truth for platform differences. |
 | `envy/local.system_packages@r0.lua` | Checks and installs formulas, casks, APT packages, or Pacman packages. |
 | `envy/local.symlink@r0.lua` | Classifies destinations, warns on conflicts, and creates or repairs only safe links. |
-| `envy/local.cargo_install@r0.lua` | Installs Git-based tools and Ubuntu's crates.io fallbacks after the stable Rust toolchain exists. |
+| `envy/local.cargo_github_*.lua` + `envy/cargo_github_tool.lua` | Clone pinned GitHub Cargo tools through the first-party `envy.github@r0` bundle, then install them from the cached source with Cargo. |
+| `envy/local.cargo_install@r0.lua` | Installs Ubuntu's crates.io fallbacks after the stable Rust toolchain exists. |
 | `bin/update` | Updates the active native manager and the portable tools installed for that profile. |
 | `tests/` | Tests profile resolution, symlink behavior, and live native-repository metadata. |
 
@@ -99,8 +101,9 @@ Submodule URLs are HTTPS so a fresh public checkout does not depend on GitHub SS
 3. Put platform-only formulas/packages in the matching profile branch.
 4. Keep Homebrew GUI applications in `casks`, not `packages`, and declare required taps separately.
 5. Use Cargo fallback entries only for portable command-line tools missing from the supported Ubuntu repositories. Keep system libraries in APT.
-6. Prefer official Ubuntu and Arch repositories. Do not add an AUR helper or third-party APT repository merely to force package parity.
-7. When a portable tool is added, update `bin/update` if that profile installs it outside the native manager.
+6. Install Cargo tools sourced from GitHub through pinned first-party `envy.github@r0` dependencies, not branch-moving `cargo install --git` setup entries.
+7. Prefer official Ubuntu and Arch repositories. Do not add an AUR helper or third-party APT repository merely to force package parity.
+8. When a portable tool is added, update `bin/update` if that profile installs it outside the native manager. Keep any GitHub `--rev` there aligned with the Envy dependency pin.
 
 Package names are manager-specific identifiers, not necessarily project, crate, or executable names. For example:
 
@@ -116,6 +119,10 @@ The last row is an important regression case. The initial Arch profile used `typ
 ### Ubuntu fallbacks
 
 Ubuntu currently installs `diskus`, `eza`, `git-delta`, `gping`, `hexyl`, `typos-cli`, and `yazi-build` through Cargo. The `yazi-build` installer provides both `yazi-fm` and `yazi-cli` and requires Cargo's `--force` flag. Ghostty and Lazygit are not automatically installed on Ubuntu. Reconsider these choices only when Ubuntu's supported baseline provides a reliable native package or the upstream installation model changes.
+
+### GitHub-sourced Cargo tools
+
+`tmx` comes from a GitHub repository rather than crates.io or native package managers. Its setup recipe depends on the first-party `envy.package-specs@r7` bundle and its `envy.github@r0` spec, pinned by full commit SHA. The recipe installs with `cargo install --path` from the cached clone. This keeps setup reproducible and still lets `bin/update` refresh the same tool by using a matching `cargo install --git --rev` command.
 
 ## Symlink safety contract
 
@@ -278,9 +285,8 @@ When changing platform behavior:
 - Update the profile assertions in `tests/platform_test.lua`.
 - Run `tests/package_metadata.sh PROFILE` on the affected operating system.
 - Update `bin/update` if the install source is not the native manager.
-- Test both a clean destination and an existing dotfile directory if links change.
-- Verify no macOS link reaches Linux and no Hyprland/Omarchy link reaches macOS or Ubuntu.
 - Keep public submodules on HTTPS.
+- Keep GitHub source pins as full SHAs and mirror them in `bin/update` when the tool also has an update command.
 - Update this guide when an invariant, supported baseline, or fallback changes.
 
 ## Session history and current validation status
@@ -291,6 +297,7 @@ The cross-platform migration:
 - Replaced separate Brew, APT, and Pacman recipes with one system-package recipe.
 - Centralized platform package and desktop-link decisions.
 - Added macOS Homebrew bootstrap and cross-platform submodule initialization.
+- Moved GitHub-sourced Cargo tools to first-party `envy.github@r0` source pins.
 - Added official-installer paths for Rustup and uv plus Cargo fallbacks for Ubuntu.
 - Unified dotfile and AI-skill linking under the safe conflict policy.
 - Added macOS, Ubuntu, and Arch CI metadata coverage.

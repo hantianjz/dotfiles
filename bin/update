@@ -77,8 +77,7 @@ cargo_bin="$(command -v cargo 2>/dev/null || true)"
 [[ -n "$cargo_bin" ]] || cargo_bin="$HOME/.cargo/bin/cargo"
 if [[ -x "$cargo_bin" ]]; then
   section "Updating Cargo tools"
-  run "$cargo_bin" install --git https://github.com/hantianjz/tmx
-  run "$cargo_bin" install --git https://github.com/hantianjz/rr_cli
+  run "$cargo_bin" install --locked --git https://github.com/hantianjz/tmx --rev 87b1e7b150b0c2f60f1d210b9dbd6873b7f1cb84
 
   if command -v apt-get >/dev/null 2>&1; then
     for crate in diskus eza git-delta gping hexyl typos-cli; do

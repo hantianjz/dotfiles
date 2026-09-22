@@ -23,4 +23,29 @@ local install = SETUP.crates.INSTALL(nil, { crates = {} })
 assert(install:match("cargo.*install %-%-force %-%-locked yazi%-build"),
   "forced Cargo packages must include --force")
 
+calls = {}
+local cargo_list = ""
+envy = {
+  run = function(command, options)
+    table.insert(calls, { command = command, options = options })
+    if command:match("install %-%-list") then
+      return { exit_code = 0, stdout = cargo_list }
+    end
+    return { exit_code = 1, stdout = "" }
+  end,
+  package = function(query)
+    assert(query == "envy.github@r0")
+    return "/tmp/github source"
+  end,
+}
+local cargo_github = dofile(root .. "/envy/cargo_github_tool.lua")
+local github_tool = cargo_github.setup("tmx", "tmx")
+cargo_list = "tmx v0.0.6:\n"
+assert(github_tool.CHECK(), "installed GitHub Cargo package must satisfy check")
+cargo_list = ""
+assert(not github_tool.CHECK(), "missing GitHub Cargo package must request install")
+github_tool.INSTALL()
+assert(calls[#calls].command == 'cargo install --path "/tmp/github source/tmx" --locked',
+  "GitHub Cargo install must use the cached source path")
+
 print("local spec tests passed")
