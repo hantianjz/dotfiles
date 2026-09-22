@@ -15,12 +15,6 @@ popd () {
     command popd "$@" > /dev/null
 }
 
-if [ `uname` = "Linux" ]; then
-    export PATH=$PATH:~/.local/bin
-elif [ `uname` = "Darwin" ]; then
-    export PATH=$PATH:~/Library/Python/2.7/bin
-fi
-
 alias cd=pushd
 
 source ${CURR_FILE_DIR}/shellrc.generic

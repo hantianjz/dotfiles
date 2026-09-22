@@ -1,14 +1,7 @@
-#*****************CURR_FILE_DIR*****************
-# Get directory of current script file, follow symlink if needed.
-CURR_FILE="${BASH_SOURCE[0]}"
-if [ -L ${CURR_FILE} ]; then
-  CURR_FILE=$(readlink ${CURR_FILE})
+if [ -r "$HOME/.config/shell/environment" ]; then
+  . "$HOME/.config/shell/environment"
 fi
-CURR_FILE_DIR="$(cd "$(dirname "${CURR_FILE}")" && pwd)"
-#*****************CURR_FILE_DIR*****************
 
-# unset CURR_FILE_DIR
-. "$HOME/.cargo/env"
-# if test -f /opt/homebrew/bin/brew eval "$(/opt/homebrew/bin/brew shellenv)"
-
-. "$HOME/.local/share/../bin/env"
+if [ -n "${BASH_VERSION:-}" ] && [ -r "$HOME/.bashrc" ]; then
+  . "$HOME/.bashrc"
+fi

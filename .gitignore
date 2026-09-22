@@ -3,3 +3,4 @@
 .aider*
 .envy/
 .envy-cache-*
+.omp/*

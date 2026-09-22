@@ -5,6 +5,8 @@ on:
     paths:
       - "envy.lua"
       - "envy/**"
+      - "fish/**"
+      - "shellrc/**"
       - "config/herdr/**"
       - "config/hypr/**"
       - "scripts/herdr-tmux-action"
@@ -17,6 +19,8 @@ on:
     paths:
       - "envy.lua"
       - "envy/**"
+      - "fish/**"
+      - "shellrc/**"
       - "config/herdr/**"
       - "config/hypr/**"
       - "scripts/herdr-tmux-action"
@@ -38,10 +42,20 @@ jobs:
     runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v4
+      - name: Install Fish
+        run: |
+          if [ "${{ matrix.profile }}" = macos ]; then
+            brew install fish
+          else
+            sudo apt-get update
+            sudo apt-get install -y fish
+          fi
       - name: Syntax checks
-        run: >-
-          bash -n setup bin/update scripts/herdr-tmux-action
-          tests/*.sh
+        run: |
+          bash -n setup bin/update scripts/herdr-tmux-action tests/*.sh
+          fish -n fish/config.fish fish/conf.d/*.fish
+      - name: Shell startup tests
+        run: tests/shell_startup_test.sh
       - name: Herdr key parity
         run: |
           tests/herdr_plugins_test.sh
@@ -67,12 +81,14 @@ jobs:
     container: archlinux:latest
     steps:
       - name: Install test prerequisites
-        run: pacman -Sy --needed --noconfirm ca-certificates curl git jq
+        run: pacman -Sy --needed --noconfirm ca-certificates curl fish git jq
       - uses: actions/checkout@v4
       - name: Syntax checks
-        run: >-
-          bash -n setup bin/update scripts/herdr-tmux-action
-          tests/*.sh
+        run: |
+          bash -n setup bin/update scripts/herdr-tmux-action tests/*.sh
+          fish -n fish/config.fish fish/conf.d/*.fish
+      - name: Shell startup tests
+        run: tests/shell_startup_test.sh
       - name: Herdr key parity
         run: |
           tests/herdr_plugins_test.sh

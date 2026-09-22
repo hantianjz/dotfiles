@@ -89,6 +89,7 @@ envy.extend(PACKAGES, { {
 
 local SYMLINKS = {
   { source = ROOT .. "/fish",                       dest = HOME .. "/.config/fish" },
+  { source = ROOT .. "/shellrc/environment",        dest = HOME .. "/.config/shell/environment" },
   { source = ROOT .. "/shellrc/bashrc",             dest = HOME .. "/.bashrc" },
   { source = ROOT .. "/shellrc/profile",            dest = HOME .. "/.profile" },
   { source = ROOT .. "/nvim",                       dest = HOME .. "/.config/nvim" },
@@ -158,7 +159,6 @@ envy.extend(PACKAGES, { {
 
 local CARGO_PACKAGES = {
   { repo = "https://github.com/hantianjz/tmx" },
-  { repo = "https://github.com/hantianjz/rr_cli" },
 }
 envy.extend(CARGO_PACKAGES, PACKAGE_PROFILE.crates)
 

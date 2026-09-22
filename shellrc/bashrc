@@ -1,16 +1,21 @@
-#*****************CURR_FILE_DIR*****************
-# Get directory of current script file, follow symlink if needed.
-CURR_FILE="${BASH_SOURCE[0]}"
-if [ -L ${CURR_FILE} ]; then
-	CURR_FILE=`readlink ${CURR_FILE}`
+if [ -r "$HOME/.config/shell/environment" ]; then
+  . "$HOME/.config/shell/environment"
 fi
-CURR_FILE_DIR="$(cd "$(dirname "${CURR_FILE}" )" && pwd )"
-#*****************CURR_FILE_DIR*****************
 
-source ${CURR_FILE_DIR}/shellrc.bash
+case $- in
+  *i*) ;;
+  *) return ;;
+esac
 
-unset CURR_FILE_DIR
+# Get the directory of this file, following its symlink when needed.
+CURR_FILE=${BASH_SOURCE[0]}
+if [ -L "$CURR_FILE" ]; then
+  CURR_FILE=$(readlink "$CURR_FILE")
+fi
+CURR_FILE_DIR=$(cd "$(dirname "$CURR_FILE")" && pwd)
 
-. "$HOME/.cargo/env"
+source "$CURR_FILE_DIR/shellrc.bash"
+
+unset CURR_FILE CURR_FILE_DIR
 
 export STM32_PRG_PATH=/home/hjz/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin

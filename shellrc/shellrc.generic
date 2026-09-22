@@ -5,12 +5,6 @@ fi
 
 source ${CURR_FILE_DIR}/shell_helper
 
-export PATH=$PATH:~/bin
-
-if [ `uname` = "Linux" ]; then
-    export PATH=$PATH:/usr/games
-fi
-
 source ${CURR_FILE_DIR}/default.alias
 
 if exist tmux; then
