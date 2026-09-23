@@ -6,6 +6,7 @@ _path_prepend() {
   esac
 }
 
+_path_prepend "$HOME/.bun/bin"
 _path_prepend "$HOME/.cargo/bin"
 _path_prepend "$HOME/bin"
 _path_prepend "$HOME/.local/bin"

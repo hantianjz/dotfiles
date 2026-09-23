@@ -42,13 +42,13 @@ jobs:
     runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v4
-      - name: Install Fish
+      - name: Install test prerequisites
         run: |
           if [ "${{ matrix.profile }}" = macos ]; then
-            brew install fish
+            brew install fish jq
           else
             sudo apt-get update
-            sudo apt-get install -y fish
+            sudo apt-get install -y fish jq
           fi
       - name: Syntax checks
         run: |
@@ -65,6 +65,8 @@ jobs:
         run: ./bin/envy lua tests/platform_test.lua
       - name: Local spec tests
         run: ./bin/envy lua tests/local_specs_test.lua
+      - name: Omp setup and updates
+        run: ./bin/envy lua tests/omp_setup_test.lua
       - name: Profile setup tests
         run: ./bin/envy lua tests/profile_setup_test.lua
       - name: Safe symlink tests
@@ -98,6 +100,8 @@ jobs:
         run: ./bin/envy lua tests/platform_test.lua
       - name: Local spec tests
         run: ./bin/envy lua tests/local_specs_test.lua
+      - name: Omp setup and updates
+        run: ./bin/envy lua tests/omp_setup_test.lua
       - name: Profile setup tests
         run: ./bin/envy lua tests/profile_setup_test.lua
       - name: Safe symlink tests

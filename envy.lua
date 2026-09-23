@@ -89,18 +89,20 @@ envy.extend(PACKAGES, { {
 } })
 
 local SYMLINKS = {
-  { source = ROOT .. "/fish",                       dest = HOME .. "/.config/fish" },
-  { source = ROOT .. "/shellrc/environment",        dest = HOME .. "/.config/shell/environment" },
-  { source = ROOT .. "/shellrc/bashrc",             dest = HOME .. "/.bashrc" },
-  { source = ROOT .. "/shellrc/profile",            dest = HOME .. "/.profile" },
-  { source = ROOT .. "/nvim",                       dest = HOME .. "/.config/nvim" },
-  { source = ROOT .. "/config/gitconfig",           dest = HOME .. "/.gitconfig" },
-  { source = ROOT .. "/config/gitignore",           dest = HOME .. "/.gitignore" },
-  { source = ROOT .. "/config/ghostty",             dest = HOME .. "/.config/ghostty" },
-  { source = ROOT .. "/config/herdr/config.toml",   dest = HOME .. "/.config/herdr/config.toml" },
-  { source = ROOT .. "/scripts/herdr-tmux-action",  dest = HOME .. "/.config/herdr/herdr-tmux-action" },
-  { source = ROOT .. "/config/herdr-automatic-rename/config.sh",
-    dest = HOME .. "/.config/herdr-automatic-rename/config.sh" },
+  { source = ROOT .. "/fish",                      dest = HOME .. "/.config/fish" },
+  { source = ROOT .. "/shellrc/environment",       dest = HOME .. "/.config/shell/environment" },
+  { source = ROOT .. "/shellrc/bashrc",            dest = HOME .. "/.bashrc" },
+  { source = ROOT .. "/shellrc/profile",           dest = HOME .. "/.profile" },
+  { source = ROOT .. "/nvim",                      dest = HOME .. "/.config/nvim" },
+  { source = ROOT .. "/config/gitconfig",          dest = HOME .. "/.gitconfig" },
+  { source = ROOT .. "/config/gitignore",          dest = HOME .. "/.gitignore" },
+  { source = ROOT .. "/config/ghostty",            dest = HOME .. "/.config/ghostty" },
+  { source = ROOT .. "/config/herdr/config.toml",  dest = HOME .. "/.config/herdr/config.toml" },
+  { source = ROOT .. "/scripts/herdr-tmux-action", dest = HOME .. "/.config/herdr/herdr-tmux-action" },
+  {
+    source = ROOT .. "/config/herdr-automatic-rename/config.sh",
+    dest = HOME .. "/.config/herdr-automatic-rename/config.sh"
+  },
   { source = ROOT .. "/tmux",                       dest = HOME .. "/.config/tmux" },
   { source = ROOT .. "/config/gdbinit",             dest = HOME .. "/.gdbinit" },
   { source = ROOT .. "/scripts/batch_find_replace", dest = HOME .. "/bin/batch_find_replace" },
@@ -147,6 +149,13 @@ envy.extend(PACKAGES, { {
 } })
 
 envy.extend(PACKAGES, { {
+  spec = "local.omp@r0",
+  source = "envy/local.omp@r0.lua",
+  setup = { "tools" },
+  options = {},
+} })
+
+envy.extend(PACKAGES, { {
   spec = "local.rustup@r0",
   source = "envy/local.rustup@r0.lua",
   setup = { "rustup" },
@@ -170,11 +179,6 @@ envy.extend(PACKAGES, { {
   source = "envy/local.cargo_install@r0.lua",
   setup = { "crates" },
   options = { crates = CARGO_PACKAGES },
-}, {
-  spec = "local.uv_tool@r0",
-  source = "envy/local.uv_tool@r0.lua",
-  setup = { "tools" },
-  options = { tools = { "bpython", "httpie" } },
 } })
 
 envy.extend(PACKAGES, {
@@ -225,7 +229,7 @@ for plugin in io.lines(ROOT .. "/config/herdr/plugins") do
         -- install directory avoids protocol errors when the CLI was upgraded
         -- before an older server was restarted.
         check = "find " .. quote(HERDR_PLUGIN_DIR) .. " -mindepth 1 -maxdepth 1 -type d -name " ..
-          quote(plugin_id .. "-*") .. " -print -quit 2>/dev/null | grep -q .",
+            quote(plugin_id .. "-*") .. " -print -quit 2>/dev/null | grep -q .",
         install = HERDR_BIN .. " plugin install " .. quote(plugin) .. " -y",
       },
     } })

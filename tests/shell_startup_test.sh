@@ -13,7 +13,8 @@ mkdir -p \
   "$test_home/.config/shell" \
   "$test_home/.local/bin" \
   "$test_home/bin" \
-  "$test_home/.cargo/bin"
+  "$test_home/.cargo/bin" \
+  "$test_home/.bun/bin"
 ln -s "$repo_root/fish" "$test_home/.config/fish"
 ln -s "$repo_root/shellrc/environment" "$test_home/.config/shell/environment"
 ln -s "$repo_root/shellrc/profile" "$test_home/.profile"
@@ -46,7 +47,7 @@ assert_path() {
   [[ ${entries[1]:-} == "$test_home/bin" ]] || fail "$label: ~/bin is not second in '$actual'"
   [[ ${entries[2]:-} == "$test_home/.cargo/bin" ]] || fail "$label: ~/.cargo/bin is not third in '$actual'"
 
-  for managed in "$test_home/.local/bin" "$test_home/bin" "$test_home/.cargo/bin"; do
+  for managed in "$test_home/.local/bin" "$test_home/bin" "$test_home/.cargo/bin" "$test_home/.bun/bin"; do
     managed_count=0
     for entry in "${entries[@]}"; do
       [[ $entry == "$managed" ]] && ((managed_count += 1))

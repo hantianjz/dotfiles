@@ -32,6 +32,8 @@ The `work` profile writes `user.email = hjz@block.xyz` to `~/.gitconfig_local`; 
 
 APT and Pacman are expected to be provided by their operating systems. Setup may ask for `sudo` when it installs system packages.
 
+Setup also installs [Bun](https://bun.sh) and [Oh My Pi](https://omp.sh), then enables `github:phenome/omp-ponytail-caveman`. Existing executables are reused; fresh installs go to `~/.bun/bin` and `~/.local/bin`. Both directories are available in Fish and POSIX/Bash shells.
+
 ### Omarchy 4.0+
 
 Run setup as your desktop user **inside the upgraded Hyprland session**, not with `sudo`. Plain `./setup` backs up and adopts the personal Hyprland configuration before running the normal package/tool setup.
@@ -62,7 +64,7 @@ Tmux plugin setup waits for native packages and symlink setup. If `~/.config/tmu
 update
 ```
 
-This updates the active native package manager, Rust and Cargo tools, uv tools, tmux plugins, and Fisher plugins. On Arch, it performs the required full-system Pacman upgrade.
+This updates the active native package manager, Bun, omp, the configured omp Git plugin, Rust and Cargo tools, uv tools, tmux plugins, and Fisher plugins. The omp Git plugin is refreshed with `omp plugin install github:phenome/omp-ponytail-caveman`; `omp update --plugins` only upgrades marketplace plugins. On Arch, it performs the required full-system Pacman upgrade.
 
 ## Maintenance
 

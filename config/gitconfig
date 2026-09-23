@@ -1,5 +1,6 @@
 [user]
-	name = H. James Zhao
+	name = James Zhao
+	email = hjz@squareup.com
 [status]
   showUntrackedFiles = all
   submoduleSummary = true

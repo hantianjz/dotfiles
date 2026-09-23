@@ -63,6 +63,26 @@ fi
 
 update_herdr_plugins
 
+export PATH="$PATH:$HOME/.local/bin:$HOME/.bun/bin"
+if command -v bun >/dev/null 2>&1; then
+  section "Updating Bun"
+  run bun upgrade
+else
+  section "Bun"
+  skip
+fi
+
+if command -v omp >/dev/null 2>&1; then
+  section "Updating omp"
+  run omp update
+  section "Updating omp plugins"
+  # Git-source plugins refresh through install; --plugins only upgrades marketplaces.
+  run omp plugin install github:phenome/omp-ponytail-caveman
+else
+  section "omp"
+  skip
+fi
+
 rustup_bin="$(command -v rustup 2>/dev/null || true)"
 [[ -n "$rustup_bin" ]] || rustup_bin="$HOME/.cargo/bin/rustup"
 if [[ -x "$rustup_bin" ]]; then

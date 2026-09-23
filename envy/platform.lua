@@ -3,7 +3,7 @@ local M = {}
 local common_packages = {
   "bat", "binutils", "btop", "cmake", "direnv", "dos2unix", "fish", "fzf",
   "git-lfs", "hugo", "jq", "luarocks", "neovim", "nmap", "nnn", "pv",
-  "ripgrep", "tmux", "wget", "zoxide",
+  "ripgrep", "tmux", "unzip", "wget", "zoxide",
 }
 
 local package_aliases = {
