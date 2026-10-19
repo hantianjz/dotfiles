@@ -43,23 +43,44 @@ update_herdr_plugins() {
   done <"$DOTFILES_ROOT/config/herdr/plugins"
 }
 
-if command -v brew >/dev/null 2>&1; then
-  section "Updating Homebrew packages"
-  run brew update
-  run brew upgrade
-elif command -v apt-get >/dev/null 2>&1; then
-  section "Updating APT packages"
-  run sudo apt-get update
-  run sudo apt-get upgrade -y
-  update_direct_herdr
-elif command -v pacman >/dev/null 2>&1; then
-  section "Updating Pacman packages"
-  run sudo pacman -Syu --noconfirm
-  update_direct_herdr
-else
-  section "System packages"
-  skip
-fi
+PACKAGE_MANAGER=""
+case "$(uname -s)" in
+  Darwin)
+    if command -v brew >/dev/null 2>&1; then
+      PACKAGE_MANAGER=brew
+    fi
+    ;;
+  Linux)
+    if command -v pacman >/dev/null 2>&1; then
+      PACKAGE_MANAGER=pacman
+    elif command -v apt-get >/dev/null 2>&1 && command -v dpkg-query >/dev/null 2>&1; then
+      PACKAGE_MANAGER=apt
+    fi
+    ;;
+esac
+
+case "$PACKAGE_MANAGER" in
+  brew)
+    section "Updating Homebrew packages"
+    run brew update
+    run brew upgrade
+    ;;
+  apt)
+    section "Updating APT packages"
+    run sudo apt-get update
+    run sudo apt-get upgrade -y
+    update_direct_herdr
+    ;;
+  pacman)
+    section "Updating Pacman packages"
+    run sudo pacman -Syu --noconfirm
+    update_direct_herdr
+    ;;
+  *)
+    section "System packages"
+    skip
+    ;;
+esac
 
 update_herdr_plugins
 
@@ -73,8 +94,10 @@ else
 fi
 
 if command -v omp >/dev/null 2>&1; then
-  section "Updating omp"
-  run omp update
+  if [[ "$PACKAGE_MANAGER" != brew ]]; then
+    section "Updating omp"
+    run omp update
+  fi
   section "Updating omp plugins"
   # Git-source plugins refresh through install; --plugins only upgrades marketplaces.
   run omp plugin install github:phenome/omp-ponytail-caveman
@@ -99,7 +122,7 @@ if [[ -x "$cargo_bin" ]]; then
   section "Updating Cargo tools"
   run "$cargo_bin" install --locked --git https://github.com/hantianjz/tmx --rev 87b1e7b150b0c2f60f1d210b9dbd6873b7f1cb84
 
-  if command -v apt-get >/dev/null 2>&1; then
+  if [[ "$PACKAGE_MANAGER" == apt ]]; then
     for crate in diskus eza git-delta gping hexyl typos-cli; do
       run "$cargo_bin" install --locked "$crate"
     done
@@ -107,17 +130,6 @@ if [[ -x "$cargo_bin" ]]; then
   fi
 else
   section "Cargo"
-  skip
-fi
-
-uv_bin="$(command -v uv 2>/dev/null || true)"
-[[ -n "$uv_bin" ]] || uv_bin="$HOME/.local/bin/uv"
-if [[ -x "$uv_bin" ]]; then
-  section "Updating uv tools"
-  run "$uv_bin" tool upgrade bpython
-  run "$uv_bin" tool upgrade httpie
-else
-  section "uv"
   skip
 fi
 

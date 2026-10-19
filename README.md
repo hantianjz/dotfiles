@@ -32,7 +32,7 @@ The `work` profile writes `user.email = hjz@block.xyz` to `~/.gitconfig_local`; 
 
 APT and Pacman are expected to be provided by their operating systems. Setup may ask for `sudo` when it installs system packages.
 
-Setup also installs [Bun](https://bun.sh) and [Oh My Pi](https://omp.sh), then enables `github:phenome/omp-ponytail-caveman`. Existing executables are reused; fresh installs go to `~/.bun/bin` and `~/.local/bin`. Both directories are available in Fish and POSIX/Bash shells.
+Setup also installs [Bun](https://bun.sh) and [Oh My Pi](https://omp.sh), then enables `github:phenome/omp-ponytail-caveman`. Existing executables are reused. On macOS, fresh omp installs use `brew install can1357/tap/omp`; Linux uses the upstream installer in `~/.local/bin`. Bun installs in `~/.bun/bin`. Both user directories are available in Fish and POSIX/Bash shells.
 
 ### Omarchy 4.0+
 
@@ -64,7 +64,11 @@ Tmux plugin setup waits for native packages and symlink setup. If `~/.config/tmu
 update
 ```
 
-This updates the active native package manager, Bun, omp, the configured omp Git plugin, Rust and Cargo tools, uv tools, tmux plugins, and Fisher plugins. The omp Git plugin is refreshed with `omp plugin install github:phenome/omp-ponytail-caveman`; `omp update --plugins` only upgrades marketplace plugins. On Arch, it performs the required full-system Pacman upgrade.
+This updates the active native package manager, Bun, omp, the configured omp Git plugin, Rust and Cargo tools, tmux plugins, and Fisher plugins. It does not update uv tools. The omp Git plugin is refreshed with `omp plugin install github:phenome/omp-ponytail-caveman`; `omp update --plugins` only upgrades marketplace plugins. On Arch, it performs the required full-system Pacman upgrade.
+
+Native-manager selection follows `envy/platform.lua`: Homebrew on macOS; on Linux, Pacman first, otherwise APT only when both `apt-get` and `dpkg-query` are available. If no supported manager is available, native updates are skipped. Ubuntu Cargo fallbacks run only when APT is selected.
+
+On macOS, Homebrew upgrades omp; the updater does not run `omp update`. Other profiles retain `omp update`. The configured Git plugin refreshes on all profiles.
 
 ## Maintenance
 

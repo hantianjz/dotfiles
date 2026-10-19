@@ -25,7 +25,11 @@ if ! command -v bun >/dev/null 2>&1; then
   curl -fsSL https://bun.sh/install | BUN_INSTALL="$HOME/.bun" bash
 fi
 if ! command -v omp >/dev/null 2>&1; then
-  curl -fsSL https://omp.sh/install.sh | PI_INSTALL_DIR="$HOME/.local/bin" sh -s -- --binary
+  if [ "$(uname -s)" = Darwin ]; then
+    brew install can1357/tap/omp
+  else
+    curl -fsSL https://omp.sh/install.sh | PI_INSTALL_DIR="$HOME/.local/bin" sh -s -- --binary
+  fi
 fi
 omp plugin install github:phenome/omp-ponytail-caveman
 ]]

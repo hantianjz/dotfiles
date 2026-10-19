@@ -42,8 +42,22 @@ case "$2" in
   *) exit 1 ;;
 esac
 ]])
-  run("chmod +x " .. quote(temp .. "/bun") .. " " .. quote(temp .. "/omp") .. " " .. quote(temp .. "/bin/curl"))
+  put(temp .. "/bin/brew", [[#!/bin/sh
+set -eu
+case "$*" in
+  'install can1357/tap/omp') cp "$FIXTURES/omp" "$FIXTURES/bin/omp" ;;
+  update) : ;;
+  upgrade) : > "$HOME/omp-updated" ;;
+  *) exit 1 ;;
+esac
+]])
+  put(temp .. "/bin/uname", [[#!/bin/sh
+printf '%s\n' "$TEST_PLATFORM"
+]])
+  run("chmod +x " .. quote(temp .. "/bun") .. " " .. quote(temp .. "/omp") .. " " ..
+    quote(temp .. "/bin/curl") .. " " .. quote(temp .. "/bin/brew") .. " " .. quote(temp .. "/bin/uname"))
   local prefix = "env -i HOME=" .. quote(temp .. "/home with spaces") .. " PATH=" .. quote(temp .. "/bin") ..
+    " TEST_PLATFORM=" .. quote(os.getenv("OMP_TEST_PLATFORM") or "Darwin") ..
     " FIXTURES=" .. quote(temp) .. " " .. quote(temp .. "/bin/bash") .. " -c "
   envy.run = function(command, options) return run(prefix .. quote(command), options) end
   dofile(root .. "/envy/local.omp@r0.lua")

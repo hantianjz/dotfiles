@@ -212,10 +212,14 @@ Run the non-mutating checks before a full setup:
 ./bin/envy lua tests/symlink_test.lua
 ./bin/envy lua tests/omarchy_setup_test.lua
 ./bin/envy lua tests/tmux_setup_test.lua
-bash -n setup bin/update tests/package_metadata.sh
+./bin/envy lua tests/omp_setup_test.lua
+bash tests/update_test.sh
+bash -n setup bin/update tests/package_metadata.sh tests/update_test.sh
 ./bin/envy lua envy.lua
 git diff --check
 ```
+
+The updater tests execute the real script with isolated command doubles, covering manager precedence, Ubuntu-only Cargo fallbacks, and the absence of uv calls. They do not upgrade the host or access the network. Never run the live updater as a validation check.
 
 Then validate the active repository metadata without installing the packages:
 
