@@ -8,7 +8,7 @@ while read -r kind name; do
   case "$profile:$kind" in
     macos:package) brew info --formula "$name" >/dev/null ;;
     macos:cask) brew info --cask "$name" >/dev/null ;;
-    macos:tap) brew tap "$name" ;;
+    macos:tap) brew tap "$name"; brew trust --tap "$name" ;;
     ubuntu:package) apt-cache show "$name" >/dev/null ;;
     arch:package) pacman -Si "$name" >/dev/null ;;
   esac
