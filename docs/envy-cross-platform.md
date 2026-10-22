@@ -233,6 +233,8 @@ tests/package_metadata.sh arch    # on Arch
 
 The metadata test generates its package list from `envy/platform.lua`; do not duplicate the list in shell. `tests/package_list.lua` must terminate every `envy.stdout` record with `\n`. A missing newline previously concatenated every package into one stream, caused the shell loop to perform zero useful checks, and allowed an invalid Arch package name to pass.
 
+On macOS, the metadata check registers declared Homebrew taps before querying formulas and casks. It does not install packages.
+
 After the non-mutating checks pass, run `./setup` on the target platform and then run it a second time. The first run validates real installation and password/permission behavior; the second validates idempotency. Do not call a platform supported solely because metadata lookup passed.
 
 GitHub Actions runs policy, symlink, syntax, and native metadata checks on Ubuntu 24.04, macOS 14, and an Arch container. These jobs query package repositories but do not fully provision a machine.
