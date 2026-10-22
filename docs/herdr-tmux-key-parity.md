@@ -3,7 +3,7 @@
 `config/herdr/config.toml` mirrors the personal prefix bindings in
 `tmux/tmux.keys.conf` when Herdr has an exact or deterministic equivalent.
 It also includes tmux-sensible's `Ctrl-a Ctrl-p` / `Ctrl-a Ctrl-n` window
-navigation and tmux-yank's `Ctrl-a Shift-y` working-directory copy.
+navigation.
 
 Herdr keeps `Ctrl-a b` for its sidebar. This intentionally differs from
 tmux-sensible's last-window binding. Herdr and tmux are configured as
@@ -32,14 +32,17 @@ The following bindings remain tmux-only:
   rearrange Herdr's live pane processes.
 - `Ctrl-a y`: tmux-yank captures an editable shell command line that Herdr's
   pane API cannot reliably derive.
+- `Ctrl-a a`, `Ctrl-a Ctrl-o`, `Ctrl-a 0`, `Ctrl-a ]`, and `Ctrl-a Shift-y`:
+  last-pane, rotation, first-pane swapping, clipboard paste, and working-directory
+  copy are not bound in the current Herdr configuration.
 - TPM and resurrect controls: Herdr manages persistence and integrations
   independently.
 - Rectangle selection: Herdr copy mode already supports `v`, Space, `y`, and
   Enter, but has no tmux rectangle-selection equivalent.
 - Mouse bindings, which are outside this keyboard-parity audit.
 
-`scripts/herdr-tmux-action` supplies rotation, first-pane swapping, literal
-system-clipboard paste, and foreground-working-directory copy. Runtime races,
-missing clipboard tools, stale panes, and single-pane layouts silently no-op.
-macOS uses `pbcopy` / `pbpaste`; supported Linux profiles install
-`wl-clipboard`.
+`scripts/herdr-tmux-action` remains available for manual rotation, first-pane
+swapping, literal system-clipboard paste, and foreground-working-directory copy.
+It is not bound in the current Herdr configuration. Runtime races, missing
+clipboard tools, stale panes, and single-pane layouts silently no-op. macOS uses
+`pbcopy` / `pbpaste`; supported Linux profiles install `wl-clipboard`.

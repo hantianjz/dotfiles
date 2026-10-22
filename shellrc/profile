@@ -2,6 +2,12 @@
 export PATH="$PATH:/Users/hjz/.docker/bin"
 # End of Docker Desktop section.
 
+if [ -x /opt/homebrew/bin/brew ]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [ -x /usr/local/bin/brew ]; then
+  eval "$(/usr/local/bin/brew shellenv)"
+fi
+
 if [ -r "$HOME/.config/shell/environment" ]; then
   . "$HOME/.config/shell/environment"
 fi
@@ -9,4 +15,3 @@ fi
 if [ -n "${BASH_VERSION:-}" ] && [ -r "$HOME/.bashrc" ]; then
   . "$HOME/.bashrc"
 fi
-eval "$(/opt/homebrew/bin/brew shellenv)"

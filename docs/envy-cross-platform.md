@@ -221,6 +221,8 @@ git diff --check
 
 The updater tests execute the real script with isolated command doubles, covering manager precedence, Ubuntu-only Cargo fallbacks, and the absence of uv calls. They do not upgrade the host or access the network. Never run the live updater as a validation check.
 
+Shell startup checks keep user tool directories ahead of Homebrew in `PATH`. The profile initializes Homebrew only when its executable exists, before loading the shared environment. Arch CI installs `diffutils` for byte-exact clipboard checks with `cmp`. The Herdr inventory audit uses C-locale ordering; chord checks exclude bindings intentionally removed from the configuration.
+
 Then validate the active repository metadata without installing the packages:
 
 ```sh

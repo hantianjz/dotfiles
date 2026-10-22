@@ -24,7 +24,7 @@ actual_prefix_keys=$(
       key = $2
       if (key == "-" || key !~ /^-/) print key
     }
-  ' "$tmux_keys" | sort -u | tr '\n' ' '
+  ' "$tmux_keys" | LC_ALL=C sort -u | tr '\n' ' '
 )
 expected_prefix_keys=', - . 0 : = C C-a C-h C-j C-k C-l C-o C-s C-v L R Z [ a h j k l m n p q r s v '
 [ "$actual_prefix_keys" = "$expected_prefix_keys" ] ||
@@ -33,12 +33,12 @@ expected_prefix_keys=', - . 0 : = C C-a C-h C-j C-k C-l C-o C-s C-v L R Z [ a h 
 for chord in \
   prefix+d prefix+shift+r prefix+shift+s \
   prefix+shift+c prefix+p prefix+ctrl+p prefix+n prefix+ctrl+n \
-  prefix+minus prefix+= prefix+shift+z prefix+[ prefix+a prefix+q \
+  prefix+minus prefix+= prefix+shift+z prefix+[ prefix+q \
   prefix+v prefix+ctrl+v prefix+s prefix+ctrl+s \
   prefix+h prefix+ctrl+h prefix+j prefix+ctrl+j \
   prefix+k prefix+ctrl+k prefix+l prefix+ctrl+l \
   ctrl+h ctrl+j ctrl+k ctrl+l \
-  prefix+ctrl+o prefix+0 prefix+] prefix+shift+y prefix+b
+  prefix+b
 do
   assert_config_has "$chord"
 done
