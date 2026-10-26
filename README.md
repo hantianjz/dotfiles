@@ -64,9 +64,9 @@ Tmux plugin setup waits for native packages and symlink setup. If `~/.config/tmu
 update
 ```
 
-This updates the active native package manager, Bun, omp, the configured omp Git plugin, Rust and Cargo tools, tmux plugins, and Fisher plugins. It does not update uv tools. The omp Git plugin is refreshed with `omp plugin install github:phenome/omp-ponytail-caveman`; `omp update --plugins` only upgrades marketplace plugins. On Arch, it performs the required full-system Pacman upgrade.
+This updates the active native package manager, Bun, omp, the configured omp Git plugin, Rust and Cargo tools, tmux plugins, and Fisher plugins. It does not update uv tools. The omp Git plugin is refreshed with `omp plugin install github:phenome/omp-ponytail-caveman`; `omp update --plugins` only upgrades marketplace plugins. On Omarchy, it delegates the required full-system Pacman upgrade to `omarchy update -y`, which preserves Omarchy's snapshot, migration, hook, and restart flow.
 
-Native-manager selection follows `envy/platform.lua`: Homebrew on macOS; on Linux, Pacman first, otherwise APT only when both `apt-get` and `dpkg-query` are available. If no supported manager is available, native updates are skipped. Ubuntu Cargo fallbacks run only when APT is selected.
+Native-manager selection follows `envy/platform.lua`: Homebrew on macOS; on Linux, Pacman first, otherwise APT only when both `apt-get` and `dpkg-query` are available. Arch systems without Omarchy use Pacman directly. If no supported manager is available, native updates are skipped. Ubuntu Cargo fallbacks run only when APT is selected.
 
 On macOS, Homebrew upgrades omp; the updater does not run `omp update`. Other profiles retain `omp update`. The configured Git plugin refreshes on all profiles.
 
