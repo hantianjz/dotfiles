@@ -34,6 +34,15 @@ APT and Pacman are expected to be provided by their operating systems. Setup may
 
 Setup also installs [Bun](https://bun.sh) and [Oh My Pi](https://omp.sh), then enables `github:phenome/omp-ponytail-caveman`. Existing executables are reused. On macOS, fresh omp installs use `brew install can1357/tap/omp`; Linux uses the upstream installer in `~/.local/bin`. Bun installs in `~/.bun/bin`. Both user directories are available in Fish and POSIX/Bash shells.
 
+Setup links `ai/CLAUDE.md` as the shared personal instruction file for Claude Code, Codex, agents-compatible tools, and omp:
+
+- `~/.claude/CLAUDE.md`
+- `~/.codex/AGENTS.md`
+- `~/.agents/AGENTS.md`
+- `~/.omp/agent/AGENTS.md`
+
+The same links are managed by direct `./bin/envy sync` runs. Differing existing regular files are preserved with a warning; merge any wanted instructions into `ai/CLAUDE.md`, back up and move the conflicting files aside, then rerun setup. This includes tool-managed additions such as `sq agents` blocks. Start a new agent session after setup to load the shared instructions. Omp uses its native global file without enabling Claude or Codex discovery.
+
 ### Omarchy 4.0+
 
 Run setup as your desktop user **inside the upgraded Hyprland session**, not with `sudo`. Plain `./setup` backs up and adopts the personal Hyprland configuration before running the normal package/tool setup.

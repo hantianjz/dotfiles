@@ -89,6 +89,10 @@ envy.extend(PACKAGES, { {
 } })
 
 local SYMLINKS = {
+  { source = ROOT .. "/ai/CLAUDE.md",              dest = HOME .. "/.claude/CLAUDE.md" },
+  { source = ROOT .. "/ai/CLAUDE.md",              dest = HOME .. "/.codex/AGENTS.md" },
+  { source = ROOT .. "/ai/CLAUDE.md",              dest = HOME .. "/.agents/AGENTS.md" },
+  { source = ROOT .. "/ai/CLAUDE.md",              dest = HOME .. "/.omp/agent/AGENTS.md" },
   { source = ROOT .. "/fish",                      dest = HOME .. "/.config/fish" },
   { source = ROOT .. "/shellrc/environment",       dest = HOME .. "/.config/shell/environment" },
   { source = ROOT .. "/shellrc/bashrc",            dest = HOME .. "/.bashrc" },
