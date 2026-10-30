@@ -1,18 +1,20 @@
 #!/bin/sh
-# Prune local branches whose remote tracking branch has been deleted.
+# Delete every local branch that has no matching branch on origin,
+# removing any worktree that has it checked out first.
 # Works on Linux and macOS, under bash, zsh, fish (invoked via /bin/sh).
 
 set -eu
 
 git fetch --prune
+git worktree prune
+current=$(git symbolic-ref -q --short HEAD || true)
 
-# Find local branches whose upstream is gone
-gone_branches=$(git branch -vv | grep ': gone]' | awk '{print $1}')
-
-if [ -z "$gone_branches" ]; then
-  exit 0
-fi
-
-echo "$gone_branches" | while IFS= read -r branch; do
-  git branch -D "$branch"
-done
+git for-each-ref --format='%(refname:short)' refs/heads |
+  while IFS= read -r branch; do
+    git show-ref -q --verify "refs/remotes/origin/$branch" && continue
+    [ "$branch" = "$current" ] && { echo "skip $branch: checked out here" >&2; continue; }
+    wt=$(git worktree list --porcelain | awk -v b="branch refs/heads/$branch" '
+      /^worktree / {p = substr($0, 10)} $0 == b {print p}')
+    [ -n "$wt" ] && git worktree remove --force "$wt"
+    git branch -D "$branch"
+  done

@@ -39,3 +39,4 @@ This ensures I maintain full control over what gets pushed to shared repositorie
 - Don't add features, refactoring, or "improvements" beyond what was asked
 - Trust internal code - only validate at system boundaries
 - Delete unused code completely (no backwards-compatibility hacks)
+- Do not add new end to end tests beyond unit test framework, especially don't create end to end test for bash script or one of scripts
