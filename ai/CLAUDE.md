@@ -40,3 +40,7 @@ This ensures I maintain full control over what gets pushed to shared repositorie
 - Trust internal code - only validate at system boundaries
 - Delete unused code completely (no backwards-compatibility hacks)
 - Do not add new end to end tests beyond unit test framework, especially don't create end to end test for bash script or one of scripts
+
+## Docker Resource Reporting
+- At the end of each session, explicitly list every Docker image and container created during the session, including image names/tags and container names/IDs.
+- State whether each resource still exists or was removed, including temporary containers created with `--rm`.
