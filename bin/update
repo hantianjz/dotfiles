@@ -89,6 +89,11 @@ esac
 
 update_herdr_plugins
 
+if command -v herdr-app >/dev/null 2>&1 || [[ -x "$HOME/.local/bin/herdr-app" ]]; then
+  section "Updating Herdr app"
+  run bash -o pipefail -c 'curl -fsSL https://releases.herdr.dev/app/install.sh | sh'
+fi
+
 export PATH="$PATH:$HOME/.local/bin:$HOME/.bun/bin"
 if command -v bun >/dev/null 2>&1; then
   section "Updating Bun"

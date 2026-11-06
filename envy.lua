@@ -220,6 +220,22 @@ if PROFILE ~= "macos" then
   } })
 end
 
+local HERDR_APP_SUPPORTED = PROFILE ~= "macos" or envy.run(
+  'test "$(uname -m)" = arm64 || test "$(sysctl -n hw.optional.arm64 2>/dev/null)" = 1',
+  { capture = true, quiet = true, check = false }
+).exit_code == 0
+if HERDR_APP_SUPPORTED then
+  envy.extend(PACKAGES, { {
+    spec = "local.shell@r0",
+    source = "envy/local.shell@r0.lua",
+    setup = { "command" },
+    options = {
+      check = "command -v herdr-app >/dev/null 2>&1 || test -x " .. quote(HOME .. "/.local/bin/herdr-app"),
+      install = "set -o pipefail\ncurl -fsSL https://releases.herdr.dev/app/install.sh | sh",
+    },
+  } })
+end
+
 local HERDR_BIN = command_exists("herdr") and "herdr" or quote(HOME .. "/.local/bin/herdr")
 for plugin in io.lines(ROOT .. "/config/herdr/plugins") do
   if plugin ~= "" and plugin:sub(1, 1) ~= "#" then

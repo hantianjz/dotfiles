@@ -34,6 +34,8 @@ APT and Pacman are expected to be provided by their operating systems. Setup may
 
 Setup also installs [Bun](https://bun.sh) and [Oh My Pi](https://omp.sh), then enables `github:phenome/omp-ponytail-caveman`. Existing executables are reused. On macOS, fresh omp installs use `brew install can1357/tap/omp`; Linux uses the upstream installer in `~/.local/bin`. Bun installs in `~/.bun/bin`. Both user directories are available in Fish and POSIX/Bash shells.
 
+Setup installs the [Herdr desktop app](https://herdr.dev/download/) separately from Herdr TUI, using the official installer on Apple Silicon macOS and Linux. Intel Macs skip the desktop app because upstream provides no Intel build. The installer places `Herdr.app` in `~/Applications` on macOS or installs into `${XDG_DATA_HOME:-~/.local/share}/herdr-app` with a desktop launcher on Linux. Both platforms get `~/.local/bin/herdr-app`. The installer also installs herdr-core when missing; the app keeps herdr-core current. Existing `herdr-app` executables are reused.
+
 Setup links `ai/CLAUDE.md` as the shared personal instruction file for Claude Code, Codex, agents-compatible tools, and omp:
 
 - `~/.claude/CLAUDE.md`
@@ -78,6 +80,8 @@ This updates the active native package manager, Bun, omp, the configured omp Git
 Native-manager selection follows `envy/platform.lua`: Homebrew on macOS; on Linux, Pacman first, otherwise APT only when both `apt-get` and `dpkg-query` are available. Arch systems without Omarchy use Pacman directly. If no supported manager is available, native updates are skipped. Ubuntu Cargo fallbacks run only when APT is selected.
 
 On macOS, Homebrew upgrades omp; the updater does not run `omp update`. Other profiles retain `omp update`. The configured Git plugin refreshes on all profiles.
+
+The updater refreshes an installed Herdr desktop app by rerunning its official installer, including on Omarchy. Missing desktop app installations are skipped. Herdr TUI installation, updates, configuration, and plugins remain separate.
 
 ## Maintenance
 
