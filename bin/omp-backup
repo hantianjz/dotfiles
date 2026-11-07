@@ -191,7 +191,7 @@ def restore(home, archive, replace=False, dry_run=False):
         finally:
             temporary.unlink()
     print(f"Restored {len(pending)} files under {home}")
-    print("Recreate dotfiles links and personal skills with ./setup. Review paths and browser preferences.")
+    print("Recreate dotfiles links with ./setup; reinstall skills from their existing sources separately.")
     xdg = os.environ.get("XDG_DATA_HOME")
     if (xdg and Path(xdg).is_absolute() and (home / ".plannotator").exists()
             and (Path(xdg) / "plannotator").exists()):

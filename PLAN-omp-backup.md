@@ -53,7 +53,7 @@ Do not change or commit the user's preexisting `ai/CLAUDE.md` edits or `PLAN-pla
 
 ### Linux migration and browser boundary
 
-Recreate dotfiles links and personal repository skills with the existing `./setup`/Envy method: `ai/skills/<name>/` links into `~/.agents/skills/` and `~/.claude/skills/`. The source directory is currently empty; do not import external personal skill sources or replace their installers. Third-party skills continue to use their original sources. Restore the file archive, then reinstall plugin dependencies using the restored manifests and Bun lock:
+Recreate dotfiles links with `./setup`. The repository's `ai/skills/` directory is empty, so setup does not currently install personal skills. Preserve the existing external `hjz-linear-to-pr` source separately and reinstall it through `sq agents skills add /path/to/hjz-linear-to-pr`; installed metadata records an explicit local-source installation. Do not import external personal skill sources into this checkout or replace their installers. Third-party skills continue to use their original sources. Restore the file archive, then reinstall plugin dependencies using the restored manifests and Bun lock:
 
 ```sh
 bun install --frozen-lockfile --cwd "$HOME/.omp/plugins"

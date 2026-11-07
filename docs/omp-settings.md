@@ -52,7 +52,17 @@ Use `--home` before the command to select another source or destination home:
 
 The script covers default locations in this inventory. It reports unsupported named profiles and effective agent/Plannotator directory overrides instead of silently missing them. `PI_CODING_AGENT_DIR` and `PLANNOTATOR_DATA_DIR` may explicitly select their default directories. Inventory and backup refuse an effective XDG Plannotator source location; migrate that source separately. Restore and dry-run allow `XDG_DATA_HOME` on a fresh destination: the restored `~/.plannotator` takes precedence. Existing XDG files remain unchanged, and restore warns when an existing XDG directory is shadowed. Do not unset a source override and assume its alternate configuration was captured.
 
-After restoring, follow [plugin reconstruction](#plugin-reconstruction), reinstall skills using their existing sources, run `omp login`, and complete the [browser preference checklist](#plannotator-browser-preferences). Personal repository skills retain the existing method: place their source directories under `ai/skills/<name>/` and run `./setup` or `./bin/envy sync`. `envy.lua` links those directories into `~/.agents/skills/` and `~/.claude/skills/`. The inspected `ai/skills` directory is currently empty; the backup does not move external personal skill sources into it or replace any installer. Skills installed elsewhere, including `~/.agents/personal-skills/hjz-linear-to-pr/`, remain managed by their original installation workflow. Restore does not execute skill/plugin installers, migrate credentials, rewrite absolute paths, or configure the browser relay.
+After restoring, follow [plugin reconstruction](#plugin-reconstruction), reinstall skills using their existing sources, run `omp login`, and complete the [browser preference checklist](#plannotator-browser-preferences). Restore does not execute skill/plugin installers, migrate credentials, rewrite absolute paths, or configure the browser relay.
+
+The installed `hjz-linear-to-pr` metadata records an explicit local-source installation. Its source is outside this repository at `~/.agents/personal-skills/hjz-linear-to-pr/`. Keep that source separately, or obtain it from its original repository on the target, then use the existing local-path installer:
+
+```sh
+sq agents skills add "$HOME/.agents/personal-skills/hjz-linear-to-pr"
+```
+
+The target needs `sq agents skills` installed and access to the skill source; neither comes from the omp archive. The CLI's `add --help` confirms that local-path installation does not contact GitHub.
+
+For skills already maintained in this dotfiles repository, `envy.lua` links `ai/skills/<name>/` into `~/.agents/skills/` and `~/.claude/skills/` through `./setup` or `./bin/envy sync`. The inspected `ai/skills` directory is empty, so setup currently installs no personal skill sources and cannot repair the dangling links below. No external personal skill source was moved into this checkout.
 
 ## Existing configuration outside Git
 
