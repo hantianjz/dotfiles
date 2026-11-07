@@ -48,7 +48,7 @@ Use `--home` before the command to select another source or destination home:
 ./bin/omp-backup --home "/path/to/target home" restore "$HOME/omp-settings.tar.gz" --dry-run
 ```
 
-The script covers default locations in this inventory. It reports unsupported named profiles and effective agent/Plannotator directory overrides instead of silently missing them. `PI_CODING_AGENT_DIR` and `PLANNOTATOR_DATA_DIR` may explicitly select their default directories. An existing `~/.plannotator` takes precedence over `XDG_DATA_HOME`; an effective XDG Plannotator location needs separate migration. Do not unset an override and assume its alternate configuration was captured.
+The script covers default locations in this inventory. It reports unsupported named profiles and effective agent/Plannotator directory overrides instead of silently missing them. `PI_CODING_AGENT_DIR` and `PLANNOTATOR_DATA_DIR` may explicitly select their default directories. Inventory and backup refuse an effective XDG Plannotator source location; migrate that source separately. Restore and dry-run allow `XDG_DATA_HOME` on a fresh destination: the restored `~/.plannotator` takes precedence. Existing XDG files remain unchanged, and restore warns when an existing XDG directory is shadowed. Do not unset a source override and assume its alternate configuration was captured.
 
 After restoring, follow [plugin reconstruction](#plugin-reconstruction), run `omp login`, and complete the [browser preference checklist](#plannotator-browser-preferences). Restore does not execute plugin installers, migrate credentials, rewrite absolute paths, or configure the browser relay.
 
@@ -169,6 +169,8 @@ Run the standard-library checks through uv:
 uv run --script tests/omp_backup_test.py
 ```
 
-Seven unit checks passed on macOS: file selection and resolved skills, permissions and repeat restores, conflict/dry-run/recovery behavior, managed/external links, linked destination parents, unsafe archives, and empty/cyclic sources. The actual executable backed up 483 files from the current home and restored them into a disposable home. Dry-run made no destination; repeat restore changed zero files. Omp read the restored `modelRoles` and `tui.vimMode: true` successfully. Credential DBs and sessions were absent, and source Plannotator and omp configuration matched restored bytes.
+Eight unit checks passed on macOS: file selection and resolved skills, permissions and repeat restores, conflict/dry-run/recovery behavior, managed/external links, linked destination parents, unsafe archives, empty/cyclic sources, and fresh-home XDG restoration. The actual executable backed up 483 files from the current home and restored them into a disposable home. Dry-run made no destination; repeat restore changed zero files. Omp read the restored `modelRoles` and `tui.vimMode: true` successfully. Credential DBs and sessions were absent, and source Plannotator and omp configuration matched restored bytes.
+
+The XDG regression check failed before the fix and passed afterward. A direct uv invocation then exercised dry-run and restore into a fresh home with `XDG_DATA_HOME` set; restored Plannotator bytes matched the source, and existing XDG preferences remained unchanged.
 
 Temporary archives and restored homes were removed. No real-home restore, plugin reinstall, or Linux run was performed. CI now runs these checks with uv on macOS and Ubuntu; that is configured coverage, not a claim that CI has run.

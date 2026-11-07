@@ -198,6 +198,11 @@ def restore(home, archive, replace=False, dry_run=False):
             temporary.unlink()
     print(f"Restored {len(pending)} files under {home}")
     print("Recreate dotfiles links with ./setup. Review absolute paths and manual browser preferences.")
+    xdg = os.environ.get("XDG_DATA_HOME")
+    if (xdg and Path(xdg).is_absolute() and (home / ".plannotator").exists()
+            and (Path(xdg) / "plannotator").exists()):
+        print(f"Restored {home / '.plannotator'} takes precedence over existing "
+              f"{Path(xdg) / 'plannotator'}; XDG files are unchanged.", file=sys.stderr)
     if (home / ".omp/plugins/package.json").exists():
         directory = shlex.quote(str(home / ".omp/plugins"))
         print(f"Rebuild trusted plugin dependencies: bun install --frozen-lockfile --cwd {directory}")
@@ -206,7 +211,7 @@ def restore(home, archive, replace=False, dry_run=False):
     return saved
 
 
-def check_overrides(home):
+def check_overrides(home, restoring=False):
     for key in ("OMP_PROFILE", "PI_PROFILE"):
         if os.environ.get(key):
             raise ValueError(f"{key} is set; migrate that profile separately (see docs/omp-settings.md)")
@@ -218,7 +223,8 @@ def check_overrides(home):
         if value and Path(value).expanduser().resolve() != default:
             raise ValueError(f"{key} selects a nondefault directory; migrate it separately")
     xdg = os.environ.get("XDG_DATA_HOME")
-    if (xdg and Path(xdg).is_absolute() and not os.environ.get("PLANNOTATOR_DATA_DIR")
+    if (not restoring and xdg and Path(xdg).is_absolute()
+            and not os.environ.get("PLANNOTATOR_DATA_DIR")
             and not (home / ".plannotator").exists()):
         raise ValueError("Plannotator uses XDG_DATA_HOME; migrate that data directory separately")
     profiles = home / ".omp/profiles"
@@ -240,7 +246,7 @@ def main():
     args = parser.parse_args()
     home = args.home.expanduser().resolve()
     try:
-        check_overrides(home)
+        check_overrides(home, restoring=args.command == "restore")
         if args.command == "inventory":
             files, warnings = inventory(home)
             for name in files:

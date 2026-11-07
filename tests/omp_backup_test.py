@@ -14,6 +14,7 @@ import stat
 import tarfile
 import tempfile
 import unittest
+from unittest.mock import patch
 
 
 backup = runpy.run_path(str(Path(__file__).resolve().parents[1] / "bin/omp-backup"))
@@ -132,6 +133,27 @@ class BackupTest(unittest.TestCase):
             self.load(replace=True)
         self.assertFalse((self.target / ".omp").exists())
         self.assertEqual(list(outside.iterdir()), [])
+
+    def test_fresh_target_restore_with_xdg_data_home(self):
+        put(self.source, ".omp/agent/config.yml", "theme: light\n")
+        put(self.source, ".plannotator/config.json", '{"theme":{"mode":"light"}}')
+        self.save()
+        existing = put(self.root, "xdg/plannotator/config.json", '{"theme":{"mode":"dark"}}')
+        environment = {"XDG_DATA_HOME": str(self.root / "xdg")}
+        arguments = ["omp-backup", "--home", str(self.target), "restore", str(self.archive)]
+        with patch.dict(os.environ, environment, clear=True):
+            # Source inventory must not silently omit effective XDG preferences.
+            with self.assertRaises(ValueError):
+                backup["check_overrides"](self.target)
+            with patch("sys.argv", arguments + ["--dry-run"]):
+                backup["main"]()
+            self.assertFalse(self.target.exists())
+            with patch("sys.argv", arguments):
+                backup["main"]()
+        self.assertEqual((self.target / ".plannotator/config.json").read_text(),
+                         '{"theme":{"mode":"light"}}')
+        self.assertEqual((self.target / ".omp/agent/config.yml").read_text(), "theme: light\n")
+        self.assertEqual(existing.read_text(), '{"theme":{"mode":"dark"}}')
 
     def test_invalid_archive_entries_are_rejected_without_writes(self):
         cases = [
