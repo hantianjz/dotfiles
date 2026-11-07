@@ -81,7 +81,7 @@ With [uv](https://docs.astral.sh/uv/getting-started/installation/) on `PATH`, th
 ./bin/omp-backup restore "$HOME/omp-settings.tar.gz"
 ```
 
-The private archive includes omp settings, plugin manifests, installed skills, and Plannotator configuration. Restore preserves dotfiles-managed links and refuses differing existing files unless `--replace` is supplied; replacement saves originals. Credentials, conversations, caches, and installed dependencies are excluded. Rebuild plugin dependencies for the target OS and authenticate separately.
+The private archive includes omp settings, plugin manifests, and Plannotator configuration. Skills and skill-manager metadata are excluded; personal skills keep the existing `ai/skills/` and `./setup` installation method. Restore preserves dotfiles-managed links and refuses differing existing files unless `--replace` is supplied; replacement saves originals. Credentials, conversations, caches, and installed dependencies are excluded. Rebuild plugin dependencies for the target OS and authenticate separately.
 
 See [the configuration inventory and migration guide](docs/omp-settings.md) for exact coverage, recovery, Linux prerequisites, and the manual checklist for browser-only Plannotator preferences.
 

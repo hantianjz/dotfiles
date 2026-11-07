@@ -38,9 +38,11 @@ Dry-run lists planned changes and conflicts without changing files. A normal res
 ./bin/omp-backup restore "$HOME/omp-settings.tar.gz" --replace
 ```
 
-Replacement moves displaced originals into a private `~/omp-before-restore-*` directory and prints its path. It does not delete unrelated files. Identical files and dotfiles-managed links remain unchanged. Newly restored regular files use mode `0600`; executable support scripts use `0700`. Backup resolves non-dotfiles skill links into regular files; dotfiles-owned links are skipped so `./setup` retains ownership. Dangling links are reported as unavailable. A real, nonlinked `.omp/agent/AGENTS.md` is included.
+Replacement moves displaced originals into a private `~/omp-before-restore-*` directory and prints its path. It does not delete unrelated files. Identical files and dotfiles-managed links remain unchanged. Newly restored regular files use mode `0600`; executable support scripts use `0700`. Dotfiles-owned links are skipped so `./setup` retains ownership. A real, nonlinked `.omp/agent/AGENTS.md` is included.
 
 Archives contain only allowlisted home-relative regular files. Restore rejects links, traversal, unexpected archive paths, duplicate entries, and linked destination parents. It validates archive contents and destination conflicts before writing; it does not provide a transaction across every file if a later filesystem operation fails. Original displaced files remain available at the printed recovery path.
+
+Skills and skill-manager metadata are excluded from both backup and restore: `.agents/skills/`, `.agents/personal-skills/`, `.omp/agent/skills/`, `.omp/agent/managed-skills/`, `.agents/.skill-lock.json`, and `.agents/skills.yaml`. Existing destination skills remain untouched. Older archives containing these paths are rejected before any files change; create a fresh backup with the current script.
 
 Use `--home` before the command to select another source or destination home:
 
@@ -50,11 +52,11 @@ Use `--home` before the command to select another source or destination home:
 
 The script covers default locations in this inventory. It reports unsupported named profiles and effective agent/Plannotator directory overrides instead of silently missing them. `PI_CODING_AGENT_DIR` and `PLANNOTATOR_DATA_DIR` may explicitly select their default directories. Inventory and backup refuse an effective XDG Plannotator source location; migrate that source separately. Restore and dry-run allow `XDG_DATA_HOME` on a fresh destination: the restored `~/.plannotator` takes precedence. Existing XDG files remain unchanged, and restore warns when an existing XDG directory is shadowed. Do not unset a source override and assume its alternate configuration was captured.
 
-After restoring, follow [plugin reconstruction](#plugin-reconstruction), run `omp login`, and complete the [browser preference checklist](#plannotator-browser-preferences). Restore does not execute plugin installers, migrate credentials, rewrite absolute paths, or configure the browser relay.
+After restoring, follow [plugin reconstruction](#plugin-reconstruction), reinstall skills using their existing sources, run `omp login`, and complete the [browser preference checklist](#plannotator-browser-preferences). Personal repository skills retain the existing method: place their source directories under `ai/skills/<name>/` and run `./setup` or `./bin/envy sync`. `envy.lua` links those directories into `~/.agents/skills/` and `~/.claude/skills/`. The inspected `ai/skills` directory is currently empty; the backup does not move external personal skill sources into it or replace any installer. Skills installed elsewhere, including `~/.agents/personal-skills/hjz-linear-to-pr/`, remain managed by their original installation workflow. Restore does not execute skill/plugin installers, migrate credentials, rewrite absolute paths, or configure the browser relay.
 
 ## Existing configuration outside Git
 
-Paths below are relative to the home directory. Keep repository-owned symlinks managed by `./setup`; do not restore them as regular files. Preserve other installed skill contents and support files rather than machine-specific absolute links.
+Paths below are relative to the home directory. Keep repository-owned symlinks managed by `./setup`; do not restore them as regular files. Skills remain inventoried here for reference but are deliberately excluded from the archive.
 
 | Path | Purpose | Backup treatment |
 | --- | --- | --- |
@@ -64,10 +66,10 @@ Paths below are relative to the home directory. Keep repository-owned symlinks m
 | `.omp/plugins/package.json` | Both plugin installation sources | Include |
 | `.omp/plugins/bun.lock` | Exact dependency resolution, including Ponytail Git revision `51319d4` | Include; rebuild dependencies on the target OS |
 | `.omp/plugins/omp-plugins.lock.json` | Plugin enabled state, features, and settings | Include; both plugins currently enabled |
-| `.agents/skills/` | Shared installed skills used by omp and Ponytail/Caveman | Include files and support directories, except links into this dotfiles checkout; recreate those through setup |
-| `.agents/.skill-lock.json` | Sources for seven public skill installations | Include |
-| `.agents/skills.yaml` | Legacy skill-manager metadata | Include as metadata, not as authoritative omp discovery configuration |
-| `.agents/personal-skills/hjz-linear-to-pr/` | Original personal skill source | Include |
+| `.agents/skills/` | Shared installed skills used by omp and Ponytail/Caveman | Exclude; reinstall through existing sources |
+| `.agents/.skill-lock.json` | Sources for seven public skill installations | Exclude; managed by the skill installer |
+| `.agents/skills.yaml` | Legacy skill-manager metadata | Exclude |
+| `.agents/personal-skills/hjz-linear-to-pr/` | Original personal skill source | Exclude; retain the existing personal skill installation workflow |
 | `.plannotator/config.json` | Server-persisted Plannotator preferences | Include; private, potentially credential-bearing |
 
 Current Plannotator file preferences: system theme, `plannotator` light/dark palettes, default terminal agent `codex`, semantic diff enabled, call flow disabled.
@@ -77,16 +79,16 @@ Two shared skill links are broken:
 - `.agents/skills/checking-ci-jobs` targets `~/.dotfiles/ai/skills/checking-ci-jobs`.
 - `.agents/skills/docs-with-mermaid` targets `~/.dotfiles/ai/skills/docs-with-mermaid`.
 
-The target directories are absent. A backup must report these as unavailable, not claim to preserve usable skills.
+The target directories are absent. These links are outside backup scope and remain unchanged; the backup does not inspect or migrate them.
 
 ## Optional configuration locations
 
 These were absent from the inspected installation. Include them if created later:
 
 - `.omp/agent/ponytail-caveman.json`: global plugin mode defaults.
-- `.omp/agent/skills/`, `managed-skills/`, `agents/`, `commands/`, `themes/`: user customization directories.
+- `.omp/agent/agents/`, `commands/`, `themes/`: user customization directories. Skill directories (`skills/`, `managed-skills/`) are excluded.
 - `.pi/agent/plannotator.json`: Plannotator phase behavior, models, tools, and instructions.
-- `.plannotator/review-skills.json`: selected review skills.
+- `.plannotator/review-skills.json`: selected review skill names, not skill contents; this Plannotator preference is included.
 - `.plannotator/guide-instructions.md`: standing Guided Review instructions.
 - `.plannotator/hooks/compound/enterplanmode-improve-hook.txt`: improvement hook. Legacy fallback: `.plannotator/compound/enterplanmode-improve-hook.txt`.
 
@@ -122,7 +124,7 @@ Do not recursively copy `.omp`, `.pi`, `.agents`, or `.plannotator` wholesale.
 - Exclude `.agents` telemetry, rollout, upload, and registry bookkeeping.
 - Session-only `/ponytail` and `/caveman` choices live in session entries. Use the plugins' `global` scope to persist desired defaults; do not migrate sessions merely to retain a mode.
 
-Configuration is not necessarily secret-free. Plannotator supports a plaintext `bitbucketToken`; custom provider, MCP, or skill files can contain credentials or internal material. Keep backups private and outside Git, even when known credential stores are excluded. Authenticate separately with `omp login` on the target. Omp also has `omp auth export/import` for deliberate credential migration; that is a separate sensitive operation.
+Configuration is not necessarily secret-free. Plannotator supports a plaintext `bitbucketToken`; custom provider or MCP files can contain credentials or internal material. Keep backups private and outside Git, even when known credential stores are excluded. Authenticate separately with `omp login` on the target. Omp also has `omp auth export/import` for deliberate credential migration; that is a separate sensitive operation.
 
 ## Machine and project boundaries
 
@@ -148,7 +150,7 @@ omp plugin list --json
 omp plugin doctor
 ```
 
-Do not transfer macOS `node_modules` to Linux. Plannotator dependencies include native modules. Plugin installation can execute lifecycle scripts; restore only trusted backups. Ponytail's skill installer needs Node plus `bunx` or `npx` and network access. Keeping resolved skill contents preserves the actual installed instructions without relying on an unpinned upstream skill reinstall.
+Do not transfer macOS `node_modules` to Linux. Plannotator dependencies include native modules. Plugin installation can execute lifecycle scripts; restore only trusted backups. Ponytail's existing skill installer needs Node plus `bunx` or `npx` and network access. Third-party skills continue to come from their original installers; personal repository skills continue to use `ai/skills/` and Envy links. No skill contents or installer metadata travel in the archive.
 
 ## Inspection evidence
 
@@ -169,7 +171,7 @@ Run the standard-library checks through uv:
 uv run --script tests/omp_backup_test.py
 ```
 
-Eight unit checks passed on macOS: file selection and resolved skills, permissions and repeat restores, conflict/dry-run/recovery behavior, managed/external links, linked destination parents, unsafe archives, empty/cyclic sources, and fresh-home XDG restoration. The actual executable backed up 483 files from the current home and restored them into a disposable home. Dry-run made no destination; repeat restore changed zero files. Omp read the restored `modelRoles` and `tui.vimMode: true` successfully. Credential DBs and sessions were absent, and source Plannotator and omp configuration matched restored bytes.
+Eight unit checks passed on macOS: skill/metadata exclusion, permissions and repeat restores, conflict/dry-run/recovery behavior, managed/external links, linked destination parents, unsafe archives (including skill paths from older backups), empty/cyclic configuration sources, and fresh-home XDG restoration. The actual executable backed up six configuration files from the current home and restored them into a disposable home. All restored bytes matched their source. Dry-run made no changes; repeat restore changed zero files. Omp read the restored `tui.vimMode: true` successfully. No skills or skill-manager metadata were archived, and a separately installed destination skill remained unchanged.
 
 The XDG regression check failed before the fix and passed afterward. A direct uv invocation then exercised dry-run and restore into a fresh home with `XDG_DATA_HOME` set; restored Plannotator bytes matched the source, and existing XDG preferences remained unchanged.
 

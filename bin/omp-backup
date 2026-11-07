@@ -21,8 +21,6 @@ FILES = (
     ".omp/plugins/package.json",
     ".omp/plugins/bun.lock",
     ".omp/plugins/omp-plugins.lock.json",
-    ".agents/.skill-lock.json",
-    ".agents/skills.yaml",
     ".pi/agent/plannotator.json",
     ".plannotator/config.json",
     ".plannotator/review-skills.json",
@@ -32,13 +30,9 @@ FILES = (
 )
 TREES = (
     ".omp/agent/extensions",
-    ".omp/agent/skills",
-    ".omp/agent/managed-skills",
     ".omp/agent/agents",
     ".omp/agent/commands",
     ".omp/agent/themes",
-    ".agents/skills",
-    ".agents/personal-skills",
 )
 SKIP = {".git", "node_modules", "__pycache__", ".DS_Store"}
 REPOSITORY = Path(__file__).resolve().parent.parent
@@ -108,7 +102,7 @@ def backup(home, archive):
     for warning in warnings:
         print(warning, file=sys.stderr)
     print(f"Backed up {len(files)} files to {archive}")
-    print("Keep archive private: configuration and skills may contain secrets or internal material.")
+    print("Keep archive private: configuration may contain secrets or internal material.")
 
 
 def allowed(name):
@@ -197,7 +191,7 @@ def restore(home, archive, replace=False, dry_run=False):
         finally:
             temporary.unlink()
     print(f"Restored {len(pending)} files under {home}")
-    print("Recreate dotfiles links with ./setup. Review absolute paths and manual browser preferences.")
+    print("Recreate dotfiles links and personal skills with ./setup. Review paths and browser preferences.")
     xdg = os.environ.get("XDG_DATA_HOME")
     if (xdg and Path(xdg).is_absolute() and (home / ".plannotator").exists()
             and (Path(xdg) / "plannotator").exists()):
@@ -253,7 +247,7 @@ def main():
                 print(name)
             for warning in warnings:
                 print(warning, file=sys.stderr)
-            print(f"{len(files)} files; credentials, databases, sessions, caches, and dependencies excluded")
+            print(f"{len(files)} files; skills, credentials, databases, sessions, caches, and dependencies excluded")
         elif args.command == "backup":
             backup(home, args.archive.expanduser().absolute())
         else:

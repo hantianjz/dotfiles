@@ -45,31 +45,39 @@ class BackupTest(unittest.TestCase):
     def load(self, **options):
         return backup["restore"](self.target, self.archive, **options)
 
-    def test_selection_materializes_skills_but_not_managed_links_or_runtime(self):
+    def test_selection_excludes_skills_metadata_and_runtime(self):
         put(self.source, ".omp/agent/config.yml", "theme: light\n")
         put(self.source, ".omp/agent/agent.db", "credentials")
         put(self.source, ".omp/agent/sessions/private.jsonl", "conversation")
         put(self.source, ".plannotator/history/private.json", "review")
-        put(self.source, ".agents/skills/tool/node_modules/ignored", "dependency")
+        for name in (
+            ".agents/skills/tool/SKILL.md",
+            ".agents/personal-skills/personal/SKILL.md",
+            ".omp/agent/skills/custom/SKILL.md",
+            ".omp/agent/managed-skills/generated/SKILL.md",
+            ".agents/.skill-lock.json",
+            ".agents/skills.yaml",
+        ):
+            put(self.source, name, "do not back up")
         tracked = put(self.source, ".dotfiles/ai/instructions.md", "tracked")
         (self.source / ".omp/agent/AGENTS.md").symlink_to(tracked)
-        skill = put(self.root, "external/skill/SKILL.md", "skill instructions")
+        skill = put(self.root, "external/skill/SKILL.md", "external instructions")
         (self.source / ".agents/skills/linked").symlink_to(skill.parent)
         (self.source / ".agents/skills/broken").symlink_to(self.root / "absent")
-        files, warnings = backup["inventory"](self.source)
-        self.assertEqual(set(files), {".omp/agent/config.yml", ".agents/skills/linked/SKILL.md"})
-        self.assertTrue(any("Managed link skipped" in warning for warning in warnings))
-        self.assertTrue(any("Dangling link unavailable" in warning for warning in warnings))
+        files, _ = backup["inventory"](self.source)
+        self.assertEqual(set(files), {".omp/agent/config.yml"})
         self.save()
+        self.assertEqual(set(backup["read_archive"](self.archive)), {".omp/agent/config.yml"})
         self.load()
-        restored = self.target / ".agents/skills/linked/SKILL.md"
-        self.assertEqual(restored.read_text(), "skill instructions")
-        self.assertFalse(restored.is_symlink())
+        self.assertEqual((self.target / ".omp/agent/config.yml").read_text(), "theme: light\n")
+        self.assertFalse((self.target / ".agents").exists())
+        self.assertFalse((self.target / ".omp/agent/skills").exists())
+        self.assertFalse((self.target / ".omp/agent/managed-skills").exists())
 
     def test_round_trip_permissions_and_existing_archive_protection(self):
         put(self.source, ".omp/agent/config.yml", "modelRoles:\n  default: test/model\n")
         put(self.source, ".plannotator/config.json", '{"reviewAnalysis":{"semanticDiff":true}}\n')
-        tool = put(self.source, ".agents/skills/tool/run", "#!/bin/sh\nprintf ok\n")
+        tool = put(self.source, ".omp/agent/commands/tool", "#!/bin/sh\nprintf ok\n")
         tool.chmod(0o755)
         self.save()
         self.assertEqual(stat.S_IMODE(self.archive.stat().st_mode), 0o600)
@@ -81,7 +89,7 @@ class BackupTest(unittest.TestCase):
         self.assertEqual((self.target / ".plannotator/config.json").read_bytes(),
                          (self.source / ".plannotator/config.json").read_bytes())
         self.assertEqual(stat.S_IMODE((self.target / ".omp/agent/config.yml").stat().st_mode), 0o600)
-        self.assertEqual(stat.S_IMODE((self.target / ".agents/skills/tool/run").stat().st_mode), 0o700)
+        self.assertEqual(stat.S_IMODE((self.target / ".omp/agent/commands/tool").stat().st_mode), 0o700)
         put(self.target, ".agents/skills/unrelated/SKILL.md", "keep")
         self.assertIsNone(self.load())
         self.assertEqual((self.target / ".agents/skills/unrelated/SKILL.md").read_text(), "keep")
@@ -161,9 +169,15 @@ class BackupTest(unittest.TestCase):
             ("/absolute", tarfile.REGTYPE),
             (".omp/agent/../config.yml", tarfile.REGTYPE),
             (".omp/agent/agent.db", tarfile.REGTYPE),
-            (".agents/skills/link", tarfile.SYMTYPE),
-            (".agents/skills/link", tarfile.LNKTYPE),
-            (".agents/skills/pipe", tarfile.FIFOTYPE),
+            (".omp/agent/extensions/link", tarfile.SYMTYPE),
+            (".omp/agent/extensions/link", tarfile.LNKTYPE),
+            (".omp/agent/extensions/pipe", tarfile.FIFOTYPE),
+            (".agents/skills/tool/SKILL.md", tarfile.REGTYPE),
+            (".agents/personal-skills/personal/SKILL.md", tarfile.REGTYPE),
+            (".omp/agent/skills/custom/SKILL.md", tarfile.REGTYPE),
+            (".omp/agent/managed-skills/generated/SKILL.md", tarfile.REGTYPE),
+            (".agents/.skill-lock.json", tarfile.REGTYPE),
+            (".agents/skills.yaml", tarfile.REGTYPE),
         ]
         for name, kind in cases:
             with self.subTest(name=name, kind=kind):
@@ -185,10 +199,10 @@ class BackupTest(unittest.TestCase):
             self.load()
         self.assertFalse(self.target.exists())
 
-    def test_empty_backup_and_skill_cycle_fail_explicitly(self):
+    def test_empty_backup_and_configuration_cycle_fail_explicitly(self):
         with self.assertRaisesRegex(ValueError, "No configuration"):
             self.save()
-        directory = self.source / ".agents/skills/loop"
+        directory = self.source / ".omp/agent/commands/loop"
         directory.mkdir(parents=True)
         (directory / "cycle").symlink_to(directory)
         with self.assertRaisesRegex(ValueError, "Symlink cycle"):

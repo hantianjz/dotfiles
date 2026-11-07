@@ -2,9 +2,9 @@
 
 ## Context
 
-Personal omp settings, installed skills, plugin manifests, and Plannotator preferences live outside this repository. The completed inventory is in `docs/omp-settings.md`. The goal is a private, repeatable file backup that restores on macOS or Linux without copying credentials, conversations, caches, or OS-specific dependencies.
+Personal omp settings, plugin manifests, and Plannotator preferences live outside this repository. The completed inventory is in `docs/omp-settings.md`. The goal is a private, repeatable file backup that restores on macOS or Linux without copying skills, skill-manager metadata, credentials, conversations, caches, or OS-specific dependencies.
 
-Implementation proceeds after the user's requested revision: invoke the script through uv directly.
+User revisions: invoke the script through uv directly; exclude skills and keep their existing installation methods.
 
 ## Approach
 
@@ -27,16 +27,15 @@ Use an explicit allowlist matching the inventory:
 
 - `.omp/agent/config.yml` and optional `ponytail-caveman.json`.
 - `.omp/plugins/package.json`, `bun.lock`, and `omp-plugins.lock.json`.
-- `.omp/agent/extensions/`, `skills/`, `managed-skills/`, `agents/`, `commands/`, and `themes/` when present.
-- `.agents/skills/`, `.agents/personal-skills/`, `.agents/.skill-lock.json`, and `.agents/skills.yaml`.
+- `.omp/agent/extensions/`, `agents/`, `commands/`, and `themes/` when present.
 - `.plannotator/config.json`, optional `review-skills.json`, `guide-instructions.md`, and the documented current/legacy improvement-hook file.
 - Optional `.pi/agent/plannotator.json`, used by the installed extension despite running under omp.
 
-Do not recursively copy application-data roots. Exclude dependency directories, Git internals, Python caches, credentials, databases, sessions, memories, logs, locks, generated review state, and binaries.
+Do not recursively copy application-data roots. Exclude `.agents/skills/`, `.agents/personal-skills/`, `.omp/agent/skills/`, `.omp/agent/managed-skills/`, `.agents/.skill-lock.json`, and `.agents/skills.yaml`. Exclude dependency directories, Git internals, Python caches, credentials, databases, sessions, memories, logs, locks, generated review state, and binaries. Older archives containing excluded skill paths are rejected; create a fresh backup.
 
 ### Repository-owned links
 
-Identify links into this checkout or the source home's `.dotfiles` directory. Report and skip them, including `.omp/agent/AGENTS.md`; `./setup` recreates managed links on the target. Include a real, user-owned `.omp/agent/AGENTS.md` if present instead of the managed link. Report dangling links without claiming their contents were backed up. Resolve other skill links into regular archive files so the target does not depend on old absolute link targets. Detect cycles.
+Identify links into this checkout or the source home's `.dotfiles` directory. Report and skip them, including `.omp/agent/AGENTS.md`; `./setup` recreates managed links on the target. Include a real, user-owned `.omp/agent/AGENTS.md` if present instead of the managed link. Report dangling links within included configuration paths as unavailable. Resolve other configuration links into regular archive files; detect cycles. Skill directories are not traversed.
 
 Do not change or commit the user's preexisting `ai/CLAUDE.md` edits or `PLAN-plannotator-native.md`. Document that uncommitted tracked instructions require separate preservation.
 
@@ -44,17 +43,17 @@ Do not change or commit the user's preexisting `ai/CLAUDE.md` edits or `PLAN-pla
 
 - Create archives exclusively, with owner-only permissions under `umask 077`; never overwrite an older archive.
 - Use the explicit file allowlist as the archive contract; store no credentials or full environment dump.
-- Warn that configuration and skill contents can still contain plaintext secrets or internal material. Keep archives outside Git.
+- Warn that configuration can still contain plaintext secrets or internal material. Keep archives outside Git.
 - Validate the complete archive before writing: reject absolute paths, traversal, duplicate/conflicting names, unknown paths, links, and special files. Read member contents to catch corruption before target changes.
 - Refuse symlinked destination parents. Leave identical target files and setup-managed links unchanged. Treat differing links as conflicts, never write through them.
 - Default: refuse differing existing files before making changes. `--replace` preserves all displaced originals in a private directory before replacing files; print that recovery path. Never delete unrelated files or destination-only skills.
 - `--dry-run` lists intended changes and conflicts without modifying files.
-- Preserve executable bits for skill support scripts; private regular files and directories remain owner-only.
+- Preserve executable bits for command support scripts; private regular files and directories remain owner-only.
 - Do not rewrite arbitrary absolute paths inside configuration or execute restored code.
 
 ### Linux migration and browser boundary
 
-Recreate dotfiles links with `./setup`. Restore the file archive, then reinstall plugin dependencies using the restored manifests and Bun lock:
+Recreate dotfiles links and personal repository skills with the existing `./setup`/Envy method: `ai/skills/<name>/` links into `~/.agents/skills/` and `~/.claude/skills/`. The source directory is currently empty; do not import external personal skill sources or replace their installers. Third-party skills continue to use their original sources. Restore the file archive, then reinstall plugin dependencies using the restored manifests and Bun lock:
 
 ```sh
 bun install --frozen-lockfile --cwd "$HOME/.omp/plugins"
@@ -93,7 +92,7 @@ No setup or updater behavior changes. uv is the explicit runtime prerequisite. N
 
 ## Verification
 
-Use synthetic homes containing representative omp settings, Plannotator preferences, executable skill files, unrelated state, setup-owned links, external skill links, and dangling links.
+Use synthetic homes containing representative omp settings, Plannotator preferences, executable commands, excluded skill contents and metadata, unrelated state, and setup-owned links.
 
 Verify byte-for-byte configuration round trips, executable permissions, owner-only archive permissions, excluded credentials/state, preserved managed links, alternate home paths containing spaces, empty selections, and existing-backup refusal. Verify conflict refusal makes no target changes; replacement retains originals; dry-run makes no changes; identical re-restore is harmless. Exercise unsafe archive paths, archive symlinks, destination-parent links, duplicates, and malformed archives through unit checks.
 
@@ -102,8 +101,8 @@ Run the actual CLI against a disposable home and read restored configuration thr
 ## Observed results
 
 - Direct `./bin/omp-backup --help` and inventory ran through the uv shebang.
-- Seven standard-library unit checks passed through `uv run --script tests/omp_backup_test.py`.
-- A real-source backup contained 483 files. Restore into a disposable home preserved configuration bytes; omp read the restored model roles and Vim mode. Dry-run wrote nothing; a repeated restore changed zero files.
-- Dotfiles instruction links were skipped, two dangling skill links were reported, and credential databases and sessions were absent from the restored home.
+- Eight standard-library unit checks passed through `uv run --script tests/omp_backup_test.py`, including skill-content/metadata exclusion and rejection of excluded skill paths in older archives.
+- A real-source backup contained six configuration files and no skills. Restore into a disposable home preserved every file's bytes; omp read the restored Vim mode. Dry-run wrote nothing; a repeated restore changed zero files.
+- Dotfiles instruction links were skipped. A separately installed target skill stayed unchanged; credential databases and sessions were absent from the restored home.
 - Temporary archives and homes were removed. Linux and plugin reconstruction were not run; macOS/Ubuntu checks are configured in CI.
 - `typos` passed for the script, tests, inventory, plan, README, and workflow.
