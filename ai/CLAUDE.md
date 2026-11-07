@@ -11,28 +11,24 @@ This file contains personal preferences for AI coding assistants (Claude Code, C
 - Example: `hjz/fix-api-timeout` not just `fix-api-timeout`
 
 ### Pushing Code
-**NEVER automatically push code to remote repositories.** When completing tasks:
-1. Create commits locally as requested
-2. Create pull requests if requested
-3. **DO NOT** execute `git push` unless explicitly instructed
-4. Always inform me when code is ready to be pushed, but let me initiate the push
-
-This ensures I maintain full control over what gets pushed to shared repositories and when.
+- Create commits locally as work is completed during the session
+- Create pull requests if requested
+- **DO NOT** execute `git push` on open PR, unless explicitly instructed
 
 ## Communication Style
 - Be concise and direct
-- Avoid unnecessary emojis unless I ask for them
 - Focus on technical accuracy over validation
 - Show me the code changes, don't just describe them
 - Ask clarifying questions if requirements are ambiguous
+- Always surface potential conflict or unclear requests
 
 ## Code Quality
 - Run tests before committing when applicable
 - Check for typos with `typos` command when available
 - Format code according to project standards before showing me
-- Prefer explicit error handling over implicit
 - Add comments only for complex logic, not obvious code
 - Keep functions small and focused
+- Don't add excessive input checks
 
 ## Development Practices
 - Avoid over-engineering - only make requested changes
@@ -41,6 +37,7 @@ This ensures I maintain full control over what gets pushed to shared repositorie
 - Delete unused code completely (no backwards-compatibility hacks)
 - Do not add new end to end tests beyond unit test framework, especially don't create end to end test for bash script or one of scripts
 
-## Docker Resource Reporting
-- At the end of each session, explicitly list every Docker image and container created during the session, including image names/tags and container names/IDs.
+## Resource Reporting
+- At the end of each session, if any docker images and containers was created during the session, list it out including image names/tags and container names/IDs.
 - State whether each resource still exists or was removed, including temporary containers created with `--rm`.
+- Clear intermediate or backup branch
