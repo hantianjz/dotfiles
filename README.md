@@ -69,6 +69,22 @@ If an older setup accidentally created a link inside an existing destination dir
 
 Tmux plugin setup waits for native packages and symlink setup. If `~/.config/tmux` is preserved as a user-owned directory, repository plugin installation is skipped with a warning rather than running a missing TPM script or changing that configuration. To adopt the repository's tmux configuration, back up and move the existing directory aside, then rerun `./setup`. For an already managed tmux directory, missing TPM submodules or installer failures remain errors.
 
+## Omp settings backup
+
+With [uv](https://docs.astral.sh/uv/getting-started/installation/) on `PATH`, the script invokes uv directly and needs no Python packages:
+
+```sh
+./bin/omp-backup inventory
+./bin/omp-backup backup "$HOME/omp-settings.tar.gz"
+# On the target machine, after installing uv and running ./setup:
+./bin/omp-backup restore "$HOME/omp-settings.tar.gz" --dry-run
+./bin/omp-backup restore "$HOME/omp-settings.tar.gz"
+```
+
+The private archive includes omp settings, plugin manifests, installed skills, and Plannotator configuration. Restore preserves dotfiles-managed links and refuses differing existing files unless `--replace` is supplied; replacement saves originals. Credentials, conversations, caches, and installed dependencies are excluded. Rebuild plugin dependencies for the target OS and authenticate separately.
+
+See [the configuration inventory and migration guide](docs/omp-settings.md) for exact coverage, recovery, Linux prerequisites, and the manual checklist for browser-only Plannotator preferences.
+
 ## Update
 
 ```sh

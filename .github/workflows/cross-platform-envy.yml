@@ -13,6 +13,7 @@ on:
       - "tmux/tmux.keys.conf"
       - "setup"
       - "bin/update"
+      - "bin/omp-backup"
       - "tests/**"
       - ".github/workflows/cross-platform-envy.yml"
   pull_request:
@@ -27,6 +28,7 @@ on:
       - "tmux/tmux.keys.conf"
       - "setup"
       - "bin/update"
+      - "bin/omp-backup"
       - "tests/**"
       - ".github/workflows/cross-platform-envy.yml"
 
@@ -42,6 +44,9 @@ jobs:
     runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - name: Omp backup and restore
+        run: uv run --script tests/omp_backup_test.py
       - name: Install test prerequisites
         run: |
           if [ "${{ matrix.profile }}" = macos ]; then

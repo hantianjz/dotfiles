@@ -1,0 +1,261 @@
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.11"
+# dependencies = []
+# ///
+"""Inventory, back up, and restore omp configuration without runtime state."""
+
+import argparse
+import os
+from pathlib import Path, PurePosixPath
+import shlex
+import sys
+import tarfile
+import tempfile
+
+
+FILES = (
+    ".omp/agent/config.yml",
+    ".omp/agent/AGENTS.md",
+    ".omp/agent/ponytail-caveman.json",
+    ".omp/plugins/package.json",
+    ".omp/plugins/bun.lock",
+    ".omp/plugins/omp-plugins.lock.json",
+    ".agents/.skill-lock.json",
+    ".agents/skills.yaml",
+    ".pi/agent/plannotator.json",
+    ".plannotator/config.json",
+    ".plannotator/review-skills.json",
+    ".plannotator/guide-instructions.md",
+    ".plannotator/hooks/compound/enterplanmode-improve-hook.txt",
+    ".plannotator/compound/enterplanmode-improve-hook.txt",
+)
+TREES = (
+    ".omp/agent/extensions",
+    ".omp/agent/skills",
+    ".omp/agent/managed-skills",
+    ".omp/agent/agents",
+    ".omp/agent/commands",
+    ".omp/agent/themes",
+    ".agents/skills",
+    ".agents/personal-skills",
+)
+SKIP = {".git", "node_modules", "__pycache__", ".DS_Store"}
+REPOSITORY = Path(__file__).resolve().parent.parent
+
+
+def managed_link(path, home):
+    return path.is_symlink() and any(
+        path.resolve().is_relative_to(root)
+        for root in (REPOSITORY, (home / ".dotfiles").resolve())
+    )
+
+
+def inventory(home):
+    files, warnings = {}, []
+
+    def visit(path, ancestors):
+        name = path.relative_to(home).as_posix()
+        if path.is_symlink() and not path.exists():
+            warnings.append(f"Dangling link unavailable: {name}")
+            return
+        if managed_link(path, home):
+            warnings.append(f"Managed link skipped (recreate with ./setup): {name}")
+            return
+        if not path.exists():
+            return
+        resolved = path.resolve()
+        if resolved in ancestors:
+            raise ValueError(f"Symlink cycle: {name}")
+        if path.is_dir():
+            if name in FILES:
+                raise ValueError(f"Expected configuration file, found directory: {name}")
+            for child in sorted(path.iterdir()):
+                if child.name not in SKIP:
+                    visit(child, ancestors | {resolved})
+        elif path.is_file():
+            if name in TREES:
+                raise ValueError(f"Expected configuration directory, found file: {name}")
+            files[name] = path
+        else:
+            raise ValueError(f"Not a regular file: {name}")
+
+    for name in FILES + TREES:
+        visit(home / name, set())
+    return files, warnings
+
+
+def backup(home, archive):
+    files, warnings = inventory(home)
+    if not files:
+        raise ValueError("No configuration found")
+    if archive in (path.resolve() for path in files.values()):
+        raise ValueError("Archive cannot replace a source file")
+    descriptor = os.open(archive, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    try:
+        with os.fdopen(descriptor, "wb") as output:
+            with tarfile.open(fileobj=output, mode="w:gz", dereference=True) as bundle:
+                for name, path in files.items():
+                    entry = bundle.gettarinfo(str(path), arcname=name)
+                    entry.mode = 0o700 if entry.mode & 0o111 else 0o600
+                    entry.uid = entry.gid = 0
+                    entry.uname = entry.gname = ""
+                    with path.open("rb") as source:
+                        bundle.addfile(entry, source)
+    except BaseException:
+        archive.unlink()
+        raise
+    for warning in warnings:
+        print(warning, file=sys.stderr)
+    print(f"Backed up {len(files)} files to {archive}")
+    print("Keep archive private: configuration and skills may contain secrets or internal material.")
+
+
+def allowed(name):
+    path = PurePosixPath(name)
+    return (
+        not path.is_absolute()
+        and str(path) == name
+        and not set(path.parts) & ({".."} | SKIP)
+        and (name in FILES or any(name.startswith(root + "/") for root in TREES))
+    )
+
+
+def read_archive(archive):
+    files = {}
+    with tarfile.open(archive, "r:gz") as bundle:
+        for entry in bundle:
+            name = entry.name
+            if not entry.isfile() or not allowed(name) or name in files:
+                raise ValueError(f"Unsafe or duplicate archive entry: {name}")
+            source = bundle.extractfile(entry)
+            with source:
+                files[name] = (source.read(), 0o700 if entry.mode & 0o111 else 0o600)
+    if not files:
+        raise ValueError("Archive contains no configuration")
+    for name in files:
+        if any(str(parent) in files for parent in PurePosixPath(name).parents):
+            raise ValueError(f"Conflicting archive paths: {name}")
+    return files
+
+
+def restore(home, archive, replace=False, dry_run=False):
+    files = read_archive(archive)
+    pending, conflicts = {}, set()
+    # Preflight every file before modifying the destination. Never extract links.
+    for name, (data, mode) in files.items():
+        target = home / name
+        for parent in target.parents:
+            if parent == home:
+                break
+            if parent.is_symlink() or (parent.exists() and not parent.is_dir()):
+                raise ValueError(f"Destination parent is not a real directory: {parent}")
+        if managed_link(target, home):
+            print(f"Managed link preserved: {name}")
+            continue
+        if target.is_dir() and not target.is_symlink():
+            raise ValueError(f"Destination is a directory: {target}")
+        if not target.is_symlink() and target.is_file():
+            executable = bool(target.stat().st_mode & 0o111)
+            if target.read_bytes() == data and executable == bool(mode & 0o111):
+                continue
+        if target.exists() or target.is_symlink():
+            conflicts.add(name)
+        pending[name] = (data, mode)
+    for name in pending:
+        print(f"{'replace' if name in conflicts else 'create'}: {name}")
+    if dry_run:
+        print(f"Dry run: {len(pending)} changes, {len(conflicts)} conflicts; no files changed")
+        return
+    if conflicts and not replace:
+        raise ValueError("Existing files differ; use --replace to preserve originals before replacement")
+    home.mkdir(parents=True, exist_ok=True, mode=0o700)
+    saved = None
+    if conflicts:
+        saved = Path(tempfile.mkdtemp(prefix="omp-before-restore-", dir=home))
+        print(f"Originals preserved in {saved}", flush=True)
+    for name, (data, mode) in pending.items():
+        target = home / name
+        target.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+        # Stage complete bytes before displacing the old file.
+        descriptor, temporary = tempfile.mkstemp(prefix=".omp-restore-", dir=target.parent)
+        temporary = Path(temporary)
+        try:
+            with os.fdopen(descriptor, "wb") as output:
+                output.write(data)
+                os.fchmod(output.fileno(), mode)
+            if name in conflicts:
+                original = saved / name
+                original.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+                target.rename(original)
+            try:
+                os.link(temporary, target)
+            except OSError:
+                if name in conflicts and not target.exists() and not target.is_symlink():
+                    original.rename(target)
+                raise
+        finally:
+            temporary.unlink()
+    print(f"Restored {len(pending)} files under {home}")
+    print("Recreate dotfiles links with ./setup. Review absolute paths and manual browser preferences.")
+    if (home / ".omp/plugins/package.json").exists():
+        directory = shlex.quote(str(home / ".omp/plugins"))
+        print(f"Rebuild trusted plugin dependencies: bun install --frozen-lockfile --cwd {directory}")
+        print("Then run: omp plugin list --json; omp plugin doctor")
+    print("Authenticate separately: omp login")
+    return saved
+
+
+def check_overrides(home):
+    for key in ("OMP_PROFILE", "PI_PROFILE"):
+        if os.environ.get(key):
+            raise ValueError(f"{key} is set; migrate that profile separately (see docs/omp-settings.md)")
+    for key, default in (
+        ("PI_CODING_AGENT_DIR", home / ".omp/agent"),
+        ("PLANNOTATOR_DATA_DIR", home / ".plannotator"),
+    ):
+        value = os.environ.get(key)
+        if value and Path(value).expanduser().resolve() != default:
+            raise ValueError(f"{key} selects a nondefault directory; migrate it separately")
+    xdg = os.environ.get("XDG_DATA_HOME")
+    if (xdg and Path(xdg).is_absolute() and not os.environ.get("PLANNOTATOR_DATA_DIR")
+            and not (home / ".plannotator").exists()):
+        raise ValueError("Plannotator uses XDG_DATA_HOME; migrate that data directory separately")
+    profiles = home / ".omp/profiles"
+    if profiles.exists() and any(profiles.iterdir()):
+        raise ValueError("Named omp profiles found; migrate them separately (see docs/omp-settings.md)")
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--home", type=Path, default=Path.home(), help="source or target home (default: HOME)")
+    commands = parser.add_subparsers(dest="command", required=True)
+    commands.add_parser("inventory", help="list included file paths, not their contents")
+    save = commands.add_parser("backup", help="create a new private .tar.gz archive")
+    save.add_argument("archive", type=Path)
+    load = commands.add_parser("restore", help="restore configuration without running plugins")
+    load.add_argument("archive", type=Path)
+    load.add_argument("--replace", action="store_true", help="preserve differing originals before replacement")
+    load.add_argument("--dry-run", action="store_true")
+    args = parser.parse_args()
+    home = args.home.expanduser().resolve()
+    try:
+        check_overrides(home)
+        if args.command == "inventory":
+            files, warnings = inventory(home)
+            for name in files:
+                print(name)
+            for warning in warnings:
+                print(warning, file=sys.stderr)
+            print(f"{len(files)} files; credentials, databases, sessions, caches, and dependencies excluded")
+        elif args.command == "backup":
+            backup(home, args.archive.expanduser().absolute())
+        else:
+            restore(home, args.archive.expanduser(), args.replace, args.dry_run)
+    except (OSError, ValueError, RuntimeError, tarfile.TarError, EOFError) as error:
+        parser.exit(1, f"omp-backup: {error}\n")
+
+
+if __name__ == "__main__":
+    os.umask(0o077)
+    main()
