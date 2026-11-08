@@ -19,3 +19,4 @@ source "$CURR_FILE_DIR/shellrc.bash"
 unset CURR_FILE CURR_FILE_DIR
 
 export STM32_PRG_PATH=/home/hjz/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin
+export QSYS_ROOTDIR="/home/hjz/intelFPGA_lite/20.1/quartus/sopc_builder/bin"

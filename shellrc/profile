@@ -15,3 +15,5 @@ fi
 if [ -n "${BASH_VERSION:-}" ] && [ -r "$HOME/.bashrc" ]; then
   . "$HOME/.bashrc"
 fi
+
+export QSYS_ROOTDIR="/home/hjz/intelFPGA_lite/20.1/quartus/sopc_builder/bin"
