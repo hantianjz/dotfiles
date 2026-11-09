@@ -11,7 +11,6 @@ if ROOT:sub(1, 1) ~= "/" then
   ROOT = ROOT == "." and cwd or cwd .. "/" .. ROOT
 end
 local HOME = assert(os.getenv("HOME"), "HOME is not set")
-local HERDR_PLUGIN_DIR = HOME .. "/.config/herdr/plugins/github"
 local platform = dofile(ROOT .. "/envy/platform.lua")
 
 PACKAGES = {}
@@ -208,17 +207,6 @@ envy.extend(PACKAGES, {
   },
 })
 
-if PROFILE ~= "macos" then
-  envy.extend(PACKAGES, { {
-    spec = "local.shell@r0",
-    source = "envy/local.shell@r0.lua",
-    setup = { "command" },
-    options = {
-      check = "command -v herdr >/dev/null 2>&1 || test -x " .. quote(HOME .. "/.local/bin/herdr"),
-      install = "curl -fsSL https://herdr.dev/install.sh | sh",
-    },
-  } })
-end
 
 local HERDR_APP_SUPPORTED = PROFILE ~= "macos" or envy.run(
   'test "$(uname -m)" = arm64 || test "$(sysctl -n hw.optional.arm64 2>/dev/null)" = 1',
@@ -236,22 +224,15 @@ if HERDR_APP_SUPPORTED then
   } })
 end
 
-local HERDR_BIN = command_exists("herdr") and "herdr" or quote(HOME .. "/.local/bin/herdr")
+local HERDR_PLUGINS = {}
 for plugin in io.lines(ROOT .. "/config/herdr/plugins") do
   if plugin ~= "" and plugin:sub(1, 1) ~= "#" then
-    local plugin_id = assert(plugin:match("/([^/]+)$"), "invalid Herdr plugin: " .. plugin)
-    envy.extend(PACKAGES, { {
-      spec = "local.shell@r0",
-      source = "envy/local.shell@r0.lua",
-      setup = { "command" },
-      options = {
-        -- `herdr plugin list` talks to the running server. Checking the local
-        -- install directory avoids protocol errors when the CLI was upgraded
-        -- before an older server was restarted.
-        check = "find " .. quote(HERDR_PLUGIN_DIR) .. " -mindepth 1 -maxdepth 1 -type d -name " ..
-            quote(plugin_id .. "-*") .. " -print -quit 2>/dev/null | grep -q .",
-        install = HERDR_BIN .. " plugin install " .. quote(plugin) .. " -y",
-      },
-    } })
+    table.insert(HERDR_PLUGINS, plugin)
   end
 end
+envy.extend(PACKAGES, { {
+  spec = "local.herdr@r0",
+  source = "envy/local.herdr@r0.lua",
+  setup = { "plugins" },
+  options = { plugins = HERDR_PLUGINS },
+} })

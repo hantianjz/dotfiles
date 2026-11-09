@@ -71,7 +71,7 @@ function M.packages(profile, manager)
       "systemd", "typos", "usbutils", "wl-clipboard", "yazi",
     })
   elseif profile == "ubuntu" then
-    append(packages, { "libglib2.0-dev", "libudev-dev", "usbutils", "wl-clipboard" })
+    append(packages, { "build-essential", "libglib2.0-dev", "libudev-dev", "usbutils", "wl-clipboard" })
     append(crates, portable_ubuntu_crates)
   else
     error("unknown platform profile: " .. tostring(profile))
