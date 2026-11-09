@@ -22,6 +22,11 @@ run() {
   fi
 }
 
+update_tmux_plugin() {
+  git -C "$1" pull &&
+    git -C "$1" submodule update --init --recursive
+}
+
 update_direct_herdr() {
   local herdr_bin
   herdr_bin="$(command -v herdr 2>/dev/null || true)"
@@ -147,7 +152,16 @@ fi
 
 if [[ -x "$HOME/.config/tmux/plugins/tpm/bin/update_plugins" ]]; then
   section "Updating tmux plugins"
-  run "$HOME/.config/tmux/plugins/tpm/bin/update_plugins" all
+  # Repository submodules need explicit updates, not `git pull` on detached HEADs.
+  run git -C "$DOTFILES_ROOT" submodule update --init --recursive -- tmux/plugins/tmux
+  run git -C "$DOTFILES_ROOT" submodule update --init --recursive --remote -- \
+    tmux/plugins/tpm tmux/plugins/tmux-continuum
+  for plugin_dir in "$HOME/.config/tmux/plugins/"*; do
+    [[ -e "$plugin_dir/.git" ]] || continue
+    [[ -z "$(git -C "$plugin_dir" rev-parse --show-superproject-working-tree)" ]] || continue
+    printf '    %s\n' "${plugin_dir##*/}"
+    run update_tmux_plugin "$plugin_dir"
+  done
 else
   section "Tmux plugins"
   skip
