@@ -43,7 +43,7 @@ local ok, failure = pcall(function()
     -- Import the real manifest, but schedule only its GitHub dependencies and
     -- tmux links. The copied manifest ROOT and Envy vendor root must coincide.
     put(base .. "/envy.lua", string.format([[
--- @envy version "0.4.9"
+-- @envy version "0.5.1"
 -- @envy bin "bin"
 local root = %q
 local home = assert(os.getenv("HOME"))

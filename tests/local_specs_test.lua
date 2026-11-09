@@ -110,7 +110,7 @@ end
 ]], root, root .. "/envy/local." .. recipe .. "@r0.lua", temp .. "/toolchain.lua", temp .. "/github.lua"))
   end
   put(temp .. "/envy.lua", string.format([[
--- @envy version "0.4.9"
+-- @envy version "0.5.1"
 -- @envy bin "bin"
 PACKAGES = {
   { spec = "local.cargo_install@r0", source = %q, setup = { "crates" },
