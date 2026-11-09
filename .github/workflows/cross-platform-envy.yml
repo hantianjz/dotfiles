@@ -39,7 +39,7 @@ jobs:
         include:
           - runner: ubuntu-24.04
             profile: ubuntu
-          - runner: macos-14
+          - runner: macos-15
             profile: macos
     runs-on: ${{ matrix.runner }}
     steps:
