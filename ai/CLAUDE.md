@@ -41,3 +41,8 @@ This file contains personal preferences for AI coding assistants (Claude Code, C
 - At the end of each session, if any docker images and containers was created during the session, list it out including image names/tags and container names/IDs.
 - State whether each resource still exists or was removed, including temporary containers created with `--rm`.
 - Clear intermediate or backup branch
+
+## Documentation
+- Do not add large documentation into the root README.md doc 
+- Default to adding new system/overall documentation in the docs folder of repo or beside the source code.
+- Do not add legacy or historical facts on changes, only document the current state of the system.
