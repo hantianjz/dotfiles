@@ -237,7 +237,7 @@ On macOS, the metadata check registers and explicitly trusts declared Homebrew t
 
 After the non-mutating checks pass, run `./setup` on the target platform and then run it a second time. The first run validates real installation and password/permission behavior; the second validates idempotency. Do not call a platform supported solely because metadata lookup passed.
 
-GitHub Actions runs policy, symlink, syntax, and native metadata checks on Ubuntu 24.04, macOS 14, and an Arch container. These jobs query package repositories but do not fully provision a machine.
+GitHub Actions runs policy, symlink, syntax, and native metadata checks on Ubuntu 24.04, macOS 15 (Apple Silicon), and an Arch container. These jobs query package repositories but do not fully provision a machine. GitHub retired macOS 14 runners on [November 2, 2026](https://github.com/actions/runner-images/issues/15226); keep the workflow on a supported pinned runner label.
 
 ## Troubleshooting
 
