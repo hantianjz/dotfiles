@@ -74,7 +74,7 @@ Envy preserves differing real files and directories at symlink destinations: it 
 
 If an older setup accidentally created a link inside an existing destination directory, the warning identifies the possible nested link. Remove or relocate that content manually before running `./setup` again.
 
-All eight tmux repositories are commit-pinned in `envy/tmux.lua`, using the first-party GitHub helper with Envy 0.4.9. Envy vendors them into `.envy/tmux/<name>/<name>`; managed links expose them at `tmux/plugins/<name>`. TPM only loads installed plugins; Envy owns acquisition and updates.
+All eight tmux repositories are commit-pinned in `envy/tmux.lua`, using the first-party GitHub helper with Envy 0.5.1. Envy vendors them into `.envy/tmux/<name>/<name>`; managed links expose them at `tmux/plugins/<name>`. TPM only loads installed plugins; Envy owns acquisition and updates.
 
 For an existing checkout, inspect and move old real directories at `tmux/plugins/<name>` outside the checkout before the first migrated setup. Preserve any local changes. Envy warns and preserves conflicting directories instead of replacing them. The same policy preserves a user-owned `~/.config/tmux`; back up and move it aside only when adopting this repository's configuration.
 

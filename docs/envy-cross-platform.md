@@ -36,7 +36,7 @@ The manifest is intentionally an orchestrator. Platform decisions live in one po
 ```mermaid
 flowchart TB
     User[User runs setup] --> Bootstrap[Bootstrap prerequisites]
-    Bootstrap --> Envy[Pinned Envy 0.4.9]
+    Bootstrap --> Envy[Pinned Envy 0.5.1]
     Envy --> Manifest[envy.lua orchestration]
     Manifest --> Policy[Platform policy]
     Manifest --> GitHub[First-party GitHub source pins]

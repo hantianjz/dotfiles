@@ -1,6 +1,6 @@
 -- envy.lua - Project manifest
--- @envy version "0.4.9"
--- @envy sha256sums "cd338f0d5dbf1e7c2b8065a8b601a0ebd1b9182cab50f5945e638b41933c1c34"
+-- @envy version "0.5.1"
+-- @envy sha256sums "3ab2574d9e651564c53cd257911c43d10b99cfed297ceda273059946117ec911"
 -- @envy bin "bin"
 -- @envy deploy "true"
 
