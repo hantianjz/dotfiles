@@ -116,7 +116,11 @@ The last row is an important regression case. The initial Arch profile used `typ
 
 ### Ubuntu fallbacks
 
-Ubuntu currently installs `diskus`, `eza`, `git-delta`, `gping`, `hexyl`, `typos-cli`, and `yazi-build` through Cargo. The `yazi-build` installer provides both `yazi-fm` and `yazi-cli` and requires Cargo's `--force` flag. Ghostty and Lazygit are not automatically installed on Ubuntu. Reconsider these choices only when Ubuntu's supported baseline provides a reliable native package or the upstream installation model changes.
+Ubuntu currently installs `diskus`, `eza`, `git-delta`, `gping`, `hexyl`, `typos-cli`, and `yazi-build` through Cargo. The `yazi-build` installer provides both `yazi-fm` and `yazi-cli` and requires Cargo's `--force` flag. Lazygit is not automatically installed on Ubuntu.
+
+Ghostty uses native packages: a Homebrew cask on macOS, Pacman on Arch, and [the official Ubuntu package](https://ghostty.org/docs/install/binary#ubuntu) starting with Ubuntu 26.04. The Ubuntu policy reads `VERSION_ID` from `/etc/os-release`; Ubuntu 24.04 retains its configuration link without automatic Ghostty installation. No Snap or third-party repository is added.
+
+Ghostty updates through the existing native-manager flow: Homebrew on macOS, APT on Ubuntu 26.04 or newer, and Pacman/Omarchy on Arch. No separate Ghostty updater is needed.
 
 ### GitHub-sourced Cargo tools
 
