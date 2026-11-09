@@ -9,8 +9,10 @@ if status is-interactive
         zoxide init fish | source
     end
 
-    for _f in $HOME/.config/herdr/plugins/github/herdr-automatic-rename-*/shell/hook.fish
-        test -r "$_f"; and source "$_f"; and break
+    if type -q jq; and test -r "$HOME/.config/herdr/plugins.json"
+        for _f in (jq -r '.[] | select(.source.kind == "github" and .source.owner == "qu8n" and .source.repo == "herdr-automatic-rename") | .plugin_root // empty' "$HOME/.config/herdr/plugins.json" 2>/dev/null)
+            test -r "$_f/shell/hook.fish"; and source "$_f/shell/hook.fish"; and break
+        end
     end
 end
 

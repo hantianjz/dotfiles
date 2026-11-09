@@ -14,6 +14,8 @@ Ubuntu uses Cargo for portable CLI tools that are unavailable from the standard 
 
 Ubuntu declares `build-essential` for Cargo builds. Cargo and shell plugin setup wait for native packages; Herdr plugins also wait for the Herdr CLI.
 
+Fisher owns its generated manager files and installs every plugin in `fish/fish_plugins`. Setup checks the complete installed list. Herdr setup reads its local plugin registry, not retained checkout directories, to detect registered installations.
+
 ## Fresh install
 
 Clone the repository and run:

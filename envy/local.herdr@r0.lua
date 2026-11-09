@@ -30,11 +30,20 @@ SETUP = {
     CHECK = function(pkg_dir, opts)
       missing = {}
       for _, plugin in ipairs(opts.plugins) do
-        local id = assert(plugin:match("/([^/]+)$"), "invalid Herdr plugin: " .. plugin)
-        -- Inspect local installs, not a potentially older running server's protocol.
-        if not succeeds("find " .. quote(home .. "/.config/herdr/plugins/github") ..
-            " -mindepth 1 -maxdepth 1 -type d -name " .. quote(id .. "-*") ..
-            " -print -quit 2>/dev/null | grep -q .") then
+        local owner, repo = plugin:match("^([^/]+)/([^/]+)$")
+        assert(owner, "invalid Herdr plugin: " .. plugin)
+        -- Inspect registered local installs, not a running server's protocol.
+        if not succeeds(string.format([[
+jq -r --arg owner %s --arg repo %s '
+  .[] | select(.source.kind == "github" and .source.owner == $owner and .source.repo == $repo)
+  | .plugin_root // empty
+' %s 2>/dev/null | {
+  while IFS= read -r root; do
+    if test -d "$root"; then exit 0; fi
+  done
+  exit 1
+}
+]], quote(owner), quote(repo), quote(home .. "/.config/herdr/plugins.json"))) then
           table.insert(missing, plugin)
         end
       end

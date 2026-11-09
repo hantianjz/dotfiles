@@ -20,6 +20,16 @@ ln -s "$repo_root/shellrc/environment" "$test_home/.config/shell/environment"
 ln -s "$repo_root/shellrc/profile" "$test_home/.profile"
 ln -s "$repo_root/shellrc/bashrc" "$test_home/.bashrc"
 printf 'set -gx SHELL_LOCAL_MARKER loaded\n' > "$test_home/.config/local_config.fish"
+hook_root="$test_home/.config/herdr/plugins/github-installations/herdr-automatic-rename-fixture/active/checkout"
+old_root="$test_home/.config/herdr/plugins/github-installations/herdr-automatic-rename-fixture/obsolete/checkout"
+mkdir -p "$hook_root/shell" "$old_root/shell"
+printf 'set -gx HERDR_HOOK_MARKER registered\n' > "$hook_root/shell/hook.fish"
+printf 'set -gx HERDR_HOOK_MARKER obsolete\n' > "$old_root/shell/hook.fish"
+jq_bin=$(command -v jq)
+ln -s "$jq_bin" "$test_home/.local/bin/jq"
+jq -n --arg root "$hook_root" \
+  '[{source:{kind:"github",owner:"qu8n",repo:"herdr-automatic-rename"},plugin_root:$root}]' \
+  > "$test_home/.config/herdr/plugins.json"
 
 
 fail() {
@@ -92,12 +102,13 @@ assert_equal nvim "$fish_editor" 'non-interactive Fish EDITOR'
 assert_equal loaded "$fish_marker" 'non-interactive Fish local config'
 
 interactive_fish_output=$("${clean_env[@]}" "$fish_bin" -lic \
-  'printf "%s|%s|%s|" (string join : -- $PATH) "$EDITOR" "$SHELL_LOCAL_MARKER"; type -q ll; and printf alias-loaded' \
+  'printf "%s|%s|%s|%s|" (string join : -- $PATH) "$EDITOR" "$SHELL_LOCAL_MARKER" "$HERDR_HOOK_MARKER"; type -q ll; and printf alias-loaded' \
   2>"$test_home/fish-interactive.stderr")
-IFS='|' read -r interactive_fish_path interactive_fish_editor interactive_fish_marker interactive_fish_alias <<< "$interactive_fish_output"
+IFS='|' read -r interactive_fish_path interactive_fish_editor interactive_fish_marker herdr_hook_marker interactive_fish_alias <<< "$interactive_fish_output"
 assert_path "$interactive_fish_path" 'interactive Fish login PATH'
 assert_equal nvim "$interactive_fish_editor" 'interactive Fish login EDITOR'
 assert_equal loaded "$interactive_fish_marker" 'interactive Fish local config'
 assert_equal alias-loaded "$interactive_fish_alias" 'interactive Fish configuration'
+assert_equal registered "$herdr_hook_marker" 'interactive Fish registered Herdr hook'
 
 printf 'Shell startup tests: ok\n'

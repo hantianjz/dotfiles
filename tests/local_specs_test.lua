@@ -88,9 +88,15 @@ set -eu
 test -f "$HOME/native-ready"
 test -L "$HOME/environment"
 test "$1 $2" = "plugin install"
-mkdir -p "$HOME/.config/herdr/plugins/github/${3##*/}-fixture"
+root="$HOME/.config/herdr/plugins/github-installations/${3##*/}-fixture/1/checkout"
+mkdir -p "$root"
+printf '[{"plugin_id":"%s","plugin_root":"%s","source":{"kind":"github","owner":"%s","repo":"%s"}}]\n' \
+  "${3##*/}" "$root" "${3%%/*}" "${3##*/}" > "$HOME/.config/herdr/plugins.json"
+printf 'installed\n' >> "$HOME/herdr-installs"
 ]])
   envy.run("chmod +x " .. quote(temp .. "/bin/curl") .. " " .. quote(temp .. "/fake-herdr"))
+  local jq = envy.run("command -v jq", { capture = true }).stdout:gsub("%s+$", "")
+  envy.run("ln -s " .. quote(jq) .. " " .. quote(temp .. "/bin/jq"))
   put(temp .. "/herdr.lua", "dofile(" .. quote(root .. "/envy/local.herdr@r0.lua") ..
     ")\nSETUP.cli.PLATFORMS = nil\n")
   for _, recipe in ipairs({ "cargo_install", "cargo_github_tmx" }) do
@@ -124,13 +130,47 @@ PACKAGES = {
     root .. "/envy/local.shell@r0.lua", temp .. "/herdr.lua"))
   local bootstrap_cache = os.getenv("ENVY_CACHE_ROOT") or
     (assert(os.getenv("HOME")) .. (envy.PLATFORM == "darwin" and "/Library/Caches/envy" or "/.cache/envy"))
-  local result = envy.run("ENVY_CACHE_ROOT=" .. quote(bootstrap_cache) .. " HOME=" .. quote(temp) ..
+  local command = "ENVY_CACHE_ROOT=" .. quote(bootstrap_cache) .. " HOME=" .. quote(temp) ..
     " PATH=" .. quote(temp .. "/bin:/usr/bin:/bin") .. " " .. quote(root .. "/bin/envy") ..
-    " --cache-root " .. quote(temp .. "/cache") .. " install --manifest " .. quote(temp .. "/envy.lua"),
-    { capture = true, check = false })
+    " --cache-root " .. quote(temp .. "/cache") .. " install --manifest " .. quote(temp .. "/envy.lua")
+  local result = envy.run(command, { capture = true, check = false })
   assert(result.exit_code == 0, result.stderr)
+  local function installs()
+    local file = assert(io.open(temp .. "/herdr-installs")); local value = file:read("*a"); file:close()
+    return value
+  end
   envy.run("test -f " .. quote(temp .. "/fisher-ready") .. " && test -d " ..
-    quote(temp .. "/.config/herdr/plugins/github/example-fixture"))
+    quote(temp .. "/.config/herdr/plugins/github-installations/example-fixture/1/checkout"))
+  assert(installs() == "installed\n")
+  envy.run(command, { capture = true })
+  assert(installs() == "installed\n", "registered plugin must not reinstall")
+  os.remove(temp .. "/.config/herdr/plugins.json")
+  envy.run(command, { capture = true })
+  assert(installs() == "installed\ninstalled\n", "retained unregistered checkout must not satisfy setup")
+  local fish = envy.run("command -v fish", { capture = true }).stdout:gsub("%s+$", "")
+  envy.run("ln -s " .. quote(fish) .. " " .. quote(temp .. "/bin/fish"))
+  dofile(root .. "/envy.lua")
+  local fisher_check
+  for _, package in ipairs(PACKAGES) do
+    if package.spec == "local.shell@r0" and package.options.check:match("^fish ") then
+      fisher_check = package.options.check
+    end
+  end
+  assert(fisher_check)
+  local config = temp .. "/fisher-home/.config/fish"
+  envy.run("mkdir -p " .. quote(config .. "/functions"))
+  put(config .. "/fish_plugins", "owner/one\nowner/two\n")
+  local function check_fisher()
+    local command = "'" .. fisher_check:gsub("'", [['"'"']]) .. "'"
+    return envy.run("env -i HOME=" .. quote(temp .. "/fisher-home") .. " XDG_CONFIG_HOME=" ..
+      quote(temp .. "/fisher-home/.config") .. " PATH=" .. quote(temp .. "/bin:/usr/bin:/bin") ..
+      " bash -c " .. command, { capture = true, check = false }).exit_code == 0
+  end
+  assert(not check_fisher(), "absent Fisher must need installation")
+  put(config .. "/functions/fisher.fish", 'function fisher; printf "%s\\n" owner/one; end\n')
+  assert(not check_fisher(), "manager presence must not hide a missing declared plugin")
+  put(config .. "/functions/fisher.fish", 'function fisher; printf "%s\\n" owner/one owner/two; end\n')
+  assert(check_fisher(), "complete declared inventory must satisfy setup")
 end)
 envy.run("rm -rf " .. quote(temp))
 assert(ok, failure)
