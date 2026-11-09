@@ -35,6 +35,8 @@ For non-interactive setup, pass the profile explicitly:
 
 The `work` profile writes `user.email = hjz@block.xyz` to `~/.gitconfig_local`; the `personal` profile writes `user.email = hjz@hackjumpzero.ca`. Other settings in `~/.gitconfig_local` are preserved.
 
+GitHub credentials use `gh` from `PATH`, on both macOS and Linux. Authenticate separately on each machine.
+
 APT and Pacman are expected to be provided by their operating systems. Setup may ask for `sudo` when it installs system packages.
 
 Setup also installs [Bun](https://bun.sh) and [Oh My Pi](https://omp.sh), then enables `github:phenome/omp-ponytail-caveman`. Existing executables are reused. On macOS, fresh omp installs use `brew install can1357/tap/omp`; Linux uses the upstream installer in `~/.local/bin`. Bun installs in `~/.bun/bin`. Both user directories are available in Fish and POSIX/Bash shells.
@@ -99,6 +101,8 @@ update
 This updates the active native package manager, Bun, omp, the configured omp Git plugin, Rust and Cargo tools, tmux plugins, and Fisher plugins. It does not update uv tools. The omp Git plugin is refreshed with `omp plugin install github:phenome/omp-ponytail-caveman`; `omp update --plugins` only upgrades marketplace plugins. On Omarchy, it delegates the required full-system Pacman upgrade to `omarchy update -y`, which preserves Omarchy's snapshot, migration, hook, and restart flow.
 
 The updater continues after individual command failures, reports their count, and exits 1. A successful run exits 0; unavailable optional tools are skipped.
+
+Tmux's theme stays pinned to v2.3.2. Updates refresh the TPM and continuum submodules from their upstream default branches; review and commit any changed submodule revisions. Other tmux plugins update individually so failures are reported instead of hidden by TPM's background jobs.
 
 Native-manager selection follows `envy/platform.lua`: Homebrew on macOS; on Linux, Pacman first, otherwise APT only when both `apt-get` and `dpkg-query` are available. Arch systems without Omarchy use Pacman directly. If no supported manager is available, native updates are skipped. Ubuntu Cargo fallbacks run only when APT is selected.
 

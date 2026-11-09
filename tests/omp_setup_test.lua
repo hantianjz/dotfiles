@@ -88,6 +88,27 @@ printf '%s\n' "$TEST_PLATFORM"
   local plugin = assert(io.open(temp .. "/home with spaces/plugin-enabled")); plugin:close()
   assert(result.stdout:find("Update completed with 1 failure(s).", 1, true), "update must summarize failures")
   assert(not result.stdout:find("Update complete.", 1, true), "failed update must not report success")
+  os.remove(temp .. "/home with spaces/update-fails")
+  run("mkdir -p " .. quote(temp .. "/home with spaces/.config/tmux/plugins/tpm/bin") .. " " ..
+    quote(temp .. "/home with spaces/.config/tmux/plugins/broken/.git") .. " " ..
+    quote(temp .. "/home with spaces/.config/tmux/plugins/healthy/.git"))
+  put(temp .. "/home with spaces/.config/tmux/plugins/tpm/bin/update_plugins", "#!/bin/sh\nexit 0\n")
+  put(temp .. "/bin/git", [[#!/bin/sh
+set -eu
+case "$3" in
+  rev-parse|submodule) : ;;
+  pull)
+    [ "$2" != "$HOME/.config/tmux/plugins/broken" ] || exit 42
+    : > "$HOME/tmux-later-updated" ;;
+  *) exit 1 ;;
+esac
+]])
+  run("chmod +x " .. quote(temp .. "/bin/git") .. " " ..
+    quote(temp .. "/home with spaces/.config/tmux/plugins/tpm/bin/update_plugins"))
+  result = envy.run(quote(root .. "/bin/update"), { capture = true, check = false })
+  assert(result.exit_code == 1, "a failed tmux plugin update must fail the updater")
+  local later = assert(io.open(temp .. "/home with spaces/tmux-later-updated")); later:close()
+  assert(result.stdout:find("Update completed with 1 failure(s).", 1, true))
 end)
 envy.run = run
 run("rm -rf " .. quote(temp))
