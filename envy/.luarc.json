@@ -2,10 +2,10 @@
   "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
   "runtime.version": "Lua 5.4",
   "workspace.library": [
-    "${env:HOME}/Library/Caches/envy/envy/0.4.8"
+    "${env:HOME}/Library/Caches/envy/envy/0.4.9"
   ],
   "diagnostics.globals": [
-    "envy", "IDENTITY", "PACKAGES", "DEPENDENCIES", "PRODUCTS",
+    "envy", "IDENTITY", "PACKAGES", "BUNDLES", "DEPENDENCIES", "PRODUCTS",
     "FETCH", "STAGE", "BUILD", "INSTALL", "CHECK", "SETUP"
   ]
 }

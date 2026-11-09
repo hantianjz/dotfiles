@@ -1,6 +1,6 @@
 -- envy.lua - Project manifest
--- @envy version "0.4.8"
--- @envy sha256sums "a8e360bb97b0d83cb5595c57c202e5ab680f7c4a74b9d379a7fb91824229a409"
+-- @envy version "0.4.9"
+-- @envy sha256sums "cd338f0d5dbf1e7c2b8065a8b601a0ebd1b9182cab50f5945e638b41933c1c34"
 -- @envy bin "bin"
 -- @envy deploy "true"
 
@@ -13,7 +13,9 @@ end
 local HOME = assert(os.getenv("HOME"), "HOME is not set")
 local platform = dofile(ROOT .. "/envy/platform.lua")
 
+local tmux = envy.import("envy/tmux.lua")
 PACKAGES = {}
+envy.extend(PACKAGES, tmux.PACKAGES)
 
 local function quote(value)
   return string.format("%q", value)
@@ -116,6 +118,13 @@ local SYMLINKS = {
 }
 
 envy.extend(SYMLINKS, platform.desktop_links(PROFILE, ROOT, HOME))
+for _, package in ipairs(tmux.PACKAGES) do
+  local name = package.options.dest
+  table.insert(SYMLINKS, {
+    source = ROOT .. "/" .. package.vendor .. "/" .. name,
+    dest = ROOT .. "/tmux/plugins/" .. name,
+  })
+end
 
 local skills = envy.run("find " .. quote(ROOT .. "/ai/skills") .. " -mindepth 1 -maxdepth 1 -type d", {
   capture = true,
@@ -185,16 +194,6 @@ envy.extend(PACKAGES, { {
 } })
 
 envy.extend(PACKAGES, {
-  {
-    spec = "local.tmux_plugins@r0",
-    source = "envy/local.tmux_plugins@r0.lua",
-    setup = { "plugins" },
-    options = {
-      source = ROOT .. "/tmux",
-      dest = HOME .. "/.config/tmux",
-      plugins = { "tmux-sensible", "tmux-yank", "tmux-resurrect", "tmux-open-nvim", "tmux-cpu" },
-    },
-  },
   {
     spec = "local.shell@r0",
     source = "envy/local.shell@r0.lua",

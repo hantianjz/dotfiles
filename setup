@@ -131,7 +131,7 @@ if profile_selection_required "$@"; then
   DOTFILES_PROFILE="$(select_dotfiles_profile)"
 fi
 
-# Config-only mode must not bootstrap packages or synchronize submodules.
+# Config-only mode must not bootstrap packages or fetch dependencies.
 if $CONFIG_ONLY; then
   exec "$SCRIPT_DIR/bin/envy" lua "$SCRIPT_DIR/envy/omarchy_setup.lua"
 fi
@@ -188,11 +188,6 @@ done
 # Explicit Envy arguments retain their original semantics (help, package queries).
 if $OMARCHY && [[ $# -eq 0 ]]; then
   "$SCRIPT_DIR/bin/envy" lua "$SCRIPT_DIR/envy/omarchy_setup.lua"
-fi
-
-if git -C "$SCRIPT_DIR" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-  git -C "$SCRIPT_DIR" submodule sync --recursive
-  git -C "$SCRIPT_DIR" submodule update --init --recursive
 fi
 
 exec "$SCRIPT_DIR/bin/envy" sync "$@"

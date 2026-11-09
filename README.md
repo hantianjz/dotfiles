@@ -25,7 +25,7 @@ Clone the repository and run:
 ./setup
 ```
 
-The setup script asks for a machine profile on the first full sync, stores it in `~/.dotfiles_profile`, initializes submodules, bootstraps Homebrew when it is missing on macOS, downloads the pinned Envy release, and syncs the complete manifest. Extra arguments are forwarded to `envy sync`.
+The setup script asks for a machine profile on the first full sync, stores it in `~/.dotfiles_profile`, bootstraps Homebrew when it is missing on macOS, downloads the pinned Envy release, and syncs the complete manifest. Extra arguments are forwarded to `envy sync`.
 For non-interactive setup, pass the profile explicitly:
 
 ```sh
@@ -56,7 +56,7 @@ The same links are managed by direct `./bin/envy sync` runs. Differing existing 
 
 Run setup as your desktop user **inside the upgraded Hyprland session**, not with `sudo`. Plain `./setup` backs up and adopts the personal Hyprland configuration before running the normal package/tool setup.
 
-For configuration only, without package installation or submodule updates:
+For configuration only, without package installation or dependency downloads:
 
 ```sh
 ./setup --omarchy-config
@@ -74,7 +74,9 @@ Envy preserves differing real files and directories at symlink destinations: it 
 
 If an older setup accidentally created a link inside an existing destination directory, the warning identifies the possible nested link. Remove or relocate that content manually before running `./setup` again.
 
-Tmux plugin setup waits for native packages and symlink setup. If `~/.config/tmux` is preserved as a user-owned directory, repository plugin installation is skipped with a warning rather than running a missing TPM script or changing that configuration. To adopt the repository's tmux configuration, back up and move the existing directory aside, then rerun `./setup`. For an already managed tmux directory, missing TPM submodules or installer failures remain errors.
+All eight tmux repositories are commit-pinned in `envy/tmux.lua`, using the first-party GitHub helper with Envy 0.4.9. Envy vendors them into `.envy/tmux/<name>/<name>`; managed links expose them at `tmux/plugins/<name>`. TPM only loads installed plugins; Envy owns acquisition and updates.
+
+For an existing checkout, inspect and move old real directories at `tmux/plugins/<name>` outside the checkout before the first migrated setup. Preserve any local changes. Envy warns and preserves conflicting directories instead of replacing them. The same policy preserves a user-owned `~/.config/tmux`; back up and move it aside only when adopting this repository's configuration.
 
 ## Omp settings backup
 
@@ -102,8 +104,7 @@ This updates the active native package manager, Bun, omp, the configured omp Git
 
 The updater continues after individual command failures, reports their count, and exits 1. A successful run exits 0; unavailable optional tools are skipped.
 
-Tmux's theme stays pinned to v2.3.2. Updates refresh the TPM and continuum submodules from their upstream default branches; review and commit any changed submodule revisions. Other tmux plugins update individually so failures are reported instead of hidden by TPM's background jobs.
-Nested submodules retain the revisions recorded by their updated parent.
+Tmux's theme stays pinned to v2.3.2, and all eight plugin revisions live in `envy/tmux.lua`. The updater runs `envy vendor --all` for repository-managed tmux configuration, restoring the declared revisions without Git pulls or submodule updates. To upgrade a plugin, resolve and review a new commit with `./bin/envy git-resolve`, update its pin, then run setup. Edits inside `.envy/tmux` are disposable and are replaced during synchronization.
 
 Native-manager selection follows `envy/platform.lua`: Homebrew on macOS; on Linux, Pacman first, otherwise APT only when both `apt-get` and `dpkg-query` are available. Arch systems without Omarchy use Pacman directly. If no supported manager is available, native updates are skipped. Ubuntu Cargo fallbacks run only when APT is selected.
 

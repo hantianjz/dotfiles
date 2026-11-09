@@ -60,6 +60,32 @@ printf '%s\n' "$TEST_PLATFORM"
 ]])
   run("chmod +x " .. quote(temp .. "/bun") .. " " .. quote(temp .. "/omp") .. " " ..
     quote(temp .. "/bin/curl") .. " " .. quote(temp .. "/bin/brew") .. " " .. quote(temp .. "/bin/uname"))
+  local project = temp .. "/project with spaces"
+  local updater = quote(project .. "/bin/update")
+  run("mkdir -p " .. quote(project .. "/bin") .. " " .. quote(project .. "/tmux") .. " " ..
+    quote(project .. "/config/herdr") .. " " .. quote(temp .. "/home with spaces/.config"))
+  run("cp " .. quote(root .. "/bin/update") .. " " .. quote(project .. "/bin/update"))
+  run("cp " .. quote(root .. "/config/herdr/plugins") .. " " .. quote(project .. "/config/herdr/plugins"))
+  run("ln -s " .. quote(project .. "/tmux") .. " " .. quote(temp .. "/home with spaces/.config/tmux"))
+  put(project .. "/bin/envy", [[#!/bin/sh
+set -eu
+[ "$#" -eq 4 ]
+[ "$1" = --project ]
+[ "$2" = "$FIXTURES/project with spaces" ]
+[ "$3" = vendor ]
+[ "$4" = --all ]
+[ ! -f "$HOME/vendor-fails" ] || exit 43
+: > "$HOME/tmux-vendored"
+]])
+  put(temp .. "/bin/fish", [[#!/bin/sh
+set -eu
+case "$*" in
+  '-c type -q fisher') : ;;
+  '-c fisher update') : > "$HOME/fisher-updated" ;;
+  *) exit 1 ;;
+esac
+]])
+  run("chmod +x " .. quote(project .. "/bin/envy") .. " " .. quote(temp .. "/bin/fish"))
   local prefix = "env -i HOME=" .. quote(temp .. "/home with spaces") .. " PATH=" .. quote(temp .. "/bin") ..
     " TEST_PLATFORM=" .. quote(os.getenv("OMP_TEST_PLATFORM") or "Darwin") ..
     " FIXTURES=" .. quote(temp) .. " " .. quote(temp .. "/bin/bash") .. " -c "
@@ -77,96 +103,33 @@ printf '%s\n' "$TEST_PLATFORM"
   envy.run(SETUP.tools.INSTALL())
   os.remove(temp .. "/home with spaces/plugin-enabled")
   assert(not SETUP.tools.CHECK(), "missing plugin must need setup")
-  envy.run(quote(root .. "/bin/update"))
+  envy.run(updater)
   assert(SETUP.tools.CHECK(), "update must refresh the Git-source plugin")
-  for _, marker in ipairs({ "bun-updated", "omp-updated" }) do
+  for _, marker in ipairs({ "bun-updated", "omp-updated", "tmux-vendored", "fisher-updated" }) do
     local file = assert(io.open(temp .. "/home with spaces/" .. marker)); file:close()
   end
   os.remove(temp .. "/home with spaces/plugin-enabled")
   put(temp .. "/home with spaces/update-fails", "")
-  local result = envy.run(quote(root .. "/bin/update"), { capture = true, check = false })
+  local result = envy.run(updater, { capture = true, check = false })
   assert(result.exit_code ~= 0, "a failed update must exit nonzero")
   local plugin = assert(io.open(temp .. "/home with spaces/plugin-enabled")); plugin:close()
   assert(result.stdout:find("Update completed with 1 failure(s).", 1, true), "update must summarize failures")
   assert(not result.stdout:find("Update complete.", 1, true), "failed update must not report success")
   os.remove(temp .. "/home with spaces/update-fails")
-  run("mkdir -p " .. quote(temp .. "/home with spaces/.config/tmux/plugins/tpm/bin") .. " " ..
-    quote(temp .. "/home with spaces/.config/tmux/plugins/broken/.git") .. " " ..
-    quote(temp .. "/home with spaces/.config/tmux/plugins/healthy/.git"))
-  put(temp .. "/home with spaces/.config/tmux/plugins/tpm/bin/update_plugins", "#!/bin/sh\nexit 0\n")
-  put(temp .. "/bin/git", [[#!/bin/sh
-set -eu
-case "$3" in
-  rev-parse|submodule) : ;;
-  pull)
-    [ "$2" != "$HOME/.config/tmux/plugins/broken" ] || exit 42
-    : > "$HOME/tmux-later-updated" ;;
-  *) exit 1 ;;
-esac
-]])
-  run("chmod +x " .. quote(temp .. "/bin/git") .. " " ..
-    quote(temp .. "/home with spaces/.config/tmux/plugins/tpm/bin/update_plugins"))
-  result = envy.run(quote(root .. "/bin/update"), { capture = true, check = false })
-  assert(result.exit_code == 1, "a failed tmux plugin update must fail the updater")
-  local later = assert(io.open(temp .. "/home with spaces/tmux-later-updated")); later:close()
+  os.remove(temp .. "/home with spaces/tmux-vendored")
+  os.remove(temp .. "/home with spaces/fisher-updated")
+  put(temp .. "/home with spaces/vendor-fails", "")
+  result = envy.run(updater, { capture = true, check = false })
+  assert(result.exit_code == 1, "failed Envy vendoring must fail the updater")
+  assert(not io.open(temp .. "/home with spaces/tmux-vendored"), "failed vendoring must not report success")
+  local fisher = assert(io.open(temp .. "/home with spaces/fisher-updated")); fisher:close()
   assert(result.stdout:find("Update completed with 1 failure(s).", 1, true))
-  -- Real local Git repositories exercise parent updates without moving child pins.
-  local git_binary = run("command -v git", { capture = true }).stdout:gsub("%s+$", "")
-  local git_prefix = "env GIT_CONFIG_GLOBAL=/dev/null GIT_CONFIG_NOSYSTEM=1 " .. quote(git_binary) ..
-    " -c protocol.file.allow=always -c user.name=Fixture -c user.email=fixture@example.com -C "
-  local function git(path, arguments)
-    return run(git_prefix .. quote(path) .. " " .. arguments, { capture = true }).stdout:gsub("%s+$", "")
-  end
-  local seed, parent, project = temp .. "/seed", temp .. "/parent", temp .. "/tmux-root"
-  run("mkdir -p " .. quote(seed) .. " " .. quote(parent .. "/bin") .. " " .. quote(project))
-  git(seed, "init -b main")
-  put(seed .. "/value", "old\n")
-  git(seed, "add value"); git(seed, "commit -m old")
-  local old_child = git(seed, "rev-parse HEAD")
-  git(parent, "init -b main")
-  put(parent .. "/bin/update_plugins", "#!/bin/sh\nexit 0\n")
-  run("chmod +x " .. quote(parent .. "/bin/update_plugins"))
-  git(parent, "submodule add " .. quote(seed) .. " lib/tmux-test")
-  git(parent, "add ."); git(parent, "commit -m parent")
-  git(project, "init -b main")
-  for name, source in pairs({ tpm = parent, tmux = seed, ["tmux-continuum"] = seed }) do
-    git(project, "submodule add " .. quote(source) .. " tmux/plugins/" .. name)
-  end
-  git(project, "commit -am project")
-  git(project, "submodule update --init --recursive")
-  put(seed .. "/value", "new\n")
-  git(seed, "commit -am new")
-  local new_child = git(seed, "rev-parse HEAD")
-  run("rm -rf " .. quote(temp .. "/home with spaces/.config/tmux/plugins"))
-  run("ln -s " .. quote(project .. "/tmux/plugins") .. " " ..
-    quote(temp .. "/home with spaces/.config/tmux/plugins"))
-  put(temp .. "/bin/git", [[#!/bin/sh
-set -eu
-source_root=]] .. quote(root) .. "\n" .. [[
-if [ "${1:-}" = -C ]; then
-  case "${2:-}" in
-    "$source_root"|"$source_root"/*)
-      destination="$FIXTURES/tmux-root${2#"$source_root"}"
-      shift 2
-      set -- -C "$destination" "$@" ;;
-  esac
-fi
-if [ "${1:-}" = -C ]; then
-  case "$2" in "$FIXTURES"|"$FIXTURES"/*) ;; *) exit 97 ;; esac
-else
-  case "$PWD" in "$FIXTURES"|"$FIXTURES"/*) ;; *) exit 97 ;; esac
-fi
-PATH="$FIXTURES/bin:/usr/bin:/bin" exec ]] .. quote(git_binary) .. [[ -c protocol.file.allow=always "$@"
-]])
-  envy.run(quote(root .. "/bin/update"), { capture = true })
-  assert(git(project .. "/tmux/plugins/tpm/lib/tmux-test", "rev-parse HEAD") == old_child,
-    "nested submodule must retain its parent's recorded revision")
-  assert(git(project .. "/tmux/plugins/tpm", "status --porcelain") == "",
-    "updating a parent must not dirty its nested submodule")
-  assert(git(project .. "/tmux/plugins/tmux", "rev-parse HEAD") == old_child,
-    "theme must retain its recorded release")
-  assert(git(project .. "/tmux/plugins/tmux-continuum", "rev-parse HEAD") == new_child,
-    "selected parent submodules must follow upstream")
+  assert(not result.stdout:find("Update complete.", 1, true))
+  os.remove(temp .. "/home with spaces/.config/tmux")
+  run("mkdir -p " .. quote(temp .. "/home with spaces/.config/tmux"))
+  result = envy.run(updater, { capture = true, check = false })
+  assert(result.exit_code == 0, "user-owned tmux config must skip Envy vendoring")
+  assert(not io.open(temp .. "/home with spaces/tmux-vendored"), "user-owned tmux config must remain untouched")
 end)
 envy.run = run
 run("rm -rf " .. quote(temp))

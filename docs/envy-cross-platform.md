@@ -36,8 +36,7 @@ The manifest is intentionally an orchestrator. Platform decisions live in one po
 ```mermaid
 flowchart TB
     User[User runs setup] --> Bootstrap[Bootstrap prerequisites]
-    Bootstrap --> Submodules[Sync HTTPS submodules]
-    Submodules --> Envy[Pinned Envy 0.4.8]
+    Bootstrap --> Envy[Pinned Envy 0.4.9]
     Envy --> Manifest[envy.lua orchestration]
     Manifest --> Policy[Platform policy]
     Manifest --> GitHub[First-party GitHub source pins]
@@ -53,9 +52,10 @@ flowchart TB
 
 | File | Responsibility |
 | --- | --- |
-| `setup` | Bootstraps curl/Homebrew, verifies prerequisites, synchronizes submodule URLs, initializes submodules, then executes Envy. |
+| `setup` | Bootstraps curl/Homebrew, verifies prerequisites, then executes Envy. |
 | `bin/envy` | Locates the manifest and downloads/runs the Envy version pinned by its directives. |
 | `envy.lua` | Builds the package graph, common links, generated AI-skill links, and post-install plugin tasks. |
+| `envy/tmux.lua` | Imports the pinned first-party GitHub helper and declares all eight vendored tmux repositories. |
 | `envy/platform.lua` | Detects the profile and returns native packages, casks, taps, Cargo fallbacks, and desktop-specific links. This is the source of truth for platform differences. |
 | `envy/local.system_packages@r0.lua` | Checks and installs formulas, casks, APT packages, or Pacman packages. |
 | `envy/local.symlink@r0.lua` | Classifies destinations, warns on conflicts, and creates or repairs only safe links. |
@@ -73,7 +73,6 @@ sequenceDiagram
     autonumber
     actor User
     participant Setup as setup
-    participant Git as Git submodules
     participant Envy as Envy manifest
     participant Manager as Native manager
     participant Portable as Cargo and uv
@@ -81,16 +80,15 @@ sequenceDiagram
     User->>Setup: ./setup
     Setup->>Setup: Detect Darwin or Linux
     Setup->>Setup: Bootstrap curl or Homebrew if needed
-    Setup->>Git: sync and update recursively
     Setup->>Envy: envy sync
     Envy->>Envy: Resolve profile and link policy
     Envy->>Manager: Check then install missing native packages
     Envy->>Portable: Check then install portable tools
-    Envy->>Envy: Create safe links and install plugins
+    Envy->>Envy: Create safe links and vendor pinned tmux sources
     Envy-->>User: Success or first actionable failure
 ```
 
-Submodule URLs are HTTPS so a fresh public checkout does not depend on GitHub SSH credentials. Homebrew is bootstrapped only on macOS; APT and Pacman are assumed to be part of their operating systems.
+GitHub dependencies use HTTPS, so a fresh public checkout does not need GitHub SSH credentials or recursive submodule initialization. Homebrew is bootstrapped only on macOS; APT and Pacman are assumed to be part of their operating systems.
 
 ## Package strategy
 
@@ -138,7 +136,11 @@ Regular dotfiles and generated AI-skill links go through the same recipe. A futu
 
 All shell paths must be quoted. Conflicts intentionally do not fail the entire sync because unrelated links and packages should still converge. If an older run created a nested link inside a real directory, the warning points out the possible nested path but does not remove it.
 
-`local.tmux_plugins@r0` depends on the manifest's native-package and symlink setup pairs. Its plugin work applies only when `~/.config/tmux` is a symlink resolving to this checkout's `tmux` directory. A preserved user-owned destination is reported and left alone, including its plugins. This is not a successful deployment of the repository's tmux settings: adopting them requires backing up and moving the conflicting destination aside, then rerunning setup. For managed destinations, the recipe invokes the checkout's TPM command-line installer; an uninitialized TPM submodule is an actionable error, not a reason to silently skip installation.
+`envy/tmux.lua` uses `envy.loadenv_bundle("first-party", "lib.github")` from a commit-pinned `envy.package-specs@r11` bundle. The helper requires Envy 0.4.9. Every `github.repo` entry vendors its pinned clone to `.envy/tmux/<name>/<name>`; `envy.lua` generates links at `tmux/plugins/<name>` through the existing safe symlink recipe. TPM is a runtime loader only; its install/update bindings are not registered.
+
+Normal `envy sync` installs the complete graph. The updater's `envy vendor --all` restores only declared vendor entries, without running native package or portable-tool setup. All eight revisions are reviewed manifest changes, not mutable branch heads. Cached copies provide convergence and repair after a vendored file is removed or edited.
+
+For existing checkouts, inspect and move old real plugin directories out of `tmux/plugins` before adopting the new links. Modified clones must be preserved. A user-owned `~/.config/tmux` remains untouched; repository dependencies may still be downloaded into this checkout, but its configuration is not deployed until the conflict is resolved.
 
 Desktop link invariants:
 
@@ -213,13 +215,13 @@ Run the non-mutating checks before a full setup:
 ./bin/envy lua tests/omarchy_setup_test.lua
 ./bin/envy lua tests/tmux_setup_test.lua
 ./bin/envy lua tests/omp_setup_test.lua
-bash tests/update_test.sh
-bash -n setup bin/update tests/package_metadata.sh tests/update_test.sh
+OMP_TEST_PLATFORM=Linux ./bin/envy lua tests/omp_setup_test.lua
+bash -n setup bin/update tests/package_metadata.sh
 ./bin/envy lua envy.lua
 git diff --check
 ```
 
-The updater tests execute the real script with isolated command doubles, covering manager precedence, Ubuntu-only Cargo fallbacks, and the absence of uv calls. They do not upgrade the host or access the network. Never run the live updater as a validation check.
+The updater tests execute the real script with isolated command doubles, covering propagated failures, continued later work, and Envy vendoring for managed tmux configuration. They do not upgrade the host or access the network. Never run the live updater as a validation check. Tmux dependency checks use the real Envy helper with immutable public GitHub revisions in disposable directories.
 
 Shell startup checks keep user tool directories ahead of Homebrew in `PATH`. The profile initializes Homebrew only when its executable exists, before loading the shared environment. Arch CI installs `diffutils` for byte-exact clipboard checks with `cmp`. The Herdr inventory audit uses C-locale ordering; chord checks exclude bindings intentionally removed from the configuration.
 
@@ -293,7 +295,7 @@ When changing platform behavior:
 - Update the profile assertions in `tests/platform_test.lua`.
 - Run `tests/package_metadata.sh PROFILE` on the affected operating system.
 - Update `bin/update` if the install source is not the native manager.
-- Keep public submodules on HTTPS.
+- Keep public GitHub dependencies on HTTPS and use the first-party helper instead of Git submodules.
 - Keep GitHub source pins as full SHAs and mirror them in `bin/update` when the tool also has an update command.
 - Update this guide when an invariant, supported baseline, or fallback changes.
 

@@ -1,6 +1,9 @@
-tmux-sensible/
-tmux-yank/
+/tmux-sensible
+/tmux-yank
 tmux-battery/
-tmux-cpu/
-tmux-open-nvim/
-tmux-resurrect/
+/tmux-cpu
+/tmux-open-nvim
+/tmux-resurrect
+/tpm
+/tmux
+/tmux-continuum
