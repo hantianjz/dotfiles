@@ -3,6 +3,10 @@ IDENTITY = "local.cargo_github_tmx@r0"
 USER_MANAGED = true
 
 DEPENDENCIES = { {
+  spec = "local.system_packages@r0",
+  setup = { "packages" },
+  needed_by = "check",
+}, {
   spec = "local.rustup_toolchain@r0",
   source = "local.rustup_toolchain@r0.lua",
   setup = { "toolchain" },

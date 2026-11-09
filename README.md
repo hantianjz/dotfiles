@@ -12,6 +12,8 @@ Shared shell, Neovim, Git, Ghostty, tmux, Herdr, scripts, and AI-skill links are
 
 Ubuntu uses Cargo for portable CLI tools that are unavailable from the standard APT repositories. GitHub-sourced Cargo tools are cloned through Envy's first-party GitHub spec at pinned commits before Cargo installs them. Ghostty and Lazygit are not automatically installed on Ubuntu.
 
+Ubuntu declares `build-essential` for Cargo builds. Cargo and shell plugin setup wait for native packages; Herdr plugins also wait for the Herdr CLI.
+
 ## Fresh install
 
 Clone the repository and run:
