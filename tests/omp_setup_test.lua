@@ -3,6 +3,7 @@ local root = script:match("^(.*)/tests/") or "."
 if root:sub(1, 1) ~= "/" then root = assert(os.getenv("PWD")) .. "/" .. root end
 local function quote(s) return "'" .. s:gsub("'", [['"'"']]) .. "'" end
 local run = envy.run
+root = run("cd " .. quote(root) .. " && pwd", { capture = true }).stdout:gsub("%s+$", "")
 local function put(path, content)
   local file = assert(io.open(path, "w")); assert(file:write(content)); assert(file:close())
 end
@@ -109,6 +110,63 @@ esac
   assert(result.exit_code == 1, "a failed tmux plugin update must fail the updater")
   local later = assert(io.open(temp .. "/home with spaces/tmux-later-updated")); later:close()
   assert(result.stdout:find("Update completed with 1 failure(s).", 1, true))
+  -- Real local Git repositories exercise parent updates without moving child pins.
+  local git_binary = run("command -v git", { capture = true }).stdout:gsub("%s+$", "")
+  local git_prefix = "env GIT_CONFIG_GLOBAL=/dev/null GIT_CONFIG_NOSYSTEM=1 " .. quote(git_binary) ..
+    " -c protocol.file.allow=always -c user.name=Fixture -c user.email=fixture@example.com -C "
+  local function git(path, arguments)
+    return run(git_prefix .. quote(path) .. " " .. arguments, { capture = true }).stdout:gsub("%s+$", "")
+  end
+  local seed, parent, project = temp .. "/seed", temp .. "/parent", temp .. "/tmux-root"
+  run("mkdir -p " .. quote(seed) .. " " .. quote(parent .. "/bin") .. " " .. quote(project))
+  git(seed, "init -b main")
+  put(seed .. "/value", "old\n")
+  git(seed, "add value"); git(seed, "commit -m old")
+  local old_child = git(seed, "rev-parse HEAD")
+  git(parent, "init -b main")
+  put(parent .. "/bin/update_plugins", "#!/bin/sh\nexit 0\n")
+  run("chmod +x " .. quote(parent .. "/bin/update_plugins"))
+  git(parent, "submodule add " .. quote(seed) .. " lib/tmux-test")
+  git(parent, "add ."); git(parent, "commit -m parent")
+  git(project, "init -b main")
+  for name, source in pairs({ tpm = parent, tmux = seed, ["tmux-continuum"] = seed }) do
+    git(project, "submodule add " .. quote(source) .. " tmux/plugins/" .. name)
+  end
+  git(project, "commit -am project")
+  git(project, "submodule update --init --recursive")
+  put(seed .. "/value", "new\n")
+  git(seed, "commit -am new")
+  local new_child = git(seed, "rev-parse HEAD")
+  run("rm -rf " .. quote(temp .. "/home with spaces/.config/tmux/plugins"))
+  run("ln -s " .. quote(project .. "/tmux/plugins") .. " " ..
+    quote(temp .. "/home with spaces/.config/tmux/plugins"))
+  put(temp .. "/bin/git", [[#!/bin/sh
+set -eu
+source_root=]] .. quote(root) .. "\n" .. [[
+if [ "${1:-}" = -C ]; then
+  case "${2:-}" in
+    "$source_root"|"$source_root"/*)
+      destination="$FIXTURES/tmux-root${2#"$source_root"}"
+      shift 2
+      set -- -C "$destination" "$@" ;;
+  esac
+fi
+if [ "${1:-}" = -C ]; then
+  case "$2" in "$FIXTURES"|"$FIXTURES"/*) ;; *) exit 97 ;; esac
+else
+  case "$PWD" in "$FIXTURES"|"$FIXTURES"/*) ;; *) exit 97 ;; esac
+fi
+PATH="$FIXTURES/bin:/usr/bin:/bin" exec ]] .. quote(git_binary) .. [[ -c protocol.file.allow=always "$@"
+]])
+  envy.run(quote(root .. "/bin/update"), { capture = true })
+  assert(git(project .. "/tmux/plugins/tpm/lib/tmux-test", "rev-parse HEAD") == old_child,
+    "nested submodule must retain its parent's recorded revision")
+  assert(git(project .. "/tmux/plugins/tpm", "status --porcelain") == "",
+    "updating a parent must not dirty its nested submodule")
+  assert(git(project .. "/tmux/plugins/tmux", "rev-parse HEAD") == old_child,
+    "theme must retain its recorded release")
+  assert(git(project .. "/tmux/plugins/tmux-continuum", "rev-parse HEAD") == new_child,
+    "selected parent submodules must follow upstream")
 end)
 envy.run = run
 run("rm -rf " .. quote(temp))
