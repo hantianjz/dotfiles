@@ -200,9 +200,26 @@ envy.extend(PACKAGES, {
     source = "envy/local.shell@r0.lua",
     setup = { "command" },
     options = {
-      check = "fish -c 'type -q fisher'",
-      install =
-      "fish -c 'curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher'",
+      check = [[fish -c '
+        type -q fisher; or exit 1
+        set -l plugins (string match --regex -- "^[^\s]+\$" < $__fish_config_dir/fish_plugins); or exit 1
+        set -l installed (fisher list)
+        for plugin in $plugins
+          contains -- $plugin $installed; or exit 1
+        end
+      ']],
+      install = [[fish -c '
+        set -l plugins (string match --regex -- "^[^\s]+\$" < $__fish_config_dir/fish_plugins); or exit 1
+        if not type -q fisher
+          set -l fisher_source (curl -fsSL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish); or exit 1
+          printf "%s\n" $fisher_source | source; or exit 1
+        end
+        fisher install $plugins; or exit 1
+        set -l installed (fisher list)
+        for plugin in $plugins
+          contains -- $plugin $installed; or exit 1
+        end
+      ']],
     },
   },
 })
