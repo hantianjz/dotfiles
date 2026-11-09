@@ -2,35 +2,9 @@ name: Cross-platform Envy
 
 on:
   push:
-    paths:
-      - "envy.lua"
-      - "envy/**"
-      - "fish/**"
-      - "shellrc/**"
-      - "config/herdr/**"
-      - "config/hypr/**"
-      - "scripts/herdr-tmux-action"
-      - "tmux/tmux.keys.conf"
-      - "setup"
-      - "bin/update"
-      - "bin/omp-backup"
-      - "tests/**"
-      - ".github/workflows/cross-platform-envy.yml"
+    branches:
+      - main
   pull_request:
-    paths:
-      - "envy.lua"
-      - "envy/**"
-      - "fish/**"
-      - "shellrc/**"
-      - "config/herdr/**"
-      - "config/hypr/**"
-      - "scripts/herdr-tmux-action"
-      - "tmux/tmux.keys.conf"
-      - "setup"
-      - "bin/update"
-      - "bin/omp-backup"
-      - "tests/**"
-      - ".github/workflows/cross-platform-envy.yml"
 
 jobs:
   unix:

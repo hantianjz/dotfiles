@@ -245,6 +245,8 @@ After the non-mutating checks pass, run `./setup` on the target platform and the
 
 GitHub Actions runs policy, symlink, syntax, and native metadata checks on Ubuntu 24.04, macOS 15 (Apple Silicon), and an Arch container. These jobs query package repositories but do not fully provision a machine. GitHub retired macOS 14 runners on [November 2, 2026](https://github.com/actions/runner-images/issues/15226); keep the workflow on a supported pinned runner label.
 
+The workflow runs on pull requests and pushes to `main`, subject to its path filters. Feature-branch pushes do not start a second run alongside pull-request checks.
+
 ## Troubleshooting
 
 ### Native manager reports “target/package not found”
