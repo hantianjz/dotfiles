@@ -54,7 +54,7 @@ assert(contains(macos.taps, "agavra/tap"))
 assert(contains(macos.taps, "nikitabobko/tap"))
 assert_equal(#macos.crates, 0)
 
-local ubuntu = platform.packages("ubuntu", "apt")
+local ubuntu = platform.packages("ubuntu", "apt", "24.04")
 assert(contains(ubuntu.packages, "fd-find"))
 assert(contains(ubuntu.packages, "wl-clipboard"))
 assert(not contains(ubuntu.packages, "ghostty"))
@@ -64,6 +64,10 @@ local yazi = assert(find_package(ubuntu.crates, "yazi-build"))
 assert(yazi.force, "yazi-build must be installed with --force")
 assert(not find_package(ubuntu.crates, "yazi-fm"))
 assert(not find_package(ubuntu.crates, "yazi-cli"))
+for _, case in ipairs({ { "25.10", false }, { "26.04", true }, { "26.10", true } }) do
+  assert_equal(contains(platform.packages("ubuntu", "apt", case[1]).packages, "ghostty"),
+    case[2], "Ghostty availability on Ubuntu " .. case[1])
+end
 
 local arch = platform.packages("arch", "pacman")
 assert(contains(arch.packages, "github-cli"))

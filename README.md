@@ -10,7 +10,7 @@ Declarative development environment setup using [Envy](https://github.com/envy-p
 
 Shared shell, Neovim, Git, Ghostty, tmux, Herdr, scripts, and AI-skill links are managed on every platform. Herdr independently uses the same `Ctrl-a`-prefixed pane and tab bindings as tmux where practical; `Ctrl-a Ctrl-a` sends a literal `Ctrl-a` to the active program. Aerospace is linked only on macOS. Personal Hyprland overrides target Omarchy v4.0.4 and are linked individually only on Arch; Ubuntu does not receive either desktop-specific link set. Existing Omarchy installations must follow the [bounded migration procedure](docs/envy-cross-platform.md#omarchy-v404-cutover) before deploying the Lua configuration.
 
-Ubuntu uses Cargo for portable CLI tools that are unavailable from the standard APT repositories. GitHub-sourced Cargo tools are cloned through Envy's first-party GitHub spec at pinned commits before Cargo installs them. Ghostty and Lazygit are not automatically installed on Ubuntu.
+Ubuntu uses Cargo for portable CLI tools that are unavailable from the standard APT repositories. GitHub-sourced Cargo tools are cloned through Envy's first-party GitHub spec at pinned commits before Cargo installs them. Ghostty installs through Homebrew on macOS, Pacman on Arch, and the official APT repositories on Ubuntu 26.04 or newer. Ubuntu 24.04 keeps its Ghostty configuration link but does not install Ghostty automatically. Lazygit is not automatically installed on Ubuntu.
 
 Ubuntu declares `build-essential` for Cargo builds. Cargo and shell plugin setup wait for native packages; Herdr plugins also wait for the Herdr CLI.
 Rustup leaves shell startup files unchanged; the shared shell environment owns Cargo's `PATH` entry.
@@ -109,6 +109,8 @@ Tmux's theme stays pinned to v2.3.2, and all eight plugin revisions live in `env
 Native-manager selection follows `envy/platform.lua`: Homebrew on macOS; on Linux, Pacman first, otherwise APT only when both `apt-get` and `dpkg-query` are available. Arch systems without Omarchy use Pacman directly. If no supported manager is available, native updates are skipped. Ubuntu Cargo fallbacks run only when APT is selected.
 
 On macOS, Homebrew upgrades omp; the updater does not run `omp update`. Other profiles retain `omp update`. The configured Git plugin refreshes on all profiles.
+
+Ghostty follows native package updates through Homebrew on macOS, APT on Ubuntu 26.04 or newer, and Pacman/Omarchy on Arch.
 
 The updater refreshes an installed Herdr desktop app by rerunning its official installer, including on Omarchy. Missing desktop app installations are skipped. Herdr TUI installation, updates, configuration, and plugins remain separate.
 

@@ -48,7 +48,7 @@ function M.detect(platform, command_exists)
   error("unsupported Linux package manager: expected pacman or apt-get with dpkg-query")
 end
 
-function M.packages(profile, manager)
+function M.packages(profile, manager, version_id)
   local packages = {}
   append(packages, common_packages)
   for _, aliases in ipairs(package_aliases) do
@@ -72,6 +72,16 @@ function M.packages(profile, manager)
     })
   elseif profile == "ubuntu" then
     append(packages, { "build-essential", "libglib2.0-dev", "libudev-dev", "usbutils", "wl-clipboard" })
+    if not version_id then
+      local release = io.open("/etc/os-release")
+      if release then
+        version_id = release:read("*a"):match('VERSION_ID="?([%d.]+)')
+        release:close()
+      end
+    end
+    if (tonumber(version_id) or 0) >= 26.04 then
+      table.insert(packages, "ghostty")
+    end
     append(crates, portable_ubuntu_crates)
   else
     error("unknown platform profile: " .. tostring(profile))
