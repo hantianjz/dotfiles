@@ -171,6 +171,25 @@ PACKAGES = {
   assert(not check_fisher(), "manager presence must not hide a missing declared plugin")
   put(config .. "/functions/fisher.fish", 'function fisher; printf "%s\\n" owner/one owner/two; end\n')
   assert(check_fisher(), "complete declared inventory must satisfy setup")
+  dofile(root .. "/envy/local.rustup@r0.lua")
+  local startup = temp .. "/rustup-home"
+  envy.run("mkdir -p " .. quote(startup))
+  put(startup .. "/.profile", "# user profile\n")
+  put(startup .. "/.bashrc", "# user bashrc\n")
+  put(temp .. "/bin/curl", [[#!/bin/sh
+cat <<'INSTALLER'
+case " $* " in *" --no-modify-path "*) exit 0 ;; esac
+printf '. "$HOME/.cargo/env"\n' >> "$HOME/.profile"
+printf '. "$HOME/.cargo/env"\n' >> "$HOME/.bashrc"
+INSTALLER
+]])
+  local install = "'" .. SETUP.rustup.INSTALL():gsub("'", [['"'"']]) .. "'"
+  envy.run("env -i HOME=" .. quote(startup) .. " PATH=" .. quote(temp .. "/bin:/usr/bin:/bin") ..
+    " bash -c " .. install, { capture = true })
+  for file, expected in pairs({ [".profile"] = "# user profile\n", [".bashrc"] = "# user bashrc\n" }) do
+    local handle = assert(io.open(startup .. "/" .. file)); local actual = handle:read("*a"); handle:close()
+    assert(actual == expected, "Rustup must preserve startup files")
+  end
 end)
 envy.run("rm -rf " .. quote(temp))
 assert(ok, failure)

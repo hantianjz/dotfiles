@@ -12,7 +12,7 @@ local check = function(pkg_dir, opts)
 end
 
 local install = function(pkg_dir, opts)
-  return "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"
+  return "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path"
 end
 
 SETUP = { rustup = { CHECK = check, INSTALL = install } }
