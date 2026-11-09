@@ -103,6 +103,7 @@ This updates the active native package manager, Bun, omp, the configured omp Git
 The updater continues after individual command failures, reports their count, and exits 1. A successful run exits 0; unavailable optional tools are skipped.
 
 Tmux's theme stays pinned to v2.3.2. Updates refresh the TPM and continuum submodules from their upstream default branches; review and commit any changed submodule revisions. Other tmux plugins update individually so failures are reported instead of hidden by TPM's background jobs.
+Nested submodules retain the revisions recorded by their updated parent.
 
 Native-manager selection follows `envy/platform.lua`: Homebrew on macOS; on Linux, Pacman first, otherwise APT only when both `apt-get` and `dpkg-query` are available. Arch systems without Omarchy use Pacman directly. If no supported manager is available, native updates are skipped. Ubuntu Cargo fallbacks run only when APT is selected.
 
