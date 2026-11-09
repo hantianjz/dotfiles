@@ -110,7 +110,7 @@ end
 ]], root, root .. "/envy/local." .. recipe .. "@r0.lua", temp .. "/toolchain.lua", temp .. "/github.lua"))
   end
   put(temp .. "/envy.lua", string.format([[
--- @envy version "0.4.8"
+-- @envy version "0.4.9"
 -- @envy bin "bin"
 PACKAGES = {
   { spec = "local.cargo_install@r0", source = %q, setup = { "crates" },
@@ -149,9 +149,13 @@ PACKAGES = {
   assert(installs() == "installed\ninstalled\n", "retained unregistered checkout must not satisfy setup")
   local fish = envy.run("command -v fish", { capture = true }).stdout:gsub("%s+$", "")
   envy.run("ln -s " .. quote(fish) .. " " .. quote(temp .. "/bin/fish"))
-  dofile(root .. "/envy.lua")
+  -- This unit check exercises Fisher, not the separate GitHub dependency graph.
+  local manifest = setmetatable({
+    envy = setmetatable({ import = function() return { PACKAGES = {} } end }, { __index = envy }),
+  }, { __index = _G })
+  assert(loadfile(root .. "/envy.lua", "t", manifest))()
   local fisher_check
-  for _, package in ipairs(PACKAGES) do
+  for _, package in ipairs(manifest.PACKAGES) do
     if package.spec == "local.shell@r0" and package.options.check:match("^fish ") then
       fisher_check = package.options.check
     end
