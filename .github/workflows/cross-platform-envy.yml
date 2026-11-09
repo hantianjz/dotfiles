@@ -71,7 +71,9 @@ jobs:
       - name: Local spec tests
         run: ./bin/envy lua tests/local_specs_test.lua
       - name: Omp setup and updates
-        run: ./bin/envy lua tests/omp_setup_test.lua
+        run: |
+          ./bin/envy lua tests/omp_setup_test.lua
+          OMP_TEST_PLATFORM=Linux ./bin/envy lua tests/omp_setup_test.lua
       - name: Profile setup tests
         run: ./bin/envy lua tests/profile_setup_test.lua
       - name: Safe symlink tests
@@ -106,7 +108,9 @@ jobs:
       - name: Local spec tests
         run: ./bin/envy lua tests/local_specs_test.lua
       - name: Omp setup and updates
-        run: ./bin/envy lua tests/omp_setup_test.lua
+        run: |
+          ./bin/envy lua tests/omp_setup_test.lua
+          OMP_TEST_PLATFORM=Linux ./bin/envy lua tests/omp_setup_test.lua
       - name: Profile setup tests
         run: ./bin/envy lua tests/profile_setup_test.lua
       - name: Safe symlink tests

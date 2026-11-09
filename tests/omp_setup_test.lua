@@ -14,7 +14,10 @@ local ok, failure = pcall(function()
     run("ln -s " .. quote(binary) .. " " .. quote(temp .. "/bin/" .. command))
   end
   put(temp .. "/bun", [[#!/bin/sh
-if [ "${1:-}" = upgrade ]; then : > "$HOME/bun-updated"; fi
+if [ "${1:-}" = upgrade ]; then
+  [ ! -f "$HOME/update-fails" ] || exit 42
+  : > "$HOME/bun-updated"
+fi
 ]])
   put(temp .. "/omp", [[#!/bin/sh
 set -eu
@@ -78,6 +81,13 @@ printf '%s\n' "$TEST_PLATFORM"
   for _, marker in ipairs({ "bun-updated", "omp-updated" }) do
     local file = assert(io.open(temp .. "/home with spaces/" .. marker)); file:close()
   end
+  os.remove(temp .. "/home with spaces/plugin-enabled")
+  put(temp .. "/home with spaces/update-fails", "")
+  local result = envy.run(quote(root .. "/bin/update"), { capture = true, check = false })
+  assert(result.exit_code ~= 0, "a failed update must exit nonzero")
+  local plugin = assert(io.open(temp .. "/home with spaces/plugin-enabled")); plugin:close()
+  assert(result.stdout:find("Update completed with 1 failure(s).", 1, true), "update must summarize failures")
+  assert(not result.stdout:find("Update complete.", 1, true), "failed update must not report success")
 end)
 envy.run = run
 run("rm -rf " .. quote(temp))
