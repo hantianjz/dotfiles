@@ -118,6 +118,8 @@ The last row is an important regression case. The initial Arch profile used `typ
 
 Ubuntu currently installs `diskus`, `eza`, `git-delta`, `gping`, `hexyl`, `typos-cli`, and `yazi-build` through Cargo. The `yazi-build` installer provides both `yazi-fm` and `yazi-cli` and requires Cargo's `--force` flag. Lazygit is not automatically installed on Ubuntu.
 
+Ubuntu's registry-based Cargo setup and all updater Cargo installs use `scripts/with-build-temp`. Each command gets a private temporary directory under `${XDG_CACHE_HOME:-$HOME/.cache}/dotfiles/build` unless `TMPDIR` explicitly selects another parent. The wrapper removes only that command's directory on success or failure. This keeps Yazi's otherwise-retained build clones off quota-limited `/tmp` and prevents repeated updates from accumulating build artifacts.
+
 Ghostty uses native packages: a Homebrew cask on macOS, Pacman on Arch, and [the official Ubuntu package](https://ghostty.org/docs/install/binary#ubuntu) starting with Ubuntu 26.04. The Ubuntu policy reads `VERSION_ID` from `/etc/os-release`; Ubuntu 24.04 retains its configuration link without automatic Ghostty installation. No Snap or third-party repository is added.
 
 Ghostty updates through the existing native-manager flow: Homebrew on macOS, APT on Ubuntu 26.04 or newer, and Pacman/Omarchy on Arch. No separate Ghostty updater is needed.

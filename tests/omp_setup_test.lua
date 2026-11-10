@@ -62,9 +62,11 @@ printf '%s\n' "$TEST_PLATFORM"
     quote(temp .. "/bin/curl") .. " " .. quote(temp .. "/bin/brew") .. " " .. quote(temp .. "/bin/uname"))
   local project = temp .. "/project with spaces"
   local updater = quote(project .. "/bin/update")
-  run("mkdir -p " .. quote(project .. "/bin") .. " " .. quote(project .. "/tmux") .. " " ..
-    quote(project .. "/config/herdr") .. " " .. quote(temp .. "/home with spaces/.config"))
+  run("mkdir -p " .. quote(project .. "/bin") .. " " .. quote(project .. "/scripts") .. " " ..
+    quote(project .. "/tmux") .. " " .. quote(project .. "/config/herdr") .. " " ..
+    quote(temp .. "/home with spaces/.config"))
   run("cp " .. quote(root .. "/bin/update") .. " " .. quote(project .. "/bin/update"))
+  run("cp " .. quote(root .. "/scripts/with-build-temp") .. " " .. quote(project .. "/scripts/with-build-temp"))
   run("cp " .. quote(root .. "/config/herdr/plugins") .. " " .. quote(project .. "/config/herdr/plugins"))
   run("ln -s " .. quote(project .. "/tmux") .. " " .. quote(temp .. "/home with spaces/.config/tmux"))
   put(project .. "/bin/envy", [[#!/bin/sh

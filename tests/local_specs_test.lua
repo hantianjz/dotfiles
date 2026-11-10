@@ -19,13 +19,6 @@ assert(SETUP.command.CHECK(nil, { check = "probe succeeds" }))
 assert(SETUP.command.INSTALL(nil, { install = "install command" }) == "install command")
 
 calls = {}
-dofile(root .. "/envy/local.cargo_install@r0.lua")
-assert(not SETUP.crates.CHECK(nil, { crates = { { package = "yazi-build", force = true } } }))
-local install = SETUP.crates.INSTALL(nil, { crates = {} })
-assert(install:match("cargo.*install %-%-force %-%-locked yazi%-build"),
-  "forced Cargo packages must include --force")
-
-calls = {}
 local cargo_list = ""
 envy = {
   run = function(command, options)
@@ -58,6 +51,35 @@ end
 local temp = envy.run("mktemp -d /tmp/local-specs-test.XXXXXX", { capture = true }).stdout:gsub("%s+$", "")
 local ok, failure = pcall(function()
   envy.run("mkdir -p " .. quote(temp .. "/.cargo/bin") .. " " .. quote(temp .. "/bin"))
+  local cache = temp .. "/cache with spaces"
+  local parent = cache .. "/dotfiles/build"
+  local custom = temp .. "/custom tmp"
+  envy.run("mkdir -p " .. quote(parent) .. " " .. quote(custom))
+  put(parent .. "/keep", "user cache\n")
+  put(temp .. "/build.sh", [[
+set -eu
+test "${TMPDIR%/*}" = "$EXPECTED_PARENT"
+test -d "$TMPDIR"
+printf '%s' "$TMPDIR" > "$HOME/build-path"
+mkdir -p "$TMPDIR/yazi-build/target"
+printf 'artifact\n' > "$TMPDIR/yazi-build/target/result"
+exit "$BUILD_EXIT"
+]])
+  for _, case in ipairs({ { 0, parent }, { 37, parent }, { 0, custom } }) do
+    local environment = "env -i HOME=" .. quote(temp) .. " PATH=" .. quote(assert(os.getenv("PATH"))) ..
+      " XDG_CACHE_HOME=" .. quote(cache) .. " EXPECTED_PARENT=" .. quote(case[2]) ..
+      " BUILD_EXIT=" .. case[1]
+    if case[2] == custom then environment = environment .. " TMPDIR=" .. quote(custom) end
+    local result = envy.run(environment .. " bash " .. quote(root .. "/scripts/with-build-temp") ..
+      " bash " .. quote(temp .. "/build.sh"), { capture = true, check = false })
+    assert(result.exit_code == case[1], "build exit status must propagate")
+    local path = assert(io.open(temp .. "/build-path"))
+    local work = path:read("*a"); path:close()
+    envy.run("test ! -e " .. quote(work))
+  end
+  local kept = assert(io.open(parent .. "/keep"))
+  assert(kept:read("*a") == "user cache\n", "cleanup must preserve unrelated cache files")
+  kept:close()
   put(temp .. "/system.lua", [[
 IDENTITY = "local.system_packages@r0"
 USER_MANAGED = true
@@ -114,7 +136,7 @@ end
 -- @envy bin "bin"
 PACKAGES = {
   { spec = "local.cargo_install@r0", source = %q, setup = { "crates" },
-    options = { crates = { { package = "diskus" } } } },
+    options = { crates = { { package = "diskus" } }, build_helper = %q } },
   { spec = "local.cargo_github_tmx@r0", source = %q, setup = { "tool" } },
   { spec = "local.system_packages@r0", source = %q },
   { spec = "local.symlink@r0", source = %q,
@@ -125,7 +147,8 @@ PACKAGES = {
   { spec = "local.herdr@r0", source = %q, setup = { "plugins" },
     options = { plugins = { "owner/example" } } },
 }
-]], temp .. "/cargo_install.lua", temp .. "/cargo_github_tmx.lua", temp .. "/system.lua",
+]], temp .. "/cargo_install.lua", root .. "/scripts/with-build-temp",
+    temp .. "/cargo_github_tmx.lua", temp .. "/system.lua",
     root .. "/envy/local.symlink@r0.lua", root .. "/shellrc/environment", temp .. "/environment",
     root .. "/envy/local.shell@r0.lua", temp .. "/herdr.lua"))
   local bootstrap_cache = os.getenv("ENVY_CACHE_ROOT") or

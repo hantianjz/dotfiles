@@ -50,13 +50,14 @@ end
 
 local install = function(pkg_dir, opts)
   local cmds = {}
+  local cargo = "bash " .. string.format("%q", opts.build_helper) .. " " .. cargo_command()
   for _, crate in ipairs(missing) do
     if crate.repo then
-      table.insert(cmds, cargo_command() .. " install --git " .. string.format("%q", crate.repo))
+      table.insert(cmds, cargo .. " install --git " .. string.format("%q", crate.repo))
     else
-      local command = cargo_command() .. " install --locked " .. crate.package
+      local command = cargo .. " install --locked " .. crate.package
       if crate.force then
-        command = cargo_command() .. " install --force --locked " .. crate.package
+        command = cargo .. " install --force --locked " .. crate.package
       end
       if crate.version then
         command = command .. " --version " .. crate.version
