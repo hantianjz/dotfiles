@@ -19,10 +19,18 @@ and invokes `herdr pane focus` only at an outer edge.
 
 The Lazy plugin spec selects the integration from the session environment:
 `HERDR_ENV`, `HERDR_PANE_ID`, and `HERDR_SOCKET_PATH` load
-`vim-herdr-navigation`; other sessions keep
-`christoomey/vim-tmux-navigator`. Envy installs the matching Herdr workflow
-plugin. Herdr takes precedence if stale or nested tmux environment variables
-are also present.
+`vim-herdr-navigation`; all other sessions load
+`christoomey/vim-tmux-navigator`. Without tmux, that plugin moves between
+Neovim windows directly, including in herdr-app terminals backed by herdr-core.
+Envy installs the matching Herdr workflow plugin. Herdr takes precedence if
+stale or nested tmux environment variables are also present.
+
+Check Neovim window navigation with installed plugins from the repository root:
+
+```sh
+env -u TMUX -u HERDR_ENV -u HERDR_PANE_ID -u HERDR_SOCKET_PATH \
+  nvim --headless -u NONE -l nvim/tests/navigation_spec.lua
+```
 
 The following bindings remain tmux-only:
 
