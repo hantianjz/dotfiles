@@ -45,6 +45,8 @@ Setup also installs [Bun](https://bun.sh) and [Oh My Pi](https://omp.sh), then e
 
 Setup installs the [Herdr desktop app](https://herdr.dev/download/) separately from Herdr TUI, using the official installer on Apple Silicon macOS and Linux. Intel Macs skip the desktop app because upstream provides no Intel build. The installer places `Herdr.app` in `~/Applications` on macOS or installs into `${XDG_DATA_HOME:-~/.local/share}/herdr-app` with a desktop launcher on Linux. Both platforms get `~/.local/bin/herdr-app`. The installer also installs herdr-core when missing; the app keeps herdr-core current. Existing `herdr-app` executables are reused.
 
+Setup links `config/herdr-app/keys.json` and `settings.json` into `${HERDR_APP_HOME:-~/.config/herdr-app}`. Edit these repository files to change app shortcuts and preferences; changes reload automatically. The bindings reserve `Cmd-h/j/k/l` for app panes and leave `Ctrl-h/j/k/l` for Neovim. App-managed mods, layouts, themes, sessions, and window state remain local. Identical existing files become links; differing files are preserved with a warning. Merge wanted settings into the repository, back up and move conflicting files aside, then rerun setup.
+
 Setup links `ai/CLAUDE.md` as the shared personal instruction file for Claude Code, Codex, agents-compatible tools, and omp:
 
 - `~/.claude/CLAUDE.md`
@@ -114,7 +116,7 @@ On macOS, Homebrew upgrades omp; the updater does not run `omp update`. Other pr
 
 Ghostty follows native package updates through Homebrew on macOS, APT on Ubuntu 26.04 or newer, and Pacman/Omarchy on Arch.
 
-The updater refreshes an installed Herdr desktop app by rerunning its official installer, including on Omarchy. Missing desktop app installations are skipped. Herdr TUI installation, updates, configuration, and plugins remain separate.
+The updater refreshes an installed Herdr desktop app by rerunning its official installer, including on Omarchy, then repairs its configuration links with `envy install local.herdr_app@r0`. Missing desktop app installations are skipped. To apply only the configuration without updating software, run `./bin/envy install local.herdr_app@r0`. Herdr TUI installation, updates, configuration, and plugins remain separate.
 
 ## Maintenance
 

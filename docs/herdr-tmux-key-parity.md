@@ -26,25 +26,17 @@ Envy installs the matching Herdr workflow plugin. Herdr takes precedence if
 stale or nested tmux environment variables are also present.
 
 Herdr app uses `Cmd-h/j/k/l` for app pane navigation, leaving
-`Ctrl-h/j/k/l` available to Neovim. In `~/.config/herdr-app/keys.json`,
-merge these entries into the existing `global` section:
+`Ctrl-h/j/k/l` available to Neovim. Dotfiles setup links
+`config/herdr-app/keys.json` and `config/herdr-app/settings.json` into
+`${HERDR_APP_HOME:-~/.config/herdr-app}`; the updater repairs those links.
+Edit the repository files to change app preferences. Differing existing files
+are preserved with a warning; merge wanted settings, back up and move the
+conflicting files aside, then rerun setup.
 
-```json
-{
-  "global": {
-    "cmd-h": "pane.go:left",
-    "cmd-j": "pane.go:down",
-    "cmd-k": "pane.go:up",
-    "cmd-l": "pane.go:right"
-  }
-}
-```
-
-Remove plain `ctrl-h/j/k/l` bindings to `pane.go`; they intercept keys before
-Neovim. Retain other bindings, including prefixed `Ctrl-a` navigation.
+Plain `ctrl-h/j/k/l` bindings to `pane.go` intercept keys before Neovim and
+are intentionally absent. Prefixed `Ctrl-a` navigation remains available.
 `Cmd-h` replaces the app's Hide shortcut. Changes reload automatically.
 Neovim window edges do not hand off to app panes; use the `Cmd` shortcuts.
-Herdr app settings are local preferences, not managed by dotfiles setup.
 
 Check Neovim window navigation with installed plugins from the repository root:
 

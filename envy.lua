@@ -148,6 +148,22 @@ envy.extend(PACKAGES, { {
   options = { links = SYMLINKS },
 } })
 
+local HERDR_APP_HOME = os.getenv("HERDR_APP_HOME")
+if not HERDR_APP_HOME or HERDR_APP_HOME == "" then
+  HERDR_APP_HOME = HOME .. "/.config/herdr-app"
+end
+envy.extend(PACKAGES, { {
+  spec = "local.herdr_app@r0",
+  source = "envy/local.herdr_app@r0.lua",
+  setup = { "links" },
+  options = {
+    links = {
+      { source = ROOT .. "/config/herdr-app/keys.json", dest = HERDR_APP_HOME .. "/keys.json" },
+      { source = ROOT .. "/config/herdr-app/settings.json", dest = HERDR_APP_HOME .. "/settings.json" },
+    },
+  },
+} })
+
 envy.extend(PACKAGES, { {
   spec = "local.system_packages@r0",
   source = "envy/local.system_packages@r0.lua",
