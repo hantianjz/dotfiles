@@ -190,7 +190,7 @@ envy.extend(PACKAGES, { {
   spec = "local.cargo_install@r0",
   source = "envy/local.cargo_install@r0.lua",
   setup = { "crates" },
-  options = { crates = CARGO_PACKAGES },
+  options = { crates = CARGO_PACKAGES, build_helper = ROOT .. "/scripts/with-build-temp" },
 } })
 
 envy.extend(PACKAGES, {

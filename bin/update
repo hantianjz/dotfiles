@@ -132,13 +132,13 @@ cargo_bin="$(command -v cargo 2>/dev/null || true)"
 [[ -n "$cargo_bin" ]] || cargo_bin="$HOME/.cargo/bin/cargo"
 if [[ -x "$cargo_bin" ]]; then
   section "Updating Cargo tools"
-  run "$cargo_bin" install --locked --git https://github.com/hantianjz/tmx --rev 87b1e7b150b0c2f60f1d210b9dbd6873b7f1cb84
+  run bash "$DOTFILES_ROOT/scripts/with-build-temp" "$cargo_bin" install --locked --git https://github.com/hantianjz/tmx --rev 87b1e7b150b0c2f60f1d210b9dbd6873b7f1cb84
 
   if [[ "$PACKAGE_MANAGER" == apt ]]; then
     for crate in diskus eza git-delta gping hexyl typos-cli; do
-      run "$cargo_bin" install --locked "$crate"
+      run bash "$DOTFILES_ROOT/scripts/with-build-temp" "$cargo_bin" install --locked "$crate"
     done
-    run "$cargo_bin" install --force --locked yazi-build
+    run bash "$DOTFILES_ROOT/scripts/with-build-temp" "$cargo_bin" install --force --locked yazi-build
   fi
 else
   section "Cargo"
