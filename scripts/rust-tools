@@ -1,0 +1,93 @@
+#!/usr/bin/env bash
+# Ubuntu's six registry tools share one prebuilt policy for setup and updates.
+set -euo pipefail
+
+mode=${1:-}
+case "$mode" in
+    check|install|update) ;;
+    *) printf 'Usage: %s {check|install|update}\n' "$0" >&2; exit 2 ;;
+esac
+if [[ $(uname -s) != Linux ]]; then
+    printf 'rust-tools supports Linux only.\n' >&2
+    exit 1
+fi
+case "$(uname -m)" in
+    x86_64) arch=x86_64; gping_arch=x86_64 ;;
+    aarch64|arm64) arch=aarch64; gping_arch=arm64 ;;
+    *) printf 'rust-tools requires x86_64 or arm64.\n' >&2; exit 1 ;;
+esac
+
+binstall="$HOME/.local/bin/cargo-binstall"
+cargo_root=${CARGO_INSTALL_ROOT:-${CARGO_HOME:-$HOME/.cargo}}
+if [[ ! -x "$binstall" ]]; then
+    printf 'Missing cargo-binstall; run dotfiles setup first.\n' >&2
+    exit 1
+fi
+# Public 1.26.2 --list output reports origin, unlike cargo install --list.
+# Accept both its wide table and narrow-terminal form without extra parsers.
+inventory=$("$binstall" --root "$cargo_root" --list) || exit 1
+installed_version=
+installed_method=
+lookup() {
+    local name version third rest
+    installed_version=
+    installed_method=
+    while read -r name version third rest; do
+        [[ $name == "$1" ]] || continue
+        installed_version=${version#v}
+        if [[ $third == '[cargo' ]]; then
+            installed_method="$third $rest"
+        else
+            installed_method=$rest
+        fi
+        return
+    done <<< "$inventory"
+}
+
+failures=0
+for pair in diskus:diskus eza:eza git-delta:delta gping:gping hexyl:hexyl typos-cli:typos; do
+    crate=${pair%%:*}
+    binary=${pair#*:}
+    lookup "$crate"
+    ready=false
+    if [[ ( $installed_method == 'cargo binstall' || $installed_method == '[cargo binstall]' ) &&
+          -x "$cargo_root/bin/$binary" ]]; then
+        ready=true
+    fi
+    if [[ $mode == check ]]; then
+        if [[ $ready == false ]]; then failures=$((failures + 1)); fi
+        continue
+    fi
+    if [[ $mode == install && $ready == true ]]; then continue; fi
+
+    args=(--root "$cargo_root" --no-confirm --strategies crate-meta-data --disable-telemetry)
+    if [[ -n $installed_version && $ready == false ]]; then
+        # Same-version source installs otherwise look up to date to binstall.
+        args+=(--force)
+    fi
+    if [[ $mode == install && -n $installed_version ]]; then
+        args+=(--version "=$installed_version")
+    fi
+    target="$arch-unknown-linux-gnu"
+    case "$crate" in
+        git-delta)
+            args+=(--pkg-url '{ repo }/releases/download/{ version }/delta-{ version }-{ target }.tar.gz'
+                --bin-dir 'delta-{ version }-{ target }/{ bin }{ binary-ext }' --pkg-fmt tgz)
+            ;;
+        gping)
+            args+=(--pkg-url "{ repo }/releases/download/gping-v{ version }/gping-Linux-gnu-$gping_arch.tar.gz"
+                --bin-dir '{ bin }{ binary-ext }' --pkg-fmt tgz)
+            ;;
+        typos-cli) target="$arch-unknown-linux-musl" ;;
+    esac
+    if ! "$binstall" "${args[@]}" --targets "$target" "$crate"; then
+        printf 'Prebuilt installation failed: %s\n' "$crate" >&2
+        failures=$((failures + 1))
+    fi
+done
+if (( failures != 0 )); then
+    if [[ $mode != check ]]; then
+        printf 'Rust tools completed with %d failure(s).\n' "$failures" >&2
+    fi
+    exit 1
+fi

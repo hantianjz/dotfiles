@@ -128,21 +128,20 @@ else
   skip
 fi
 
-cargo_bin="$(command -v cargo 2>/dev/null || true)"
-[[ -n "$cargo_bin" ]] || cargo_bin="$HOME/.cargo/bin/cargo"
-if [[ -x "$cargo_bin" ]]; then
-  section "Updating Cargo tools"
-  run bash "$DOTFILES_ROOT/scripts/with-build-temp" "$cargo_bin" install --locked --git https://github.com/hantianjz/tmx --rev 87b1e7b150b0c2f60f1d210b9dbd6873b7f1cb84
+section "Updating tmx"
+run "$DOTFILES_ROOT/bin/envy" --project "$DOTFILES_ROOT" install local.tmx@r0
 
-  if [[ "$PACKAGE_MANAGER" == apt ]]; then
-    for crate in diskus eza git-delta gping hexyl typos-cli; do
-      run bash "$DOTFILES_ROOT/scripts/with-build-temp" "$cargo_bin" install --locked "$crate"
-    done
-    run bash "$DOTFILES_ROOT/scripts/with-build-temp" "$cargo_bin" install --force --locked yazi-build
+if [[ "$PACKAGE_MANAGER" == apt ]]; then
+  section "Updating Yazi"
+  run "$DOTFILES_ROOT/bin/envy" --project "$DOTFILES_ROOT" install local.yazi@r0
+
+  section "Updating Rust tools"
+  if "$DOTFILES_ROOT/bin/envy" --project "$DOTFILES_ROOT" install local.binstall@r0; then
+    run bash "$DOTFILES_ROOT/scripts/rust-tools" update
+  else
+    fail
+    failures=$((failures + 1))
   fi
-else
-  section "Cargo"
-  skip
 fi
 
 if [[ -L "$HOME/.config/tmux" && "$HOME/.config/tmux" -ef "$DOTFILES_ROOT/tmux" ]]; then

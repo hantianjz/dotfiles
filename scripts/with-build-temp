@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-set -euo pipefail
-
-parent="${TMPDIR:-${XDG_CACHE_HOME:-$HOME/.cache}/dotfiles/build}"
-mkdir -p -- "$parent"
-work="$(mktemp -d "$parent/build.XXXXXXXX")"
-trap 'rm -rf -- "$work"' EXIT
-export TMPDIR="$work"
-"$@"
