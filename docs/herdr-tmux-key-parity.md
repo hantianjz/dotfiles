@@ -33,6 +33,12 @@ Edit the repository files to change app preferences. Differing existing files
 are preserved with a warning; merge wanted settings, back up and move the
 conflicting files aside, then rerun setup.
 
+Use repository edits rather than the app Settings UI for managed preferences.
+The UI saves settings with an atomic file replacement, which can replace a
+symlink instead of updating its target. If a managed file becomes a regular
+file, merge wanted changes into the repository, back up and move that file
+aside, then run `./bin/envy install local.herdr_app@r0` to restore the link.
+
 Plain `ctrl-h/j/k/l` bindings to `pane.go` intercept keys before Neovim and
 are intentionally absent. Prefixed `Ctrl-a` navigation remains available.
 `Cmd-h` replaces the app's Hide shortcut. Changes reload automatically.

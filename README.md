@@ -47,6 +47,8 @@ Setup installs the [Herdr desktop app](https://herdr.dev/download/) separately f
 
 Setup links `config/herdr-app/keys.json` and `settings.json` into `${HERDR_APP_HOME:-~/.config/herdr-app}`. Edit these repository files to change app shortcuts and preferences; changes reload automatically. The bindings reserve `Cmd-h/j/k/l` for app panes and leave `Ctrl-h/j/k/l` for Neovim. App-managed mods, layouts, themes, sessions, and window state remain local. Identical existing files become links; differing files are preserved with a warning. Merge wanted settings into the repository, back up and move conflicting files aside, then rerun setup.
 
+Use repository edits for managed preferences, not the app Settings UI: its atomic file writes can replace a configuration symlink. If that happens, merge the local changes into the repository, back up and move the regular file aside, then run `./bin/envy install local.herdr_app@r0` to restore the link.
+
 Setup links `ai/CLAUDE.md` as the shared personal instruction file for Claude Code, Codex, agents-compatible tools, and omp:
 
 - `~/.claude/CLAUDE.md`
