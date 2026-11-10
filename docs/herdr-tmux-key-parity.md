@@ -25,6 +25,27 @@ Neovim windows directly, including in herdr-app terminals backed by herdr-core.
 Envy installs the matching Herdr workflow plugin. Herdr takes precedence if
 stale or nested tmux environment variables are also present.
 
+Herdr app has separate key routing in `~/.config/herdr-app/keys.json`.
+Global `Ctrl-h/j/k/l` bindings to `pane.go` intercept the keys before Neovim.
+Override them in the more-specific `terminal` section:
+
+```json
+{
+  "terminal": {
+    "ctrl-h": "terminal",
+    "ctrl-j": "terminal",
+    "ctrl-k": "terminal",
+    "ctrl-l": "terminal"
+  }
+}
+```
+
+Merge these entries into the existing file; retain other bindings. Changes
+reload automatically. In terminal panes, use `Ctrl-a` followed by `h/j/k/l`
+or `Cmd-Alt-arrow` for app pane navigation. These overrides restore Neovim
+window navigation; they do not hand off to app panes at a Neovim window edge.
+Herdr app settings are local preferences, not managed by dotfiles setup.
+
 Check Neovim window navigation with installed plugins from the repository root:
 
 ```sh
