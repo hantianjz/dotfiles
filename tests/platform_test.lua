@@ -18,14 +18,6 @@ local function contains(values, wanted)
   return false
 end
 
-local function find_package(values, wanted)
-  for _, value in ipairs(values) do
-    if value.package == wanted then
-      return value
-    end
-  end
-end
-
 local function command_set(commands)
   return function(command)
     return commands[command] == true
@@ -52,18 +44,12 @@ assert(contains(macos.casks, "ghostty"))
 assert(contains(macos.casks, "aerospace"))
 assert(contains(macos.taps, "agavra/tap"))
 assert(contains(macos.taps, "nikitabobko/tap"))
-assert_equal(#macos.crates, 0)
 
 local ubuntu = platform.packages("ubuntu", "apt", "24.04")
 assert(contains(ubuntu.packages, "fd-find"))
 assert(contains(ubuntu.packages, "wl-clipboard"))
 assert(not contains(ubuntu.packages, "ghostty"))
 assert(not contains(ubuntu.packages, "lazygit"))
-assert_equal(#ubuntu.crates, 7)
-local yazi = assert(find_package(ubuntu.crates, "yazi-build"))
-assert(yazi.force, "yazi-build must be installed with --force")
-assert(not find_package(ubuntu.crates, "yazi-fm"))
-assert(not find_package(ubuntu.crates, "yazi-cli"))
 for _, case in ipairs({ { "25.10", false }, { "26.04", true }, { "26.10", true } }) do
   assert_equal(contains(platform.packages("ubuntu", "apt", case[1]).packages, "ghostty"),
     case[2], "Ghostty availability on Ubuntu " .. case[1])
@@ -75,7 +61,6 @@ assert(contains(arch.packages, "ghostty"))
 assert(contains(arch.packages, "typos"))
 assert(contains(arch.packages, "wl-clipboard"))
 assert(not contains(arch.packages, "typos-cli"))
-assert_equal(#arch.crates, 0)
 
 local mac_links = platform.desktop_links("macos", "/repo", "/home/test")
 assert_equal(#mac_links, 1)

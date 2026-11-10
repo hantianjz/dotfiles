@@ -18,31 +18,6 @@ assert(calls[1].options.check == false, "a failed shell probe must not abort set
 assert(SETUP.command.CHECK(nil, { check = "probe succeeds" }))
 assert(SETUP.command.INSTALL(nil, { install = "install command" }) == "install command")
 
-calls = {}
-local cargo_list = ""
-envy = {
-  run = function(command, options)
-    table.insert(calls, { command = command, options = options })
-    if command:match("install %-%-list") then
-      return { exit_code = 0, stdout = cargo_list }
-    end
-    return { exit_code = 1, stdout = "" }
-  end,
-  package = function(query)
-    assert(query == "envy.github@r0")
-    return "/tmp/github source"
-  end,
-}
-local cargo_github = dofile(root .. "/envy/cargo_github_tool.lua")
-local github_tool = cargo_github.setup("tmx", "tmx")
-cargo_list = "tmx v0.0.6:\n"
-assert(github_tool.CHECK(), "installed GitHub Cargo package must satisfy check")
-cargo_list = ""
-assert(not github_tool.CHECK(), "missing GitHub Cargo package must request install")
-github_tool.INSTALL()
-assert(calls[#calls].command == 'cargo install --path "/tmp/github source/tmx" --locked',
-  "GitHub Cargo install must use the cached source path")
-
 envy = real_envy
 local function quote(value) return string.format("%q", value) end
 local function put(path, value)
@@ -50,58 +25,12 @@ local function put(path, value)
 end
 local temp = envy.run("mktemp -d /tmp/local-specs-test.XXXXXX", { capture = true }).stdout:gsub("%s+$", "")
 local ok, failure = pcall(function()
-  envy.run("mkdir -p " .. quote(temp .. "/.cargo/bin") .. " " .. quote(temp .. "/bin"))
-  local cache = temp .. "/cache with spaces"
-  local parent = cache .. "/dotfiles/build"
-  local custom = temp .. "/custom tmp"
-  envy.run("mkdir -p " .. quote(parent) .. " " .. quote(custom))
-  put(parent .. "/keep", "user cache\n")
-  put(temp .. "/build.sh", [[
-set -eu
-test "${TMPDIR%/*}" = "$EXPECTED_PARENT"
-test -d "$TMPDIR"
-printf '%s' "$TMPDIR" > "$HOME/build-path"
-mkdir -p "$TMPDIR/yazi-build/target"
-printf 'artifact\n' > "$TMPDIR/yazi-build/target/result"
-exit "$BUILD_EXIT"
-]])
-  for _, case in ipairs({ { 0, parent }, { 37, parent }, { 0, custom } }) do
-    local environment = "env -i HOME=" .. quote(temp) .. " PATH=" .. quote(assert(os.getenv("PATH"))) ..
-      " XDG_CACHE_HOME=" .. quote(cache) .. " EXPECTED_PARENT=" .. quote(case[2]) ..
-      " BUILD_EXIT=" .. case[1]
-    if case[2] == custom then environment = environment .. " TMPDIR=" .. quote(custom) end
-    local result = envy.run(environment .. " bash " .. quote(root .. "/scripts/with-build-temp") ..
-      " bash " .. quote(temp .. "/build.sh"), { capture = true, check = false })
-    assert(result.exit_code == case[1], "build exit status must propagate")
-    local path = assert(io.open(temp .. "/build-path"))
-    local work = path:read("*a"); path:close()
-    envy.run("test ! -e " .. quote(work))
-  end
-  local kept = assert(io.open(parent .. "/keep"))
-  assert(kept:read("*a") == "user cache\n", "cleanup must preserve unrelated cache files")
-  kept:close()
+  envy.run("mkdir -p " .. quote(temp .. "/bin"))
   put(temp .. "/system.lua", [[
 IDENTITY = "local.system_packages@r0"
 USER_MANAGED = true
 SETUP = { packages = { CHECK = "false", INSTALL = 'touch "$HOME/native-ready"' } }
 ]])
-  put(temp .. "/toolchain.lua", [[
-IDENTITY = "local.rustup_toolchain@r0"
-USER_MANAGED = true
-SETUP = { toolchain = { CHECK = "true", INSTALL = "false" } }
-]])
-  put(temp .. "/github.lua", [[
-IDENTITY = "envy.github@r0"
-USER_MANAGED = true
-SETUP = { unused = { CHECK = "true", INSTALL = "false" } }
-]])
-  put(temp .. "/.cargo/bin/cargo", [[#!/bin/sh
-set -eu
-test -f "$HOME/native-ready"
-test "$*" = "install --list"
-printf 'tmx v0.0.6:\ndiskus v0.9.0:\n'
-]])
-  envy.run("chmod +x " .. quote(temp .. "/.cargo/bin/cargo"))
   put(temp .. "/bin/curl", [[#!/bin/sh
 printf '%s\n' 'mkdir -p "$HOME/.local/bin"; cp "$HOME/fake-herdr" "$HOME/.local/bin/herdr"'
 ]])
@@ -121,23 +50,10 @@ printf 'installed\n' >> "$HOME/herdr-installs"
   envy.run("ln -s " .. quote(jq) .. " " .. quote(temp .. "/bin/jq"))
   put(temp .. "/herdr.lua", "dofile(" .. quote(root .. "/envy/local.herdr@r0.lua") ..
     ")\nSETUP.cli.PLATFORMS = nil\n")
-  for _, recipe in ipairs({ "cargo_install", "cargo_github_tmx" }) do
-    put(temp .. "/" .. recipe .. ".lua", string.format([[
-envy.loadenv = function(name) return dofile(%q .. "/envy/" .. name .. ".lua") end
-dofile(%q)
-for _, dep in ipairs(DEPENDENCIES) do
-  if dep.spec == "local.rustup_toolchain@r0" then dep.source = %q end
-  if dep.spec == "envy.github@r0" then dep.bundle = nil; dep.source = %q end
-end
-]], root, root .. "/envy/local." .. recipe .. "@r0.lua", temp .. "/toolchain.lua", temp .. "/github.lua"))
-  end
   put(temp .. "/envy.lua", string.format([[
 -- @envy version "0.5.1"
 -- @envy bin "bin"
 PACKAGES = {
-  { spec = "local.cargo_install@r0", source = %q, setup = { "crates" },
-    options = { crates = { { package = "diskus" } }, build_helper = %q } },
-  { spec = "local.cargo_github_tmx@r0", source = %q, setup = { "tool" } },
   { spec = "local.system_packages@r0", source = %q },
   { spec = "local.symlink@r0", source = %q,
     options = { links = { { source = %q, dest = %q } } } },
@@ -147,8 +63,7 @@ PACKAGES = {
   { spec = "local.herdr@r0", source = %q, setup = { "plugins" },
     options = { plugins = { "owner/example" } } },
 }
-]], temp .. "/cargo_install.lua", root .. "/scripts/with-build-temp",
-    temp .. "/cargo_github_tmx.lua", temp .. "/system.lua",
+]], temp .. "/system.lua",
     root .. "/envy/local.symlink@r0.lua", root .. "/shellrc/environment", temp .. "/environment",
     root .. "/envy/local.shell@r0.lua", temp .. "/herdr.lua"))
   local bootstrap_cache = os.getenv("ENVY_CACHE_ROOT") or

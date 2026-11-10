@@ -10,9 +10,11 @@ Declarative development environment setup using [Envy](https://github.com/envy-p
 
 Shared shell, Neovim, Git, Ghostty, tmux, Herdr, scripts, and AI-skill links are managed on every platform. Herdr independently uses the same `Ctrl-a`-prefixed pane and tab bindings as tmux where practical; `Ctrl-a Ctrl-a` sends a literal `Ctrl-a` to the active program. Aerospace is linked only on macOS. Personal Hyprland overrides target Omarchy v4.0.4 and are linked individually only on Arch; Ubuntu does not receive either desktop-specific link set. Existing Omarchy installations must follow the [bounded migration procedure](docs/envy-cross-platform.md#omarchy-v404-cutover) before deploying the Lua configuration.
 
-Ubuntu uses Cargo for portable CLI tools that are unavailable from the standard APT repositories. GitHub-sourced Cargo tools are cloned through Envy's first-party GitHub spec at pinned commits before Cargo installs them. Ghostty installs through Homebrew on macOS, Pacman on Arch, and the official APT repositories on Ubuntu 26.04 or newer. Ubuntu 24.04 keeps its Ghostty configuration link but does not install Ghostty automatically. Lazygit is not automatically installed on Ubuntu.
+Ubuntu installs portable Rust CLIs from upstream prebuilt releases with `cargo-binstall`, and Yazi from its official `.deb`. No Rust CLI source-build fallback runs during setup or updates. All profiles install `tmx` and `hmx` from checksum-pinned v0.0.8 release archives.
 
-Ubuntu declares `build-essential` for Cargo builds. Cargo and shell plugin setup wait for native packages; Herdr plugins also wait for the Herdr CLI.
+Ghostty installs through Homebrew on macOS, Pacman on Arch, and the official APT repositories on Ubuntu 26.04 or newer. Ubuntu 24.04 keeps its Ghostty configuration link but does not install Ghostty automatically. Lazygit is not automatically installed on Ubuntu.
+
+Ubuntu retains `build-essential` and Rustup's stable toolchain as development tools. Shell plugin setup waits for native packages; Herdr plugins also wait for the Herdr CLI.
 Rustup leaves shell startup files unchanged; the shared shell environment owns Cargo's `PATH` entry.
 
 Fisher owns its generated manager files and installs every plugin in `fish/fish_plugins`. Setup checks the complete installed list. Herdr setup reads its local plugin registry, not retained checkout directories, to detect registered installations.
@@ -100,13 +102,13 @@ See [the configuration inventory and migration guide](docs/omp-settings.md) for 
 update
 ```
 
-This updates the active native package manager, Bun, omp, the configured omp Git plugin, Rust and Cargo tools, tmux plugins, and Fisher plugins. It does not update uv tools. The omp Git plugin is refreshed with `omp plugin install github:phenome/omp-ponytail-caveman`; `omp update --plugins` only upgrades marketplace plugins. On Omarchy, it delegates the required full-system Pacman upgrade to `omarchy update -y`, which preserves Omarchy's snapshot, migration, hook, and restart flow.
+This updates the active native package manager, Bun, omp, the configured omp Git plugin, Rust, prebuilt CLI tools, tmux plugins, and Fisher plugins. It does not update uv tools. The omp Git plugin is refreshed with `omp plugin install github:phenome/omp-ponytail-caveman`; `omp update --plugins` only upgrades marketplace plugins. On Omarchy, it delegates the required full-system Pacman upgrade to `omarchy update -y`, which preserves Omarchy's snapshot, migration, hook, and restart flow.
 
 The updater continues after individual command failures, reports their count, and exits 1. A successful run exits 0; unavailable optional tools are skipped.
 
 Tmux's theme stays pinned to v2.3.2, and all eight plugin revisions live in `envy/tmux.lua`. The updater runs `envy vendor --all` for repository-managed tmux configuration, restoring the declared revisions without Git pulls or submodule updates. To upgrade a plugin, resolve and review a new commit with `./bin/envy git-resolve`, update its pin, then run setup. Edits inside `.envy/tmux` are disposable and are replaced during synchronization.
 
-Native-manager selection follows `envy/platform.lua`: Homebrew on macOS; on Linux, Pacman first, otherwise APT only when both `apt-get` and `dpkg-query` are available. Arch systems without Omarchy use Pacman directly. If no supported manager is available, native updates are skipped. Ubuntu Cargo fallbacks run only when APT is selected.
+Native-manager selection follows `envy/platform.lua`: Homebrew on macOS; on Linux, Pacman first, otherwise APT only when both `apt-get` and `dpkg-query` are available. Arch systems without Omarchy use Pacman directly. If no supported manager is available, native updates are skipped. Yazi's `.deb` and `cargo-binstall` run only when APT is selected. Scoped Envy installs retain the declared tmx/Yazi release pins; Ubuntu's six other Rust CLIs follow upstream releases.
 
 On macOS, Homebrew upgrades omp; the updater does not run `omp update`. Other profiles retain `omp update`. The configured Git plugin refreshes on all profiles.
 

@@ -13,16 +13,6 @@ local package_aliases = {
   { brew = "libusb",      apt = "libusb-1.0-0-dev", pacman = "libusb" },
 }
 
-local portable_ubuntu_crates = {
-  { package = "diskus" },
-  { package = "eza" },
-  { package = "git-delta", binary = "delta" },
-  { package = "gping" },
-  { package = "hexyl" },
-  { package = "typos-cli", binary = "typos" },
-  { package = "yazi-build", force = true },
-}
-
 local function append(target, values)
   for _, value in ipairs(values) do
     table.insert(target, value)
@@ -57,7 +47,6 @@ function M.packages(profile, manager, version_id)
   end
 
   local casks = {}
-  local crates = {}
 
   if profile == "macos" then
     append(packages, {
@@ -82,7 +71,6 @@ function M.packages(profile, manager, version_id)
     if (tonumber(version_id) or 0) >= 26.04 then
       table.insert(packages, "ghostty")
     end
-    append(crates, portable_ubuntu_crates)
   else
     error("unknown platform profile: " .. tostring(profile))
   end
@@ -91,7 +79,6 @@ function M.packages(profile, manager, version_id)
     packages = packages,
     casks = casks,
     taps = profile == "macos" and { "agavra/tap", "nikitabobko/tap" } or {},
-    crates = crates,
   }
 end
 

@@ -66,7 +66,6 @@ printf '%s\n' "$TEST_PLATFORM"
     quote(project .. "/tmux") .. " " .. quote(project .. "/config/herdr") .. " " ..
     quote(temp .. "/home with spaces/.config"))
   run("cp " .. quote(root .. "/bin/update") .. " " .. quote(project .. "/bin/update"))
-  run("cp " .. quote(root .. "/scripts/with-build-temp") .. " " .. quote(project .. "/scripts/with-build-temp"))
   run("cp " .. quote(root .. "/config/herdr/plugins") .. " " .. quote(project .. "/config/herdr/plugins"))
   run("ln -s " .. quote(project .. "/tmux") .. " " .. quote(temp .. "/home with spaces/.config/tmux"))
   put(project .. "/bin/envy", [[#!/bin/sh
@@ -74,10 +73,15 @@ set -eu
 [ "$#" -eq 4 ]
 [ "$1" = --project ]
 [ "$2" = "$FIXTURES/project with spaces" ]
-[ "$3" = vendor ]
-[ "$4" = --all ]
-[ ! -f "$HOME/vendor-fails" ] || exit 43
-: > "$HOME/tmux-vendored"
+case "$3:$4" in
+  install:local.tmx@r0|install:local.yazi@r0) : ;;
+  install:local.binstall@r0) [ ! -f "$HOME/bootstrap-fails" ] || exit 44 ;;
+  vendor:--all)
+    [ ! -f "$HOME/vendor-fails" ] || exit 43
+    : > "$HOME/tmux-vendored"
+    ;;
+  *) exit 99 ;;
+esac
 ]])
   put(temp .. "/bin/fish", [[#!/bin/sh
 set -eu
@@ -88,6 +92,17 @@ case "$*" in
 esac
 ]])
   run("chmod +x " .. quote(project .. "/bin/envy") .. " " .. quote(temp .. "/bin/fish"))
+  put(project .. "/scripts/rust-tools", [[#!/bin/sh
+set -eu
+[ "$1" = update ]
+: > "$HOME/rust-tools-updated"
+]])
+  if os.getenv("OMP_TEST_PLATFORM") == "Linux" then
+    for _, command in ipairs({ "apt-get", "dpkg-query", "sudo" }) do
+      put(temp .. "/bin/" .. command, "#!/bin/sh\nexit 0\n")
+      run("chmod +x " .. quote(temp .. "/bin/" .. command))
+    end
+  end
   local prefix = "env -i HOME=" .. quote(temp .. "/home with spaces") .. " PATH=" .. quote(temp .. "/bin") ..
     " TEST_PLATFORM=" .. quote(os.getenv("OMP_TEST_PLATFORM") or "Darwin") ..
     " FIXTURES=" .. quote(temp) .. " " .. quote(temp .. "/bin/bash") .. " -c "
@@ -132,6 +147,16 @@ esac
   result = envy.run(updater, { capture = true, check = false })
   assert(result.exit_code == 0, "user-owned tmux config must skip Envy vendoring")
   assert(not io.open(temp .. "/home with spaces/tmux-vendored"), "user-owned tmux config must remain untouched")
+  if os.getenv("OMP_TEST_PLATFORM") == "Linux" then
+    os.remove(temp .. "/home with spaces/rust-tools-updated")
+    os.remove(temp .. "/home with spaces/fisher-updated")
+    put(temp .. "/home with spaces/bootstrap-fails", "")
+    result = envy.run(updater, { capture = true, check = false })
+    assert(result.exit_code == 1, "failed bootstrap must fail the updater")
+    assert(not io.open(temp .. "/home with spaces/rust-tools-updated"), "failed bootstrap must not run dependent tool updates")
+    local fisher = assert(io.open(temp .. "/home with spaces/fisher-updated")); fisher:close()
+    assert(result.stdout:find("Update completed with 1 failure(s).", 1, true))
+  end
 end)
 envy.run = run
 run("rm -rf " .. quote(temp))

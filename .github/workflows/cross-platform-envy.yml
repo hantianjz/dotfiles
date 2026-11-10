@@ -31,7 +31,7 @@ jobs:
           fi
       - name: Syntax checks
         run: |
-          bash -n setup bin/update scripts/herdr-tmux-action tests/*.sh
+          bash -n setup bin/update scripts/herdr-tmux-action scripts/rust-tools tests/*.sh
           fish -n fish/config.fish fish/conf.d/*.fish
       - name: Shell startup tests
         run: tests/shell_startup_test.sh
@@ -44,6 +44,12 @@ jobs:
         run: ./bin/envy lua tests/platform_test.lua
       - name: Local spec tests
         run: ./bin/envy lua tests/local_specs_test.lua
+      - name: tmx release migration
+        run: ./bin/envy lua tests/tmx_release_test.lua
+      - name: Prebuilt Rust tool migration
+        run: ./bin/envy lua tests/binstall_tools_test.lua
+      - name: Yazi native package migration
+        run: ./bin/envy lua tests/yazi_setup_test.lua
       - name: Omp setup and updates
         run: |
           ./bin/envy lua tests/omp_setup_test.lua
@@ -68,7 +74,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Syntax checks
         run: |
-          bash -n setup bin/update scripts/herdr-tmux-action tests/*.sh
+          bash -n setup bin/update scripts/herdr-tmux-action scripts/rust-tools tests/*.sh
           fish -n fish/config.fish fish/conf.d/*.fish
       - name: Shell startup tests
         run: tests/shell_startup_test.sh
@@ -81,6 +87,12 @@ jobs:
         run: ./bin/envy lua tests/platform_test.lua
       - name: Local spec tests
         run: ./bin/envy lua tests/local_specs_test.lua
+      - name: tmx release migration
+        run: ./bin/envy lua tests/tmx_release_test.lua
+      - name: Prebuilt Rust tool migration
+        run: ./bin/envy lua tests/binstall_tools_test.lua
+      - name: Yazi native package migration
+        run: ./bin/envy lua tests/yazi_setup_test.lua
       - name: Omp setup and updates
         run: |
           ./bin/envy lua tests/omp_setup_test.lua

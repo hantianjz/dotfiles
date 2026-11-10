@@ -11,7 +11,7 @@ This guide records the strategy and invariants established during the cross-plat
 | Profile | Detection | Native manager | Desktop additions | Portable fallback |
 | --- | --- | --- | --- | --- |
 | macOS | `envy.PLATFORM == "darwin"` | Homebrew formulas and casks | Aerospace | None currently |
-| Ubuntu 24.04+ | Linux with `apt-get` and `dpkg-query` | APT | None | Selected Rust tools through Cargo |
+| Ubuntu 24.04+ | Linux with `apt-get` and `dpkg-query` | APT | None | Upstream prebuilt Rust CLIs and official Yazi `.deb` |
 | Arch Linux x86_64 | Linux with `pacman` | Pacman | Hyprland/Omarchy overrides | None currently |
 
 Pacman takes precedence if both Pacman and APT commands are visible. Other Linux distributions and Windows are deliberately unsupported. Arch-specific configuration must remain in user-owned `~/.config` paths; never modify packaged Omarchy source under `/usr/share/omarchy` (or the older `~/.local/share/omarchy` location).
@@ -41,10 +41,10 @@ flowchart TB
     Manifest --> Policy[Platform policy]
     Manifest --> GitHub[First-party GitHub source pins]
     Policy -->|macOS| Brew[Homebrew formulas and casks]
-    Policy -->|Ubuntu| Apt[APT and Cargo fallbacks]
+    Policy -->|Ubuntu| Apt[APT and upstream binaries]
     Policy -->|Arch| Pacman[Pacman and Omarchy links]
     Manifest --> Links[Safe symlink recipe]
-    Manifest --> Tools[Rustup, pinned Cargo tools, uv tools]
+    Manifest --> Tools[Rustup and prebuilt CLI tools]
     Manifest --> Plugins[Tmux and Fisher plugins]
 ```
 
@@ -56,11 +56,13 @@ flowchart TB
 | `bin/envy` | Locates the manifest and downloads/runs the Envy version pinned by its directives. |
 | `envy.lua` | Builds the package graph, common links, generated AI-skill links, and post-install plugin tasks. |
 | `envy/tmux.lua` | Imports the pinned first-party GitHub helper and declares all eight vendored tmux repositories. |
-| `envy/platform.lua` | Detects the profile and returns native packages, casks, taps, Cargo fallbacks, and desktop-specific links. This is the source of truth for platform differences. |
+| `envy/platform.lua` | Detects the profile and returns native packages, casks, taps, and desktop-specific links. This is the source of truth for platform differences. |
 | `envy/local.system_packages@r0.lua` | Checks and installs formulas, casks, APT packages, or Pacman packages. |
 | `envy/local.symlink@r0.lua` | Classifies destinations, warns on conflicts, and creates or repairs only safe links. |
-| `envy/local.cargo_github_*.lua` + `envy/cargo_github_tool.lua` | Clone pinned GitHub Cargo tools through the first-party `envy.github@r0` bundle, then install them from the cached source with Cargo. |
-| `envy/local.cargo_install@r0.lua` | Installs Ubuntu's crates.io fallbacks after the stable Rust toolchain exists. |
+| `envy/local.tmx@r0.lua` | Fetches checksum-pinned tmx/hmx archives and migrates the old owned Git Cargo installation. |
+| `envy/local.yazi@r0.lua` | Fetches the pinned official Yazi `.deb`, installs it with APT, and removes legacy Cargo ownership safely. |
+| `envy/local.binstall@r0.lua` | Fetches the checksum-pinned cargo-binstall bootstrap. |
+| `envy/local.binstall_tools@r0.lua` + `scripts/rust-tools` | Install/update Ubuntu's six upstream prebuilt Rust CLIs without compiling. |
 | `bin/update` | Updates the active native manager and the portable tools installed for that profile. |
 | `tests/` | Tests profile resolution, symlink behavior, and live native-repository metadata. |
 
@@ -75,7 +77,7 @@ sequenceDiagram
     participant Setup as setup
     participant Envy as Envy manifest
     participant Manager as Native manager
-    participant Portable as Cargo and uv
+    participant Portable as Envy binary recipes
 
     User->>Setup: ./setup
     Setup->>Setup: Detect Darwin or Linux
@@ -98,10 +100,10 @@ GitHub dependencies use HTTPS, so a fresh public checkout does not need GitHub S
 2. Put name differences in `package_aliases`. Keys are manager names (`brew`, `apt`, and `pacman`), not operating-system names.
 3. Put platform-only formulas/packages in the matching profile branch.
 4. Keep Homebrew GUI applications in `casks`, not `packages`, and declare required taps separately.
-5. Use Cargo fallback entries only for portable command-line tools missing from the supported Ubuntu repositories. Keep system libraries in APT.
-6. Install Cargo tools sourced from GitHub through pinned first-party `envy.github@r0` dependencies, not branch-moving `cargo install --git` setup entries.
+5. Use upstream prebuilt releases where Ubuntu packages are unavailable or too old for the selected tool versions. Keep system libraries in APT.
+6. Pin fixed release archives by version and checksum. Never silently fall back to compiling Rust CLI tools.
 7. Prefer official Ubuntu and Arch repositories. Do not add an AUR helper or third-party APT repository merely to force package parity.
-8. When a portable tool is added, update `bin/update` if that profile installs it outside the native manager. Keep any GitHub `--rev` there aligned with the Envy dependency pin.
+8. When a portable tool is added, update `bin/update` if that profile installs it outside the native manager. Use scoped Envy installs for fixed release pins instead of duplicating versions in the updater.
 
 Package names are manager-specific identifiers, not necessarily project, crate, or executable names. For example:
 
@@ -110,23 +112,29 @@ Package names are manager-specific identifiers, not necessarily project, crate, 
 | GitHub CLI (`gh`) | `gh` | `gh` | `github-cli` |
 | fd (`fd`) | `fd` | `fd-find` | `fd` |
 | Ninja | `ninja` | `ninja-build` | `ninja` |
-| typos (`typos`) | `typos-cli` | Cargo crate `typos-cli` | `typos` |
+| typos (`typos`) | `typos-cli` | Upstream binary for crate `typos-cli` | `typos` |
 
 The last row is an important regression case. The initial Arch profile used `typos-cli`, which is a valid crate/Homebrew name but not an official Pacman target. The correct Arch package is `typos`.
 
 ### Ubuntu fallbacks
 
-Ubuntu currently installs `diskus`, `eza`, `git-delta`, `gping`, `hexyl`, `typos-cli`, and `yazi-build` through Cargo. The `yazi-build` installer provides both `yazi-fm` and `yazi-cli` and requires Cargo's `--force` flag. Lazygit is not automatically installed on Ubuntu.
+Ubuntu installs `diskus`, `eza`, `git-delta`, `gping`, `hexyl`, and `typos-cli` with cargo-binstall v1.26.2. `scripts/rust-tools` owns the crate/executable mappings and upstream archive overrides for delta and gping. Only the `crate-meta-data` strategy is enabled: no QuickInstall mirror or compilation fallback. Most binaries use GNU targets; typos uses musl. Homebrew and Pacman retain ownership on macOS and Arch. Lazygit is not automatically installed on Ubuntu.
 
-Ubuntu's registry-based Cargo setup and all updater Cargo installs use `scripts/with-build-temp`. Each command gets a private temporary directory under `${XDG_CACHE_HOME:-$HOME/.cache}/dotfiles/build` unless `TMPDIR` explicitly selects another parent. The wrapper removes only that command's directory on success or failure. This keeps Yazi's otherwise-retained build clones off quota-limited `/tmp` and prevents repeated updates from accumulating build artifacts.
+Setup migrates source-installed crates at their existing versions; `update` follows current upstream releases. These six rolling releases are not checksum-pinned in the manifest; cargo-binstall verifies upstream signatures where release metadata provides them. If an upstream binary is unavailable, installation fails rather than compiling. The cargo-binstall bootstrap itself is version- and checksum-pinned.
+
+Yazi uses the official [v26.9.1 release](https://github.com/sxyazi/yazi/releases/tag/v26.9.1) GNU `.deb` for amd64 or arm64, checksum-pinned in `envy/local.yazi@r0.lua`. APT installs its native dependencies without adding a repository or keyring. Setup and updates retain package version `26.9.1-1`; macOS and Arch keep native-manager ownership. The GNU package requires glibc 2.39 or newer, matching the Ubuntu 24.04 baseline.
+
+Yazi migration installs the `.deb` successfully before uninstalling registered `yazi-build`, `yazi-fm`, or `yazi-cli` packages. Recognized unregistered installer outputs are moved into a retained `.yazi-before-native.*` directory inside the Cargo installation root. Unknown manual binaries cause an explicit conflict before APT runs. The obsolete Cargo build recipes and temporary-build wrapper are removed; Rustup and `build-essential` remain development tools.
 
 Ghostty uses native packages: a Homebrew cask on macOS, Pacman on Arch, and [the official Ubuntu package](https://ghostty.org/docs/install/binary#ubuntu) starting with Ubuntu 26.04. The Ubuntu policy reads `VERSION_ID` from `/etc/os-release`; Ubuntu 24.04 retains its configuration link without automatic Ghostty installation. No Snap or third-party repository is added.
 
 Ghostty updates through the existing native-manager flow: Homebrew on macOS, APT on Ubuntu 26.04 or newer, and Pacman/Omarchy on Arch. No separate Ghostty updater is needed.
 
-### GitHub-sourced Cargo tools
+### tmx release binaries
 
-`tmx` comes from a GitHub repository rather than crates.io or native package managers. Its setup recipe depends on the first-party `envy.package-specs@r7` bundle and its `envy.github@r0` spec, pinned by full commit SHA. The recipe installs with `cargo install --path` from the cached clone. This keeps setup reproducible and still lets `bin/update` refresh the same tool by using a matching `cargo install --git --rev` command.
+All profiles install `tmx` and `hmx` from [v0.0.8](https://github.com/hantianjz/tmx/releases/tag/v0.0.8) archives for macOS/Linux on x86_64/arm64. `envy/local.tmx@r0.lua` pins all four SHA256 digests and installs into `~/.local/bin`. Both files are staged before uninstalling an old Cargo package owned by `https://github.com/hantianjz/tmx`, including when Cargo's installation root overlaps `~/.local`. Other Cargo sources named `tmx` remain untouched.
+
+The v0.0.8 archives currently report `tmx 0.0.6` and `hmx 0.0.6` because the tagged source still carries that package version. Setup compares installed bytes against the verified cached binaries, not the CLI version string. `bin/update` uses the same scoped Envy recipe and release pin. The unrelated crates.io package named `tmx` is not used.
 
 ## Symlink safety contract
 
@@ -217,17 +225,19 @@ Run the non-mutating checks before a full setup:
 ```sh
 ./bin/envy lua tests/platform_test.lua
 ./bin/envy lua tests/local_specs_test.lua
+./bin/envy lua tests/tmx_release_test.lua
+./bin/envy lua tests/binstall_tools_test.lua
+./bin/envy lua tests/yazi_setup_test.lua
 ./bin/envy lua tests/symlink_test.lua
 ./bin/envy lua tests/omarchy_setup_test.lua
 ./bin/envy lua tests/tmux_setup_test.lua
 ./bin/envy lua tests/omp_setup_test.lua
 OMP_TEST_PLATFORM=Linux ./bin/envy lua tests/omp_setup_test.lua
-bash -n setup bin/update tests/package_metadata.sh
-./bin/envy lua envy.lua
+bash -n setup bin/update scripts/rust-tools tests/package_metadata.sh
 git diff --check
 ```
 
-The updater tests execute the real script with isolated command doubles, covering propagated failures, continued later work, and Envy vendoring for managed tmux configuration. They do not upgrade the host or access the network. Never run the live updater as a validation check. Tmux dependency checks use the real Envy helper with immutable public GitHub revisions in disposable directories.
+The updater tests execute the real script with isolated command doubles, covering propagated failures, continued later work, scoped portable-tool installs, and Envy vendoring for managed tmux configuration. Migration tests cover same-version source-to-binary replacement, retained old installations on failure, ownership boundaries, and overlapping tmx installation roots. These checks do not upgrade the host or access the network. Never run the live updater as a validation check. Tmux dependency checks use the real Envy helper with immutable public GitHub revisions in disposable directories.
 
 Shell startup checks keep user tool directories ahead of Homebrew in `PATH`. The profile initializes Homebrew only when its executable exists, before loading the shared environment. Arch CI installs `diffutils` for byte-exact clipboard checks with `cmp`. The Herdr inventory audit uses C-locale ordering; chord checks exclude bindings intentionally removed from the configuration.
 

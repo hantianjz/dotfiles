@@ -179,19 +179,24 @@ envy.extend(PACKAGES, { {
   options = { toolchain = "stable" },
 } })
 
-local CARGO_PACKAGES = {}
-envy.extend(CARGO_PACKAGES, PACKAGE_PROFILE.crates)
-
 envy.extend(PACKAGES, { {
-  spec = "local.cargo_github_tmx@r0",
-  source = "envy/local.cargo_github_tmx@r0.lua",
-  setup = { "tool" },
-}, {
-  spec = "local.cargo_install@r0",
-  source = "envy/local.cargo_install@r0.lua",
-  setup = { "crates" },
-  options = { crates = CARGO_PACKAGES, build_helper = ROOT .. "/scripts/with-build-temp" },
+  spec = "local.tmx@r0",
+  source = "envy/local.tmx@r0.lua",
+  setup = { "tools" },
 } })
+
+if PROFILE == "ubuntu" then
+  envy.extend(PACKAGES, {
+    { spec = "local.yazi@r0", source = "envy/local.yazi@r0.lua", setup = { "package" } },
+    { spec = "local.binstall@r0", source = "envy/local.binstall@r0.lua", setup = { "tools" } },
+    {
+      spec = "local.binstall_tools@r0",
+      source = "envy/local.binstall_tools@r0.lua",
+      setup = { "tools" },
+      options = { script = ROOT .. "/scripts/rust-tools" },
+    },
+  })
+end
 
 envy.extend(PACKAGES, {
   {
