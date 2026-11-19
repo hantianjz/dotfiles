@@ -143,6 +143,9 @@ if [[ "$PACKAGE_MANAGER" == apt ]]; then
   section "Updating Neovim"
   run "$DOTFILES_ROOT/bin/envy" --project "$DOTFILES_ROOT" install local.neovim@r0 local.system_packages@r0
 
+  section "Updating Tree-sitter CLI"
+  run "$DOTFILES_ROOT/bin/envy" --project "$DOTFILES_ROOT" install local.tree_sitter@r0
+
   section "Updating Yazi"
   run "$DOTFILES_ROOT/bin/envy" --project "$DOTFILES_ROOT" install local.yazi@r0
 

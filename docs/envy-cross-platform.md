@@ -63,6 +63,7 @@ flowchart TB
 | `envy/local.yazi@r0.lua` | Fetches the pinned official Yazi `.deb`, installs it with APT, and removes legacy Cargo ownership safely. |
 | `envy/local.binstall@r0.lua` | Fetches the checksum-pinned cargo-binstall bootstrap. |
 | `envy/local.neovim@r0.lua` | Installs Ubuntu's latest stable upstream Neovim and verifies its release digest. |
+| `envy/local.tree_sitter@r0.lua` | Installs Ubuntu's checksum-pinned upstream Tree-sitter CLI for parser builds. |
 | `envy/local.binstall_tools@r0.lua` + `scripts/rust-tools` | Install/update Ubuntu's six upstream prebuilt Rust CLIs without compiling. |
 | `bin/update` | Updates the active native manager and the portable tools installed for that profile. |
 | `tests/` | Tests profile resolution, symlink behavior, and live native-repository metadata. |
@@ -120,6 +121,8 @@ The last row is an important regression case. The initial Arch profile used `typ
 ### Ubuntu fallbacks
 
 Neovim comes from the [latest stable upstream release](https://github.com/neovim/neovim/releases/latest) on Ubuntu x86_64 and arm64, not APT. Setup and `update` resolve the current release and verify its official SHA-256 digest before installation. The complete runtime lives under `~/.local/share/neovim`, with `~/.local/bin/nvim` activating it. Existing system installations remain untouched; an unrelated executable at `~/.local/bin/nvim` causes a conflict instead of being overwritten.
+
+The `nvim-treesitter` main branch requires Neovim 0.12+, Tree-sitter CLI 0.26.1+, `curl`, `tar`, and a C compiler. Ubuntu installs the official [Tree-sitter CLI v0.27.2 release](https://github.com/tree-sitter/tree-sitter/releases/tag/v0.27.2), checksum-pinned for x86_64 and arm64, into `~/.local/bin/tree-sitter`; APT's older CLI is not used. `build-essential` supplies the compiler. Setup and `update` use the same CLI recipe without npm or Rust compilation. macOS installs Homebrew's `tree-sitter`; Arch installs `tree-sitter-cli` and `gcc`.
 
 Ubuntu installs `diskus`, `eza`, `git-delta`, `gping`, `hexyl`, and `typos-cli` with cargo-binstall v1.26.2. `scripts/rust-tools` owns the crate/executable mappings and upstream archive overrides for delta and gping. Only the `crate-meta-data` strategy is enabled: no QuickInstall mirror or compilation fallback. Most binaries use GNU targets; typos uses musl. Homebrew and Pacman retain ownership on macOS and Arch. Lazygit is not automatically installed on Ubuntu.
 
@@ -231,6 +234,7 @@ Run the non-mutating checks before a full setup:
 ./bin/envy lua tests/tmx_release_test.lua
 ./bin/envy lua tests/binstall_tools_test.lua
 ./bin/envy lua tests/yazi_setup_test.lua
+./bin/envy lua tests/tree_sitter_setup_test.lua
 ./bin/envy lua tests/symlink_test.lua
 ./bin/envy lua tests/omarchy_setup_test.lua
 ./bin/envy lua tests/tmux_setup_test.lua
@@ -263,6 +267,17 @@ GitHub Actions runs policy, symlink, syntax, and native metadata checks on Ubunt
 The workflow runs on pull requests and pushes to `main`, subject to its path filters. Feature-branch pushes do not start a second run alongside pull-request checks.
 
 ## Troubleshooting
+
+### Neovim Tree-sitter installation fails
+
+Rerun `./setup` to install the CLI and compiler dependencies. To repair only Ubuntu's CLI without running the complete setup:
+
+```sh
+./bin/envy install local.tree_sitter@r0
+tree-sitter --version
+```
+
+Restart Neovim and allow its asynchronous parser installation to finish before quitting. Use `:checkhealth nvim-treesitter` to check requirements, and `:TSUpdate` to update installed parsers. The CLI must be on Neovim's `PATH`; do not install it through npm.
 
 ### Native manager reports “target/package not found”
 

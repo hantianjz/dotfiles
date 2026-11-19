@@ -214,6 +214,7 @@ end
 if PROFILE == "ubuntu" then
   envy.extend(PACKAGES, {
     { spec = "local.neovim@r0", source = "envy/local.neovim@r0.lua", setup = { "editor" } },
+    { spec = "local.tree_sitter@r0", source = "envy/local.tree_sitter@r0.lua", setup = { "tools" } },
     { spec = "local.yazi@r0", source = "envy/local.yazi@r0.lua", setup = { "package" } },
     { spec = "local.binstall@r0", source = "envy/local.binstall@r0.lua", setup = { "tools" } },
     {

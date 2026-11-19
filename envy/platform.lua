@@ -51,13 +51,13 @@ function M.packages(profile, manager, version_id)
   if profile == "macos" then
     append(packages, {
       "diskus", "eza", "git-delta", "gping", "hexyl", "lazygit",
-      "herdr", "neovim", "tuicr", "typos-cli", "yazi",
+      "herdr", "neovim", "tree-sitter", "tuicr", "typos-cli", "yazi",
     })
     append(casks, { "ghostty", "aerospace" })
   elseif profile == "arch" then
     append(packages, {
       "diskus", "eza", "git-delta", "ghostty", "gping", "hexyl", "lazygit",
-      "neovim", "systemd", "typos", "usbutils", "wl-clipboard", "yazi",
+      "gcc", "neovim", "systemd", "tree-sitter-cli", "typos", "usbutils", "wl-clipboard", "yazi",
     })
   elseif profile == "ubuntu" then
     append(packages, { "build-essential", "libglib2.0-dev", "libudev-dev", "usbutils", "wl-clipboard" })

@@ -53,6 +53,9 @@ jobs:
       - name: Neovim upstream releases
         if: matrix.profile == 'ubuntu'
         run: ./bin/envy lua tests/neovim_setup_test.lua
+      - name: Tree-sitter CLI installation
+        if: matrix.profile == 'ubuntu'
+        run: ./bin/envy lua tests/tree_sitter_setup_test.lua
       - name: Omp setup and updates
         run: |
           ./bin/envy lua tests/omp_setup_test.lua

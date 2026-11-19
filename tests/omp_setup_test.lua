@@ -84,6 +84,10 @@ case "$3:$4" in
     [ ! -f "$HOME/neovim-fails" ] || exit 45
     : > "$HOME/neovim-updated"
     ;;
+  install:local.tree_sitter@r0)
+    [ ! -f "$HOME/tree-sitter-fails" ] || exit 46
+    : > "$HOME/tree-sitter-updated"
+    ;;
   install:local.binstall@r0) [ ! -f "$HOME/bootstrap-fails" ] || exit 44 ;;
   vendor:--all)
     [ ! -f "$HOME/vendor-fails" ] || exit 43
@@ -165,6 +169,13 @@ set -eu
     assert(not io.open(temp .. "/home with spaces/neovim-updated"), "failed Neovim update must not report success")
     assert(result.stdout:find("Update completed with 1 failure(s).", 1, true))
     os.remove(temp .. "/home with spaces/neovim-fails")
+    local treesitter = assert(io.open(temp .. "/home with spaces/tree-sitter-updated")); treesitter:close()
+    os.remove(temp .. "/home with spaces/tree-sitter-updated")
+    put(temp .. "/home with spaces/tree-sitter-fails", "")
+    result = envy.run(updater, { capture = true, check = false })
+    assert(result.exit_code == 1, "failed Tree-sitter update must fail the updater")
+    assert(not io.open(temp .. "/home with spaces/tree-sitter-updated"), "failed Tree-sitter update must not report success")
+    os.remove(temp .. "/home with spaces/tree-sitter-fails")
     os.remove(temp .. "/home with spaces/rust-tools-updated")
     os.remove(temp .. "/home with spaces/fisher-updated")
     put(temp .. "/home with spaces/bootstrap-fails", "")
