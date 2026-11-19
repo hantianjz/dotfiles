@@ -72,7 +72,7 @@ jobs:
     container: archlinux:latest
     steps:
       - name: Install test prerequisites
-        run: pacman -Sy --needed --noconfirm ca-certificates curl diffutils fish git jq
+        run: pacman -Syu --needed --noconfirm ca-certificates curl diffutils fish git jq
       - uses: actions/checkout@v4
       - name: Syntax checks
         run: |
