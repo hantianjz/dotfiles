@@ -93,12 +93,6 @@ cmd-m = []
 cmd-slash = 'layout tiles horizontal vertical'
 cmd-period = 'layout accordion horizontal vertical'
 
-# See: https://nikitabobko.github.io/AeroSpace/commands#focus
-cmd-shift-h = 'focus left'
-cmd-shift-j = 'focus down'
-cmd-shift-k = 'focus up'
-cmd-shift-l = 'focus right'
-
 # See: https://nikitabobko.github.io/AeroSpace/commands#move
 cmd-ctrl-h = 'move left'
 cmd-ctrl-j = 'move down'

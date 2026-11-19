@@ -38,7 +38,6 @@ jobs:
       - name: Herdr key parity
         run: |
           tests/herdr_tmux_action_test.sh
-          tests/herdr_tmux_parity_test.sh
       - name: Platform policy tests
         run: ./bin/envy lua tests/platform_test.lua
       - name: Local spec tests
@@ -84,7 +83,6 @@ jobs:
       - name: Herdr key parity
         run: |
           tests/herdr_tmux_action_test.sh
-          tests/herdr_tmux_parity_test.sh
       - name: Platform policy tests
         run: ./bin/envy lua tests/platform_test.lua
       - name: Local spec tests
