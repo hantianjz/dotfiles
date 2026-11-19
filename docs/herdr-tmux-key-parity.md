@@ -10,20 +10,9 @@ tmux-sensible's last-window binding. Herdr and tmux are configured as
 independent multiplexers and are not intended to be nested. Herdr's built-in
 double-prefix behavior sends a literal `Ctrl-a` to the active program.
 
-Direct `Ctrl-h/j/k/l` is process-aware in both multiplexers. tmux uses
-`vim-tmux-navigator`; Herdr uses the upstream
-`paulbkim-dev/vim-herdr-navigation` workflow plugin. Its Herdr action forwards
-the key when Neovim is in the foreground and otherwise focuses the neighboring
-Herdr pane. Inside Neovim, its editor integration moves between windows first
-and invokes `herdr pane focus` only at an outer edge.
-
-The Lazy plugin spec selects the integration from the session environment:
-`HERDR_ENV`, `HERDR_PANE_ID`, and `HERDR_SOCKET_PATH` load
-`vim-herdr-navigation`; all other sessions load
-`christoomey/vim-tmux-navigator`. Without tmux, that plugin moves between
-Neovim windows directly, including in herdr-app terminals backed by herdr-core.
-Envy installs the matching Herdr workflow plugin. Herdr takes precedence if
-stale or nested tmux environment variables are also present.
+Inside Neovim, `Ctrl-h/j/k/l` uses native window navigation in normal and
+terminal modes. These keys never hand off to Herdr or tmux panes, including
+at a Neovim window edge. No multiplexer navigation plugin is loaded.
 
 Herdr app uses `Cmd-h/j/k/l` for app pane navigation, leaving
 `Ctrl-h/j/k/l` available to Neovim. Dotfiles setup links
@@ -48,11 +37,10 @@ In Herdr app, `Ctrl-a [` starts a text selection at the terminal cursor;
 `Cmd-c` copies the selection. This does not enter a modal copy mode or
 change the existing pane navigation bindings.
 
-Check Neovim window navigation with installed plugins from the repository root:
+Check native Neovim window navigation from the repository root:
 
 ```sh
-env -u TMUX -u HERDR_ENV -u HERDR_PANE_ID -u HERDR_SOCKET_PATH \
-  nvim --headless -u NONE -l nvim/tests/navigation_spec.lua
+nvim --headless -u NONE -l nvim/tests/navigation_spec.lua
 ```
 
 The following bindings remain tmux-only:

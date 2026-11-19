@@ -90,6 +90,11 @@ vim.keymap.set('n', '˚', function() vim.cmd("silent! cprev") end) -- ALT-k
 
 vim.keymap.set('t', '<Esc>', '<C-\\><C-n>', { noremap = true, silent = true })
 
+for _, direction in ipairs({ 'h', 'j', 'k', 'l' }) do
+  vim.keymap.set('n', '<C-' .. direction .. '>', '<C-w>' .. direction, { silent = true })
+  vim.keymap.set('t', '<C-' .. direction .. '>', '<C-\\><C-n><C-w>' .. direction, { silent = true })
+end
+
 
 -- Inspect a lua object
 P = function(v)
