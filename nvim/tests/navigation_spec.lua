@@ -1,13 +1,10 @@
--- Run from the repository root with installed Neovim plugins:
--- env -u TMUX -u HERDR_ENV -u HERDR_PANE_ID -u HERDR_SOCKET_PATH nvim --headless -u NONE -l nvim/tests/navigation_spec.lua
-vim.opt.loadplugins = true
-vim.opt.runtimepath:prepend(vim.fn.stdpath("data") .. "/lazy/lazy.nvim")
-require("lazy").setup({
-  spec = dofile("nvim/lua/plugins/tmux.lua"),
-  install = { missing = false },
-  checker = { enabled = false },
-  change_detection = { enabled = false },
-})
+-- Run from the repository root:
+-- nvim --headless -u NONE -l nvim/tests/navigation_spec.lua
+vim.env.TMUX = "/nonexistent/tmux"
+vim.env.HERDR_ENV = "1"
+vim.env.HERDR_PANE_ID = "removed-herdr-pane"
+vim.env.HERDR_SOCKET_PATH = "/nonexistent/herdr"
+dofile("nvim/lua/nvim_cfg.lua")
 
 local function navigate(key, expected)
   local input = vim.api.nvim_replace_termcodes(key, true, false, true)
@@ -21,6 +18,8 @@ local left = vim.api.nvim_get_current_win()
 vim.cmd("wincmd l")
 local right = vim.api.nvim_get_current_win()
 navigate("<C-h>", left)
+navigate("<C-h>", left)
+navigate("<C-l>", right)
 navigate("<C-l>", right)
 
 vim.cmd("only")
@@ -30,5 +29,7 @@ local top = vim.api.nvim_get_current_win()
 vim.cmd("wincmd j")
 local bottom = vim.api.nvim_get_current_win()
 navigate("<C-k>", top)
+navigate("<C-k>", top)
+navigate("<C-j>", bottom)
 navigate("<C-j>", bottom)
 print("Neovim navigation: all four directions passed")
