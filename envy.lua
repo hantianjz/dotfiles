@@ -106,10 +106,6 @@ local SYMLINKS = {
   { source = ROOT .. "/config/ghostty",            dest = HOME .. "/.config/ghostty" },
   { source = ROOT .. "/config/herdr/config.toml",  dest = HOME .. "/.config/herdr/config.toml" },
   { source = ROOT .. "/scripts/herdr-tmux-action", dest = HOME .. "/.config/herdr/herdr-tmux-action" },
-  {
-    source = ROOT .. "/config/herdr-automatic-rename/config.sh",
-    dest = HOME .. "/.config/herdr-automatic-rename/config.sh"
-  },
   { source = ROOT .. "/tmux",                       dest = HOME .. "/.config/tmux" },
   { source = ROOT .. "/config/gdbinit",             dest = HOME .. "/.gdbinit" },
   { source = ROOT .. "/scripts/batch_find_replace", dest = HOME .. "/bin/batch_find_replace" },
@@ -266,15 +262,3 @@ if HERDR_APP_SUPPORTED then
   } })
 end
 
-local HERDR_PLUGINS = {}
-for plugin in io.lines(ROOT .. "/config/herdr/plugins") do
-  if plugin ~= "" and plugin:sub(1, 1) ~= "#" then
-    table.insert(HERDR_PLUGINS, plugin)
-  end
-end
-envy.extend(PACKAGES, { {
-  spec = "local.herdr@r0",
-  source = "envy/local.herdr@r0.lua",
-  setup = { "plugins" },
-  options = { plugins = HERDR_PLUGINS },
-} })
