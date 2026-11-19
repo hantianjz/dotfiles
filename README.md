@@ -10,7 +10,7 @@ Declarative development environment setup using [Envy](https://github.com/envy-p
 
 Shared shell, Neovim, Git, Ghostty, tmux, Herdr, scripts, and AI-skill links are managed on every platform. Herdr independently uses the same `Ctrl-a`-prefixed pane and tab bindings as tmux where practical; `Ctrl-a Ctrl-a` sends a literal `Ctrl-a` to the active program. Aerospace is linked only on macOS. Personal Hyprland overrides target Omarchy v4.0.4 and are linked individually only on Arch; Ubuntu does not receive either desktop-specific link set. Existing Omarchy installations must follow the [bounded migration procedure](docs/envy-cross-platform.md#omarchy-v404-cutover) before deploying the Lua configuration.
 
-Ubuntu installs portable Rust CLIs from upstream prebuilt releases with `cargo-binstall`, and Yazi from its official `.deb`. No Rust CLI source-build fallback runs during setup or updates. All profiles install `tmx` and `hmx` from checksum-pinned v0.0.8 release archives.
+Ubuntu installs portable Rust CLIs from upstream prebuilt releases with `cargo-binstall`, and Yazi from its official `.deb`. No Rust CLI source-build fallback runs during setup or updates. All profiles except `remote` install `tmx` and `hmx` from checksum-pinned v0.0.8 release archives.
 
 Ghostty installs through Homebrew on macOS, Pacman on Arch, and the official APT repositories on Ubuntu 26.04 or newer. Ubuntu 24.04 keeps its Ghostty configuration link but does not install Ghostty automatically. Lazygit is not automatically installed on Ubuntu.
 
@@ -33,9 +33,10 @@ For non-interactive setup, pass the profile explicitly:
 ```sh
 ./setup --profile work
 ./setup --profile personal
+./setup --profile remote
 ```
 
-The `work` profile writes `user.email = hjz@block.xyz` to `~/.gitconfig_local`; the `personal` profile writes `user.email = hjz@hackjumpzero.ca`. Other settings in `~/.gitconfig_local` are preserved.
+The `work` profile writes `user.email = hjz@block.xyz` to `~/.gitconfig_local`; the `personal` and `remote` profiles write `user.email = hjz@hackjumpzero.ca`. Other settings in `~/.gitconfig_local` are preserved. The `remote` profile matches `personal` but skips installation and updates of the bundled `tmx`/`hmx` tools. Switching to `remote` does not uninstall existing tools.
 
 GitHub credentials use `gh` from `PATH`, on both macOS and Linux. Authenticate separately on each machine.
 

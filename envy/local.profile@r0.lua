@@ -15,7 +15,8 @@ local function parent_dir(path)
 end
 
 local function validate(opts)
-  assert(opts.profile == "personal" or opts.profile == "work", "profile must be personal or work")
+  assert(opts.profile == "personal" or opts.profile == "work" or opts.profile == "remote",
+    "profile must be personal, work, or remote")
   assert(opts.profile_path and opts.profile_path ~= "", "profile_path is required")
   assert(opts.gitconfig_path and opts.gitconfig_path ~= "", "gitconfig_path is required")
   assert(opts.git_user_email and opts.git_user_email ~= "", "git_user_email is required")

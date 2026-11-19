@@ -132,7 +132,7 @@ Ghostty updates through the existing native-manager flow: Homebrew on macOS, APT
 
 ### tmx release binaries
 
-All profiles install `tmx` and `hmx` from [v0.0.8](https://github.com/hantianjz/tmx/releases/tag/v0.0.8) archives for macOS/Linux on x86_64/arm64. `envy/local.tmx@r0.lua` pins all four SHA256 digests and installs into `~/.local/bin`. Both files are staged before uninstalling an old Cargo package owned by `https://github.com/hantianjz/tmx`, including when Cargo's installation root overlaps `~/.local`. Other Cargo sources named `tmx` remain untouched.
+All profiles except `remote` install `tmx` and `hmx` from [v0.0.8](https://github.com/hantianjz/tmx/releases/tag/v0.0.8) archives for macOS/Linux on x86_64/arm64. The `remote` machine profile otherwise matches `personal`, including its Git email; it skips tmx/hmx updates and leaves existing binaries untouched. `envy/local.tmx@r0.lua` pins all four SHA256 digests and installs into `~/.local/bin`. Both files are staged before uninstalling an old Cargo package owned by `https://github.com/hantianjz/tmx`, including when Cargo's installation root overlaps `~/.local`. Other Cargo sources named `tmx` remain untouched.
 
 The v0.0.8 archives currently report `tmx 0.0.6` and `hmx 0.0.6` because the tagged source still carries that package version. Setup compares installed bytes against the verified cached binaries, not the CLI version string. `bin/update` uses the same scoped Envy recipe and release pin. The unrelated crates.io package named `tmx` is not used.
 

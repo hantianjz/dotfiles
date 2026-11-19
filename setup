@@ -14,7 +14,7 @@ while [[ $# -gt 0 ]]; do
     --profile)
       shift
       if [[ $# -eq 0 ]]; then
-        echo "ERROR: --profile requires work or personal" >&2
+        echo "ERROR: --profile requires work, personal, or remote" >&2
         exit 1
       fi
       REQUESTED_PROFILE="$1"
@@ -39,6 +39,7 @@ normalize_dotfiles_profile() {
   case "$1" in
     personal|1) printf '%s\n' personal ;;
     work|2) printf '%s\n' work ;;
+    remote|3) printf '%s\n' remote ;;
     *) return 1 ;;
   esac
 }
@@ -51,7 +52,7 @@ select_dotfiles_profile() {
       printf '%s\n' "$normalized"
       return
     fi
-    echo "ERROR: unknown dotfiles profile '$REQUESTED_PROFILE' (expected work or personal)" >&2
+    echo "ERROR: unknown dotfiles profile '$REQUESTED_PROFILE' (expected work, personal, or remote)" >&2
     exit 1
   fi
 
@@ -69,18 +70,18 @@ select_dotfiles_profile() {
 
   if [[ -t 0 && -t 1 ]]; then
     while true; do
-      printf 'Select dotfiles profile [personal/work] (default: personal): ' >&2
+      printf 'Select dotfiles profile [personal/work/remote] (default: personal): ' >&2
       IFS= read -r profile
       profile="${profile:-personal}"
       if normalized="$(normalize_dotfiles_profile "$profile")"; then
         printf '%s\n' "$normalized"
         return
       fi
-      echo "ERROR: enter personal or work" >&2
+      echo "ERROR: enter personal, work, or remote" >&2
     done
   fi
 
-  echo "ERROR: choose a dotfiles profile with --profile work|personal" >&2
+  echo "ERROR: choose a dotfiles profile with --profile work|personal|remote" >&2
   exit 1
 }
 
