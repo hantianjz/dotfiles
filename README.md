@@ -14,13 +14,13 @@ Ubuntu installs portable Rust CLIs from upstream prebuilt releases with `cargo-b
 
 Ghostty installs through Homebrew on macOS, Pacman on Arch, and the official APT repositories on Ubuntu 26.04 or newer. Ubuntu 24.04 keeps its Ghostty configuration link but does not install Ghostty automatically. Lazygit is not automatically installed on Ubuntu.
 
-Ubuntu retains `build-essential` and Rustup's stable toolchain as development tools. Shell plugin setup waits for native packages; Herdr plugins also wait for the Herdr CLI.
+Ubuntu retains `build-essential` and Rustup's stable toolchain as development tools. Shell plugin setup waits for native packages.
 
 Ubuntu installs the latest stable Neovim from [official upstream releases](https://github.com/neovim/neovim/releases/latest), not APT. Setup and `update` verify the release archive's SHA-256 and expose it as `~/.local/bin/nvim`; existing APT installations remain untouched.
 
 Rustup leaves shell startup files unchanged; the shared shell environment owns Cargo's `PATH` entry.
 
-Fisher owns its generated manager files and installs every plugin in `fish/fish_plugins`. Setup checks the complete installed list. Herdr setup reads its local plugin registry, not retained checkout directories, to detect registered installations.
+Fisher owns its generated manager files and installs every plugin in `fish/fish_plugins`. Setup checks the complete installed list.
 
 ## Fresh install
 

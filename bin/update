@@ -32,19 +32,6 @@ update_direct_herdr() {
   fi
 }
 
-update_herdr_plugins() {
-  local herdr_bin plugin
-  herdr_bin="$(command -v herdr 2>/dev/null || true)"
-  [[ -n "$herdr_bin" ]] || herdr_bin="$HOME/.local/bin/herdr"
-  [[ -x "$herdr_bin" ]] || return
-
-  section "Updating Herdr plugins"
-  while IFS= read -r plugin; do
-    [[ -n "$plugin" && "$plugin" != \#* ]] || continue
-    run "$herdr_bin" plugin install "$plugin" -y
-  done <"$DOTFILES_ROOT/config/herdr/plugins"
-}
-
 PACKAGE_MANAGER=""
 case "$(uname -s)" in
   Darwin)
@@ -88,8 +75,6 @@ case "$PACKAGE_MANAGER" in
     skip
     ;;
 esac
-
-update_herdr_plugins
 
 if command -v herdr-app >/dev/null 2>&1 || [[ -x "$HOME/.local/bin/herdr-app" ]]; then
   section "Updating Herdr app"

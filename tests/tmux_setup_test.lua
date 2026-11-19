@@ -26,8 +26,7 @@ local ok, failure = pcall(function()
     run("mkdir -p " .. quote(base .. "/envy") .. " " .. quote(base .. "/tmux/plugins") ..
       " " .. quote(base .. "/ai/skills") .. " " .. quote(base .. "/config/herdr") ..
       " " .. quote(home .. "/.config"))
-    for _, path in ipairs({ "envy/platform.lua", "envy/tmux.lua", "envy/local.symlink@r0.lua",
-        "config/herdr/plugins" }) do
+    for _, path in ipairs({ "envy/platform.lua", "envy/tmux.lua", "envy/local.symlink@r0.lua" }) do
       run("cp " .. quote(root .. "/" .. path) .. " " .. quote(base .. "/" .. path))
     end
     run("cp " .. quote(root .. "/envy.lua") .. " " .. quote(base .. "/actual.lua"))

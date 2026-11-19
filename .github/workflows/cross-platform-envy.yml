@@ -37,7 +37,6 @@ jobs:
         run: tests/shell_startup_test.sh
       - name: Herdr key parity
         run: |
-          tests/herdr_plugins_test.sh
           tests/herdr_tmux_action_test.sh
           tests/herdr_tmux_parity_test.sh
       - name: Platform policy tests
@@ -84,7 +83,6 @@ jobs:
         run: tests/shell_startup_test.sh
       - name: Herdr key parity
         run: |
-          tests/herdr_plugins_test.sh
           tests/herdr_tmux_action_test.sh
           tests/herdr_tmux_parity_test.sh
       - name: Platform policy tests
