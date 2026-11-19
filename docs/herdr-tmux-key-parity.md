@@ -44,6 +44,10 @@ are intentionally absent. Prefixed `Ctrl-a` navigation remains available.
 `Cmd-h` replaces the app's Hide shortcut. Changes reload automatically.
 Neovim window edges do not hand off to app panes; use the `Cmd` shortcuts.
 
+In Herdr app, `Ctrl-a [` starts a text selection at the terminal cursor;
+`Cmd-c` copies the selection. This does not enter a modal copy mode or
+change the existing pane navigation bindings.
+
 Check Neovim window navigation with installed plugins from the repository root:
 
 ```sh
