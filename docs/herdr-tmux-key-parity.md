@@ -68,8 +68,8 @@ The following bindings remain tmux-only:
   copy are not bound in the current Herdr configuration.
 - TPM and resurrect controls: Herdr manages persistence and integrations
   independently.
-- Rectangle selection: Herdr copy mode already supports `v`, Space, `y`, and
-  Enter, but has no tmux rectangle-selection equivalent.
+- Rectangle selection: Herdr app exposes cell, word, and line selection,
+  but no tmux rectangle-selection equivalent or built-in modal copy mode.
 - Mouse bindings, which are outside this keyboard-parity audit.
 
 `scripts/herdr-tmux-action` remains available for manual rotation, first-pane
