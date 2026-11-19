@@ -56,14 +56,14 @@ The desktop app uses Catppuccin Mocha colors in `settings.json`, matching Neovim
 
 Use repository edits for managed preferences, not the app Settings UI: its atomic file writes can replace a configuration symlink. If that happens, merge the local changes into the repository, back up and move the regular file aside, then run `./bin/envy install local.herdr_app@r0` to restore the link.
 
-Setup links `ai/CLAUDE.md` as the shared personal instruction file for Claude Code, Codex, agents-compatible tools, and omp:
+Setup links `ai/work/AGENTS.md` for the `work` profile and `ai/CLAUDE.md` for the `personal` profile as the shared instruction file for Claude Code, Codex, agents-compatible tools, and omp:
 
 - `~/.claude/CLAUDE.md`
 - `~/.codex/AGENTS.md`
 - `~/.agents/AGENTS.md`
 - `~/.omp/agent/AGENTS.md`
 
-The same links are managed by direct `./bin/envy sync` runs. Differing existing regular files are preserved with a warning; merge any wanted instructions into `ai/CLAUDE.md`, back up and move the conflicting files aside, then rerun setup. This includes tool-managed additions such as `sq agents` blocks. Start a new agent session after setup to load the shared instructions. Omp uses its native global file without enabling Claude or Codex discovery.
+The same links are managed by direct `./bin/envy sync` runs using `DOTFILES_PROFILE` or the saved `~/.dotfiles_profile`; without either, they use the personal file. Switching profiles repoints existing symlinks. Differing existing regular files are preserved with a warning; merge wanted instructions into the selected profile's file, back up and move conflicting files aside, then rerun setup. This includes tool-managed additions such as `sq agents` blocks. Start a new agent session after setup to load the shared instructions. Omp uses its native global file without enabling Claude or Codex discovery.
 
 ### Omarchy 4.0+
 
