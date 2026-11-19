@@ -2,12 +2,14 @@
 ---
 --- Selects the navigator for the multiplexer that launched Neovim.
 
+local use_herdr = vim.env.HERDR_ENV == "1"
+    and vim.env.HERDR_PANE_ID ~= nil
+    and vim.env.HERDR_SOCKET_PATH ~= nil
+
 ---@type LazySpec
 local tmux_navigator = {
   'christoomey/vim-tmux-navigator',
-  cond = function()
-    return vim.env.TMUX ~= nil
-  end,
+  cond = not use_herdr,
   keys = {
     {
       "<C-h>",
@@ -44,11 +46,7 @@ local tmux_navigator = {
 
 local herdr_navigator = {
   "paulbkim-dev/vim-herdr-navigation",
-  cond = function()
-    return vim.env.HERDR_ENV == "1"
-        and vim.env.HERDR_PANE_ID ~= nil
-        and vim.env.HERDR_SOCKET_PATH ~= nil
-  end,
+  cond = use_herdr,
   config = function(plugin)
     dofile(plugin.dir .. "/editor/nvim.lua")
   end,

@@ -19,10 +19,37 @@ and invokes `herdr pane focus` only at an outer edge.
 
 The Lazy plugin spec selects the integration from the session environment:
 `HERDR_ENV`, `HERDR_PANE_ID`, and `HERDR_SOCKET_PATH` load
-`vim-herdr-navigation`; other sessions keep
-`christoomey/vim-tmux-navigator`. Envy installs the matching Herdr workflow
-plugin. Herdr takes precedence if stale or nested tmux environment variables
-are also present.
+`vim-herdr-navigation`; all other sessions load
+`christoomey/vim-tmux-navigator`. Without tmux, that plugin moves between
+Neovim windows directly, including in herdr-app terminals backed by herdr-core.
+Envy installs the matching Herdr workflow plugin. Herdr takes precedence if
+stale or nested tmux environment variables are also present.
+
+Herdr app uses `Cmd-h/j/k/l` for app pane navigation, leaving
+`Ctrl-h/j/k/l` available to Neovim. Dotfiles setup links
+`config/herdr-app/keys.json` and `config/herdr-app/settings.json` into
+`${HERDR_APP_HOME:-~/.config/herdr-app}`; the updater repairs those links.
+Edit the repository files to change app preferences. Differing existing files
+are preserved with a warning; merge wanted settings, back up and move the
+conflicting files aside, then rerun setup.
+
+Use repository edits rather than the app Settings UI for managed preferences.
+The UI saves settings with an atomic file replacement, which can replace a
+symlink instead of updating its target. If a managed file becomes a regular
+file, merge wanted changes into the repository, back up and move that file
+aside, then run `./bin/envy install local.herdr_app@r0` to restore the link.
+
+Plain `ctrl-h/j/k/l` bindings to `pane.go` intercept keys before Neovim and
+are intentionally absent. Prefixed `Ctrl-a` navigation remains available.
+`Cmd-h` replaces the app's Hide shortcut. Changes reload automatically.
+Neovim window edges do not hand off to app panes; use the `Cmd` shortcuts.
+
+Check Neovim window navigation with installed plugins from the repository root:
+
+```sh
+env -u TMUX -u HERDR_ENV -u HERDR_PANE_ID -u HERDR_SOCKET_PATH \
+  nvim --headless -u NONE -l nvim/tests/navigation_spec.lua
+```
 
 The following bindings remain tmux-only:
 

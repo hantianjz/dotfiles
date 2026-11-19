@@ -94,6 +94,8 @@ update_herdr_plugins
 if command -v herdr-app >/dev/null 2>&1 || [[ -x "$HOME/.local/bin/herdr-app" ]]; then
   section "Updating Herdr app"
   run bash -o pipefail -c 'curl -fsSL https://releases.herdr.dev/app/install.sh | sh'
+  section "Syncing Herdr app configuration"
+  run "$DOTFILES_ROOT/bin/envy" --project "$DOTFILES_ROOT" install local.herdr_app@r0
 fi
 
 export PATH="$PATH:$HOME/.local/bin:$HOME/.bun/bin"
