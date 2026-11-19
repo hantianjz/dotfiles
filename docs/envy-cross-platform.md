@@ -59,7 +59,6 @@ flowchart TB
 | `envy/platform.lua` | Detects the profile and returns native packages, casks, taps, and desktop-specific links. This is the source of truth for platform differences. |
 | `envy/local.system_packages@r0.lua` | Checks and installs formulas, casks, APT packages, or Pacman packages. |
 | `envy/local.symlink@r0.lua` | Classifies destinations, warns on conflicts, and creates or repairs only safe links. |
-| `envy/local.tmx@r0.lua` | Fetches checksum-pinned tmx/hmx archives and migrates the old owned Git Cargo installation. |
 | `envy/local.yazi@r0.lua` | Fetches the pinned official Yazi `.deb`, installs it with APT, and removes legacy Cargo ownership safely. |
 | `envy/local.binstall@r0.lua` | Fetches the checksum-pinned cargo-binstall bootstrap. |
 | `envy/local.neovim@r0.lua` | Installs Ubuntu's latest stable upstream Neovim and verifies its release digest. |
@@ -135,12 +134,6 @@ Yazi migration installs the `.deb` successfully before uninstalling registered `
 Ghostty uses native packages: a Homebrew cask on macOS, Pacman on Arch, and [the official Ubuntu package](https://ghostty.org/docs/install/binary#ubuntu) starting with Ubuntu 26.04. The Ubuntu policy reads `VERSION_ID` from `/etc/os-release`; Ubuntu 24.04 retains its configuration link without automatic Ghostty installation. No Snap or third-party repository is added.
 
 Ghostty updates through the existing native-manager flow: Homebrew on macOS, APT on Ubuntu 26.04 or newer, and Pacman/Omarchy on Arch. No separate Ghostty updater is needed.
-
-### tmx release binaries
-
-All profiles except `remote` install `tmx` and `hmx` from [v0.0.8](https://github.com/hantianjz/tmx/releases/tag/v0.0.8) archives for macOS/Linux on x86_64/arm64. The `remote` machine profile otherwise matches `personal`, including its Git email; it skips tmx/hmx updates and leaves existing binaries untouched. `envy/local.tmx@r0.lua` pins all four SHA256 digests and installs into `~/.local/bin`. Both files are staged before uninstalling an old Cargo package owned by `https://github.com/hantianjz/tmx`, including when Cargo's installation root overlaps `~/.local`. Other Cargo sources named `tmx` remain untouched.
-
-The v0.0.8 archives currently report `tmx 0.0.6` and `hmx 0.0.6` because the tagged source still carries that package version. Setup compares installed bytes against the verified cached binaries, not the CLI version string. `bin/update` uses the same scoped Envy recipe and release pin. The unrelated crates.io package named `tmx` is not used.
 
 ## Symlink safety contract
 
@@ -231,7 +224,6 @@ Run the non-mutating checks before a full setup:
 ```sh
 ./bin/envy lua tests/platform_test.lua
 ./bin/envy lua tests/local_specs_test.lua
-./bin/envy lua tests/tmx_release_test.lua
 ./bin/envy lua tests/binstall_tools_test.lua
 ./bin/envy lua tests/yazi_setup_test.lua
 ./bin/envy lua tests/tree_sitter_setup_test.lua
@@ -244,7 +236,7 @@ bash -n setup bin/update scripts/rust-tools tests/package_metadata.sh
 git diff --check
 ```
 
-The updater tests execute the real script with isolated command doubles, covering propagated failures, continued later work, scoped portable-tool installs, and Envy vendoring for managed tmux configuration. Migration tests cover same-version source-to-binary replacement, retained old installations on failure, ownership boundaries, and overlapping tmx installation roots. These checks do not upgrade the host or access the network. Never run the live updater as a validation check. Tmux dependency checks use the real Envy helper with immutable public GitHub revisions in disposable directories.
+The updater tests execute the real script with isolated command doubles, covering propagated failures, continued later work, scoped portable-tool installs, and Envy vendoring for managed tmux configuration. Migration tests cover retained old installations on failure and ownership boundaries. These checks do not upgrade the host or access the network. Never run the live updater as a validation check. Tmux dependency checks use the real Envy helper with immutable public GitHub revisions in disposable directories.
 
 Shell startup checks keep user tool directories ahead of Homebrew in `PATH`. The profile initializes Homebrew only when its executable exists, before loading the shared environment. Arch CI installs `diffutils` for byte-exact clipboard checks with `cmp`. The Herdr inventory audit uses C-locale ordering; chord checks exclude bindings intentionally removed from the configuration.
 

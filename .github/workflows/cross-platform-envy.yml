@@ -44,8 +44,6 @@ jobs:
         run: ./bin/envy lua tests/platform_test.lua
       - name: Local spec tests
         run: ./bin/envy lua tests/local_specs_test.lua
-      - name: tmx release migration
-        run: ./bin/envy lua tests/tmx_release_test.lua
       - name: Prebuilt Rust tool migration
         run: ./bin/envy lua tests/binstall_tools_test.lua
       - name: Yazi native package migration
@@ -93,8 +91,6 @@ jobs:
         run: ./bin/envy lua tests/platform_test.lua
       - name: Local spec tests
         run: ./bin/envy lua tests/local_specs_test.lua
-      - name: tmx release migration
-        run: ./bin/envy lua tests/tmx_release_test.lua
       - name: Prebuilt Rust tool migration
         run: ./bin/envy lua tests/binstall_tools_test.lua
       - name: Yazi native package migration

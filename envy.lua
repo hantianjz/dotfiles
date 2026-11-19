@@ -35,7 +35,6 @@ local PACKAGE_PROFILE = platform.packages(PROFILE, PACKAGE_MANAGER)
 
 local MACHINE_PROFILE_EMAILS = {
   personal = "hjz@hackjumpzero.ca",
-  remote = "hjz@hackjumpzero.ca",
   work = "hjz@block.xyz",
 }
 local MACHINE_PROFILE_PATH = HOME .. "/.dotfiles_profile"
@@ -59,7 +58,7 @@ if not MACHINE_PROFILE or MACHINE_PROFILE == "" then
 end
 local MACHINE_PROFILE_EMAIL = MACHINE_PROFILE and MACHINE_PROFILE_EMAILS[MACHINE_PROFILE] or nil
 if MACHINE_PROFILE and not MACHINE_PROFILE_EMAIL then
-  error("unknown dotfiles profile '" .. MACHINE_PROFILE .. "' (expected personal, work, or remote)")
+  error("unknown dotfiles profile '" .. MACHINE_PROFILE .. "' (expected personal or work)")
 end
 
 if MACHINE_PROFILE_EMAIL then
@@ -202,14 +201,6 @@ envy.extend(PACKAGES, { {
   setup = { "toolchain" },
   options = { toolchain = "stable" },
 } })
-
-if MACHINE_PROFILE ~= "remote" then
-  envy.extend(PACKAGES, { {
-    spec = "local.tmx@r0",
-    source = "envy/local.tmx@r0.lua",
-    setup = { "tools" },
-  } })
-end
 
 if PROFILE == "ubuntu" then
   envy.extend(PACKAGES, {

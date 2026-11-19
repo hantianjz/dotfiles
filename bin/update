@@ -130,15 +130,6 @@ else
   skip
 fi
 
-machine_profile="${DOTFILES_PROFILE:-}"
-if [[ -z "$machine_profile" && -r "$HOME/.dotfiles_profile" ]]; then
-  IFS= read -r machine_profile < "$HOME/.dotfiles_profile" || true
-fi
-if [[ "$machine_profile" != remote ]]; then
-  section "Updating tmx"
-  run "$DOTFILES_ROOT/bin/envy" --project "$DOTFILES_ROOT" install local.tmx@r0
-fi
-
 if [[ "$PACKAGE_MANAGER" == apt ]]; then
   section "Updating Neovim"
   run "$DOTFILES_ROOT/bin/envy" --project "$DOTFILES_ROOT" install local.neovim@r0 local.system_packages@r0

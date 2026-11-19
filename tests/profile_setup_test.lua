@@ -50,14 +50,8 @@ email = trim(run("git config --file " .. quote(gitconfig_path) .. " --get user.e
 assert(email == "hjz@hackjumpzero.ca", "personal profile should set the personal email")
 
 opts.profile = "remote"
-assert(not SETUP.profile.CHECK(nil, opts), "switching to remote should need setup")
-run(SETUP.profile.INSTALL(nil, opts))
-assert(SETUP.profile.CHECK(nil, opts), "installed remote profile should be current")
-profile_file = assert(io.open(profile_path, "r"))
-assert(trim(profile_file:read("*a")) == "remote", "profile marker should record remote")
-profile_file:close()
-email = trim(run("git config --file " .. quote(gitconfig_path) .. " --get user.email").stdout)
-assert(email == "hjz@hackjumpzero.ca", "remote profile should keep the personal email")
+assert(not pcall(SETUP.profile.CHECK, nil, opts), "removed profile must be rejected")
+assert(not pcall(SETUP.profile.INSTALL, nil, opts), "removed profile must not overwrite profile files")
 
 run("rm -rf " .. quote(temp))
 print("profile setup tests passed")

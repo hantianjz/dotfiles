@@ -79,7 +79,7 @@ fi
 [ "$1" = --project ]
 [ "$2" = "$FIXTURES/project with spaces" ]
 case "$3:$4" in
-  install:local.tmx@r0|install:local.yazi@r0) : ;;
+  install:local.yazi@r0) : ;;
   install:local.neovim@r0)
     [ ! -f "$HOME/neovim-fails" ] || exit 45
     : > "$HOME/neovim-updated"
