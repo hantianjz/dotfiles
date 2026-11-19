@@ -62,6 +62,7 @@ flowchart TB
 | `envy/local.tmx@r0.lua` | Fetches checksum-pinned tmx/hmx archives and migrates the old owned Git Cargo installation. |
 | `envy/local.yazi@r0.lua` | Fetches the pinned official Yazi `.deb`, installs it with APT, and removes legacy Cargo ownership safely. |
 | `envy/local.binstall@r0.lua` | Fetches the checksum-pinned cargo-binstall bootstrap. |
+| `envy/local.neovim@r0.lua` | Installs Ubuntu's latest stable upstream Neovim and verifies its release digest. |
 | `envy/local.binstall_tools@r0.lua` + `scripts/rust-tools` | Install/update Ubuntu's six upstream prebuilt Rust CLIs without compiling. |
 | `bin/update` | Updates the active native manager and the portable tools installed for that profile. |
 | `tests/` | Tests profile resolution, symlink behavior, and live native-repository metadata. |
@@ -117,6 +118,8 @@ Package names are manager-specific identifiers, not necessarily project, crate, 
 The last row is an important regression case. The initial Arch profile used `typos-cli`, which is a valid crate/Homebrew name but not an official Pacman target. The correct Arch package is `typos`.
 
 ### Ubuntu fallbacks
+
+Neovim comes from the [latest stable upstream release](https://github.com/neovim/neovim/releases/latest) on Ubuntu x86_64 and arm64, not APT. Setup and `update` resolve the current release and verify its official SHA-256 digest before installation. The complete runtime lives under `~/.local/share/neovim`, with `~/.local/bin/nvim` activating it. Existing system installations remain untouched; an unrelated executable at `~/.local/bin/nvim` causes a conflict instead of being overwritten.
 
 Ubuntu installs `diskus`, `eza`, `git-delta`, `gping`, `hexyl`, and `typos-cli` with cargo-binstall v1.26.2. `scripts/rust-tools` owns the crate/executable mappings and upstream archive overrides for delta and gping. Only the `crate-meta-data` strategy is enabled: no QuickInstall mirror or compilation fallback. Most binaries use GNU targets; typos uses musl. Homebrew and Pacman retain ownership on macOS and Arch. Lazygit is not automatically installed on Ubuntu.
 

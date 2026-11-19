@@ -169,6 +169,13 @@ envy.extend(PACKAGES, { {
 } })
 
 envy.extend(PACKAGES, { {
+  spec = "local.bun_lsp@r0",
+  source = "envy/local.bun_lsp@r0.lua",
+  setup = { "servers" },
+  options = {},
+} })
+
+envy.extend(PACKAGES, { {
   spec = "local.rustup@r0",
   source = "envy/local.rustup@r0.lua",
   setup = { "rustup" },
@@ -190,6 +197,7 @@ end
 
 if PROFILE == "ubuntu" then
   envy.extend(PACKAGES, {
+    { spec = "local.neovim@r0", source = "envy/local.neovim@r0.lua", setup = { "editor" } },
     { spec = "local.yazi@r0", source = "envy/local.yazi@r0.lua", setup = { "package" } },
     { spec = "local.binstall@r0", source = "envy/local.binstall@r0.lua", setup = { "tools" } },
     {

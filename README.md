@@ -15,6 +15,9 @@ Ubuntu installs portable Rust CLIs from upstream prebuilt releases with `cargo-b
 Ghostty installs through Homebrew on macOS, Pacman on Arch, and the official APT repositories on Ubuntu 26.04 or newer. Ubuntu 24.04 keeps its Ghostty configuration link but does not install Ghostty automatically. Lazygit is not automatically installed on Ubuntu.
 
 Ubuntu retains `build-essential` and Rustup's stable toolchain as development tools. Shell plugin setup waits for native packages; Herdr plugins also wait for the Herdr CLI.
+
+Ubuntu installs the latest stable Neovim from [official upstream releases](https://github.com/neovim/neovim/releases/latest), not APT. Setup and `update` verify the release archive's SHA-256 and expose it as `~/.local/bin/nvim`; existing APT installations remain untouched.
+
 Rustup leaves shell startup files unchanged; the shared shell environment owns Cargo's `PATH` entry.
 
 Fisher owns its generated manager files and installs every plugin in `fish/fish_plugins`. Setup checks the complete installed list. Herdr setup reads its local plugin registry, not retained checkout directories, to detect registered installations.
@@ -43,6 +46,8 @@ GitHub credentials use `gh` from `PATH`, on both macOS and Linux. Authenticate s
 APT and Pacman are expected to be provided by their operating systems. Setup may ask for `sudo` when it installs system packages.
 
 Setup also installs [Bun](https://bun.sh) and [Oh My Pi](https://omp.sh), then enables `github:phenome/omp-ponytail-caveman`. Existing executables are reused. On macOS, fresh omp installs use `brew install can1357/tap/omp`; Linux uses the upstream installer in `~/.local/bin`. Bun installs in `~/.bun/bin`. Both user directories are available in Fish and POSIX/Bash shells.
+
+Neovim runs Bash, JSON, TypeScript/JavaScript, and Pyright language servers with Bun, without Node.js or npm. Setup installs their packages globally in `~/.bun`; Mason manages the other servers. Rerun `./setup` on an existing installation, then restart Neovim. Keep TypeScript below version 7 for `typescript-language-server`.
 
 Setup installs the [Herdr desktop app](https://herdr.dev/download/) separately from Herdr TUI, using the official installer on Apple Silicon macOS and Linux. Intel Macs skip the desktop app because upstream provides no Intel build. The installer places `Herdr.app` in `~/Applications` on macOS or installs into `${XDG_DATA_HOME:-~/.local/share}/herdr-app` with a desktop launcher on Linux. Both platforms get `~/.local/bin/herdr-app`. The installer also installs herdr-core when missing; the app keeps herdr-core current. Existing `herdr-app` executables are reused.
 

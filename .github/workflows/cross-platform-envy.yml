@@ -50,6 +50,9 @@ jobs:
         run: ./bin/envy lua tests/binstall_tools_test.lua
       - name: Yazi native package migration
         run: ./bin/envy lua tests/yazi_setup_test.lua
+      - name: Neovim upstream releases
+        if: matrix.profile == 'ubuntu'
+        run: ./bin/envy lua tests/neovim_setup_test.lua
       - name: Omp setup and updates
         run: |
           ./bin/envy lua tests/omp_setup_test.lua

@@ -28,9 +28,7 @@ return {
 
       -- List of LSP servers to install and configure
       local ensure_installed = {
-        'bashls',
         'clangd',
-        'jsonls',
         'lua_ls',
         'rust_analyzer',
         'mesonlsp',
@@ -60,7 +58,19 @@ return {
       vim.lsp.config('gopls', { on_attach = on_attach })
       vim.lsp.config('jdtls', { on_attach = on_attach })
       vim.lsp.config('ruff', { on_attach = on_attach })
-      vim.lsp.config('ts_ls', { on_attach = on_attach })
+      local bun_bin = vim.fn.expand("~/.bun/bin/")
+      vim.lsp.config('bashls', {
+        cmd = { "bun", "--bun", bun_bin .. "bash-language-server", "start" },
+        on_attach = on_attach,
+      })
+      vim.lsp.config('jsonls', {
+        cmd = { "bun", "--bun", bun_bin .. "vscode-json-language-server", "--stdio" },
+        on_attach = on_attach,
+      })
+      vim.lsp.config('ts_ls', {
+        cmd = { "bun", "--bun", bun_bin .. "typescript-language-server", "--stdio" },
+        on_attach = on_attach,
+      })
       vim.lsp.config('ocamllsp', { on_attach = on_attach })
       vim.lsp.config('clangd',
         {
@@ -122,6 +132,7 @@ return {
       })
 
       vim.lsp.config('pyright', {
+        cmd = { "bun", "--bun", bun_bin .. "pyright-langserver", "--stdio" },
         on_attach = on_attach,
         root_markers = { "pyrightconfig.json", ".git" },
         settings = {
@@ -154,6 +165,8 @@ return {
         on_attach = on_attach,
         root_dir = util.root_pattern('meson_options.txt', 'meson.options', '.git'),
       })
+
+      vim.lsp.enable({ 'bashls', 'jsonls', 'ts_ls', 'pyright' })
     end
   },
 }

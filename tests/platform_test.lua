@@ -37,6 +37,7 @@ assert_equal(profile, "ubuntu")
 assert_equal(manager, "apt")
 
 local macos = platform.packages("macos", "brew")
+assert(contains(macos.packages, "neovim"))
 assert(contains(macos.packages, "lazygit"))
 assert(contains(macos.packages, "herdr"))
 assert(contains(macos.packages, "tuicr"))
@@ -46,6 +47,7 @@ assert(contains(macos.taps, "agavra/tap"))
 assert(contains(macos.taps, "nikitabobko/tap"))
 
 local ubuntu = platform.packages("ubuntu", "apt", "24.04")
+assert(not contains(ubuntu.packages, "neovim"))
 assert(contains(ubuntu.packages, "fd-find"))
 assert(contains(ubuntu.packages, "wl-clipboard"))
 assert(not contains(ubuntu.packages, "ghostty"))
@@ -56,6 +58,7 @@ for _, case in ipairs({ { "25.10", false }, { "26.04", true }, { "26.10", true }
 end
 
 local arch = platform.packages("arch", "pacman")
+assert(contains(arch.packages, "neovim"))
 assert(contains(arch.packages, "github-cli"))
 assert(contains(arch.packages, "ghostty"))
 assert(contains(arch.packages, "typos"))

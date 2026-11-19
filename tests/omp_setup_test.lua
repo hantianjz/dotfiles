@@ -70,11 +70,20 @@ printf '%s\n' "$TEST_PLATFORM"
   run("ln -s " .. quote(project .. "/tmux") .. " " .. quote(temp .. "/home with spaces/.config/tmux"))
   put(project .. "/bin/envy", [[#!/bin/sh
 set -eu
-[ "$#" -eq 4 ]
+if [ "${4:-}" = local.neovim@r0 ]; then
+  [ "$#" -eq 5 ]
+  [ "$5" = local.system_packages@r0 ]
+else
+  [ "$#" -eq 4 ]
+fi
 [ "$1" = --project ]
 [ "$2" = "$FIXTURES/project with spaces" ]
 case "$3:$4" in
   install:local.tmx@r0|install:local.yazi@r0) : ;;
+  install:local.neovim@r0)
+    [ ! -f "$HOME/neovim-fails" ] || exit 45
+    : > "$HOME/neovim-updated"
+    ;;
   install:local.binstall@r0) [ ! -f "$HOME/bootstrap-fails" ] || exit 44 ;;
   vendor:--all)
     [ ! -f "$HOME/vendor-fails" ] || exit 43
@@ -148,6 +157,14 @@ set -eu
   assert(result.exit_code == 0, "user-owned tmux config must skip Envy vendoring")
   assert(not io.open(temp .. "/home with spaces/tmux-vendored"), "user-owned tmux config must remain untouched")
   if os.getenv("OMP_TEST_PLATFORM") == "Linux" then
+    local neovim = assert(io.open(temp .. "/home with spaces/neovim-updated")); neovim:close()
+    os.remove(temp .. "/home with spaces/neovim-updated")
+    put(temp .. "/home with spaces/neovim-fails", "")
+    result = envy.run(updater, { capture = true, check = false })
+    assert(result.exit_code == 1, "failed Neovim update must fail the updater")
+    assert(not io.open(temp .. "/home with spaces/neovim-updated"), "failed Neovim update must not report success")
+    assert(result.stdout:find("Update completed with 1 failure(s).", 1, true))
+    os.remove(temp .. "/home with spaces/neovim-fails")
     os.remove(temp .. "/home with spaces/rust-tools-updated")
     os.remove(temp .. "/home with spaces/fisher-updated")
     put(temp .. "/home with spaces/bootstrap-fails", "")
@@ -156,6 +173,8 @@ set -eu
     assert(not io.open(temp .. "/home with spaces/rust-tools-updated"), "failed bootstrap must not run dependent tool updates")
     local fisher = assert(io.open(temp .. "/home with spaces/fisher-updated")); fisher:close()
     assert(result.stdout:find("Update completed with 1 failure(s).", 1, true))
+  else
+    assert(not io.open(temp .. "/home with spaces/neovim-updated"), "native platforms must not install the Ubuntu Neovim recipe")
   end
 end)
 envy.run = run

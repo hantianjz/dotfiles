@@ -2,7 +2,7 @@ local M = {}
 
 local common_packages = {
   "bat", "binutils", "btop", "cmake", "direnv", "dos2unix", "fish", "fzf",
-  "git-lfs", "hugo", "jq", "luarocks", "neovim", "nmap", "nnn", "pv",
+  "git-lfs", "hugo", "jq", "luarocks", "nmap", "nnn", "pv",
   "ripgrep", "tmux", "unzip", "wget", "zoxide",
 }
 
@@ -51,13 +51,13 @@ function M.packages(profile, manager, version_id)
   if profile == "macos" then
     append(packages, {
       "diskus", "eza", "git-delta", "gping", "hexyl", "lazygit",
-      "herdr", "tuicr", "typos-cli", "yazi",
+      "herdr", "neovim", "tuicr", "typos-cli", "yazi",
     })
     append(casks, { "ghostty", "aerospace" })
   elseif profile == "arch" then
     append(packages, {
       "diskus", "eza", "git-delta", "ghostty", "gping", "hexyl", "lazygit",
-      "systemd", "typos", "usbutils", "wl-clipboard", "yazi",
+      "neovim", "systemd", "typos", "usbutils", "wl-clipboard", "yazi",
     })
   elseif profile == "ubuntu" then
     append(packages, { "build-essential", "libglib2.0-dev", "libudev-dev", "usbutils", "wl-clipboard" })
