@@ -46,3 +46,6 @@ This file contains personal preferences for AI coding assistants (Claude Code, C
 - Do not add large documentation into the root README.md doc 
 - Default to adding new system/overall documentation in the docs folder of repo or beside the source code.
 - Do not add legacy or historical facts on changes, only document the current state of the system.
+
+## Shell usage
+- For all shell cmds that I ask for provide me the shell cmd in fish shell syntax, since that is the terminal I use
