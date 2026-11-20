@@ -21,12 +21,12 @@ for digit = 0, 9 do
   rex.unbind("cmd+[Digit" .. digit .. "]")
 end
 
--- Use the tmux prefix for pane and tab navigation.
+-- Focus panes directly; use the tmux prefix for other pane and tab actions.
 rex.bind("ctrl+a>ctrl+a", "pane.send_key", { key = "ctrl+a" })
-rex.bind("ctrl+a>h", "pane.focus.left")
-rex.bind("ctrl+a>j", "pane.focus.down")
-rex.bind("ctrl+a>k", "pane.focus.up")
-rex.bind("ctrl+a>l", "pane.focus.right")
+rex.bind("ctrl+h", "pane.focus.left")
+rex.bind("ctrl+j", "pane.focus.down")
+rex.bind("ctrl+k", "pane.focus.up")
+rex.bind("ctrl+l", "pane.focus.right")
 rex.bind("ctrl+a>a", "pane.focus_recent.in_tab")
 rex.bind("ctrl+a>ctrl+v", "pane.split", { direction = "right" })
 rex.bind("ctrl+a>v", "pane.split", { direction = "right" })
