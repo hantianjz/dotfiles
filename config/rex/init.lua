@@ -39,6 +39,9 @@ rex.bind("ctrl+a>shift+z", "pane.zoom")
 rex.bind("cmd+w", "pane.close")
 rex.bind("alt+cmd+w", "client.tab.close")
 
+-- Copy mode already binds y to copy the selection and exit.
+rex.bind("ctrl+a>[", "pane.copy_mode.enter")
+
 rex.bind("cmd+c", "pane.copy")
 rex.bind("cmd+v", "pane.paste")
 rex.bind("ctrl+insert", "pane.copy")
