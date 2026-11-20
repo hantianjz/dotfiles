@@ -87,7 +87,7 @@ Explicit Envy arguments, such as `./setup --strict`, are forwarded without the a
 
 Envy preserves differing real files and directories at symlink destinations: it warns and continues with other links. A regular file identical to its source can be adopted as a managed symlink. Correct links are left alone, while stale or broken symlinks are replaced.
 
-Setup links `config/rex/init.lua` to `~/.config/rex/init.lua`. Edit the repository file, then run `rex config reload`. The file keeps Rex's font controls and copy-mode keys, restores clipboard shortcuts, and uses `Ctrl+a` sequences for pane and tab management. `Cmd+w` closes the pane.
+Setup links `config/rex/init.lua` to `~/.config/rex/init.lua`. Edit the repository file, then run `rex config reload`. The file keeps Rex's font controls, copy-mode keys, and command palette (`Cmd+Shift+P`). It restores clipboard shortcuts and uses `Ctrl+a` sequences for pane and tab management. `Cmd+w` closes the pane.
 
 Press `Ctrl+a` then `[` to enter copy mode. Press `v` to start selection and `y` to copy and exit.
 

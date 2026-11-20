@@ -1,8 +1,8 @@
--- Rex has no bulk reset. Clear the documented Mac shortcuts except font controls and copy-mode keys.
+-- Rex has no bulk reset. Keep the default font, copy-mode, and command palette shortcuts.
 -- https://www.superlogical.com/rex/docs/reference/mac-actions
 for _, key in ipairs({
   "cmd+n", "shift+cmd+w", "ctrl+cmd+f", "cmd+w",
-  "shift+cmd+p", "cmd+,", "shift+cmd+,", "shift+cmd+u", "alt+shift+cmd+u", "shift+cmd+.",
+  "cmd+,", "shift+cmd+,", "shift+cmd+u", "alt+shift+cmd+u", "shift+cmd+.",
   "shift+cmd+n", "alt+shift+cmd+n", "cmd+k", "cmd+r",
   "cmd+t", "alt+cmd+w", "ctrl+tab", "shift+cmd+]", "ctrl+shift+tab", "shift+cmd+[", "cmd+'",
   "ctrl+shift+pageup", "ctrl+shift+pagedown",
