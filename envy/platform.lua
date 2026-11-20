@@ -82,41 +82,4 @@ function M.packages(profile, manager, version_id)
   }
 end
 
-function M.desktop_links(profile, root, home)
-  if profile == "arch" then
-    local links = {}
-    local hypr_files = {
-      "autostart.lua",
-      "bindings.lua",
-      "hyprland.lua",
-      "hyprsunset.conf",
-      "input.lua",
-      "looknfeel.lua",
-      "monitors.lua",
-      "xdph.conf",
-    }
-    for _, filename in ipairs(hypr_files) do
-      table.insert(links, {
-        source = root .. "/config/hypr/" .. filename,
-        dest = home .. "/.config/hypr/" .. filename,
-      })
-    end
-    table.insert(links, {
-      source = root .. "/config/omarchy/shell.json",
-      dest = home .. "/.config/omarchy/shell.json",
-    })
-    return links
-  end
-  if profile == "macos" then
-    return { {
-      source = root .. "/config/aerospace.toml",
-      dest = home .. "/.aerospace.toml",
-    } }
-  end
-  if profile == "ubuntu" then
-    return {}
-  end
-  error("unknown platform profile: " .. tostring(profile))
-end
-
 return M

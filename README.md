@@ -8,7 +8,7 @@ Declarative development environment setup using [Envy](https://github.com/envy-p
 - Ubuntu 24.04 LTS or newer, using APT
 - Arch Linux on x86_64, using Pacman
 
-Shared shell, Neovim, Git, Ghostty, tmux, scripts, and AI-skill links are managed on every platform. Aerospace is linked only on macOS. Personal Hyprland overrides target Omarchy v4.0.4 and are linked individually only on Arch; Ubuntu does not receive either desktop-specific link set. Existing Omarchy installations must follow the [bounded migration procedure](docs/envy-cross-platform.md#omarchy-v404-cutover) before deploying the Lua configuration.
+Shared shell, Neovim, Git, Ghostty, tmux, scripts, and AI-skill links are managed on every platform. Aerospace is linked only on macOS.
 
 Ubuntu installs portable Rust CLIs from upstream prebuilt releases with `cargo-binstall`, and Yazi from its official `.deb`. No Rust CLI source-build fallback runs during setup or updates.
 
@@ -67,22 +67,6 @@ Setup links `ai/work/AGENTS.md` for the `work` profile and `ai/CLAUDE.md` for th
 
 The same links are managed by direct `./bin/envy sync` runs using `DOTFILES_PROFILE` or the saved `~/.dotfiles_profile`; without either, they use the personal file. Switching profiles repoints existing symlinks. Differing existing regular files are preserved with a warning; merge wanted instructions into the selected profile's file, back up and move conflicting files aside, then rerun setup. This includes tool-managed additions such as `sq agents` blocks. Start a new agent session after setup to load the shared instructions. Omp uses its native global file without enabling Claude or Codex discovery.
 
-### Omarchy 4.0+
-
-Run setup as your desktop user **inside the upgraded Hyprland session**, not with `sudo`. Plain `./setup` backs up and adopts the personal Hyprland configuration before running the normal package/tool setup.
-
-For configuration only, without package installation or dependency downloads:
-
-```sh
-./setup --omarchy-config
-```
-
-The cutover preserves original files and symlink targets under `~/omarchy-config-backup.*`, installs the eight managed files, reloads Hyprland, and checks configuration errors. Installation or parser failure restores displaced destinations; unrelated files are untouched. Missing content behind an already dangling link is reported, not claimed as backed up. Password/fingerprint setup is not changed.
-
-Omarchy 3 and unknown/development version strings are rejected. Complete the supported upgrade separately; back up and detach repository-owned links **before upgrading Omarchy or updating this checkout**. The setup-time backup cannot recover bytes already changed or removed by either update. See the [cutover and live checks](docs/envy-cross-platform.md#omarchy-v404-cutover).
-
-Explicit Envy arguments, such as `./setup --strict`, are forwarded without the automatic cutover. Run `./setup --omarchy-config` separately when adopting generated Omarchy files. `--omarchy-config` takes no additional arguments.
-
 ## Existing dotfiles
 
 Envy preserves differing real files and directories at symlink destinations: it warns and continues with other links. A regular file identical to its source can be adopted as a managed symlink. Correct links are left alone, while stale or broken symlinks are replaced.
@@ -123,22 +107,20 @@ See [the configuration inventory and migration guide](docs/omp-settings.md) for 
 update
 ```
 
-This updates the active native package manager, Bun, omp, the configured omp Git plugin, Rust, prebuilt CLI tools, tmux plugins, and Fisher plugins. It does not update uv tools. The omp Git plugin is refreshed with `omp plugin install github:phenome/omp-ponytail-caveman`; `omp update --plugins` only upgrades marketplace plugins. On Omarchy, it delegates the required full-system Pacman upgrade to `omarchy update -y`, which preserves Omarchy's snapshot, migration, hook, and restart flow.
+This updates the active native package manager, Bun, omp, the configured omp Git plugin, Rust, prebuilt CLI tools, tmux plugins, and Fisher plugins. It does not update uv tools. The omp Git plugin is refreshed with `omp plugin install github:phenome/omp-ponytail-caveman`; `omp update --plugins` only upgrades marketplace plugins.
 
 The updater continues after individual command failures, reports their count, and exits 1. A successful run exits 0; unavailable optional tools are skipped.
 
 Tmux's theme stays pinned to v2.3.2, and all eight plugin revisions live in `envy/tmux.lua`. The updater runs `envy vendor --all` for repository-managed tmux configuration, restoring the declared revisions without Git pulls or submodule updates. To upgrade a plugin, resolve and review a new commit with `./bin/envy git-resolve`, update its pin, then run setup. Edits inside `.envy/tmux` are disposable and are replaced during synchronization.
 
-Native-manager selection follows `envy/platform.lua`: Homebrew on macOS; on Linux, Pacman first, otherwise APT only when both `apt-get` and `dpkg-query` are available. Arch systems without Omarchy use Pacman directly. If no supported manager is available, native updates are skipped. Yazi's `.deb` and `cargo-binstall` run only when APT is selected. Scoped Envy installs retain the declared Yazi release pin; Ubuntu's six other Rust CLIs follow upstream releases.
+Native-manager selection follows `envy/platform.lua`: Homebrew on macOS; on Linux, Pacman first, otherwise APT only when both `apt-get` and `dpkg-query` are available. If no supported manager is available, native updates are skipped. Yazi's `.deb` and `cargo-binstall` run only when APT is selected. Scoped Envy installs retain the declared Yazi release pin; Ubuntu's six other Rust CLIs follow upstream releases.
 
 On macOS, Homebrew upgrades omp; the updater does not run `omp update`. Other profiles retain `omp update`. The configured Git plugin refreshes on all profiles.
 
-Ghostty follows native package updates through Homebrew on macOS, APT on Ubuntu 26.04 or newer, and Pacman/Omarchy on Arch.
+Ghostty follows native package updates through Homebrew on macOS, APT on Ubuntu 26.04 or newer, and Pacman on Arch.
 
-The updater refreshes an installed Herdr desktop app by rerunning its official installer, including on Omarchy, then repairs its configuration links with `envy install local.herdr_app@r0`. Missing desktop app installations are skipped. To apply only the configuration without updating software, run `./bin/envy install local.herdr_app@r0`. Herdr TUI installation, updates, configuration, and plugins remain separate.
+The updater refreshes an installed Herdr desktop app by rerunning its official installer, then repairs its configuration links with `envy install local.herdr_app@r0`. Missing desktop app installations are skipped. To apply only the configuration without updating software, run `./bin/envy install local.herdr_app@r0`. Herdr TUI installation, updates, configuration, and plugins remain separate.
 
 ## Maintenance
 
 See [Cross-platform Envy maintainer guide](docs/envy-cross-platform.md) for the design strategy, package and symlink invariants, testing workflow, troubleshooting steps, and agent handoff checklist.
-
-For the ThinkPad T480s fingerprint reader, see the [Omarchy fingerprint setup runbook](docs/omarchy-t480s-fingerprint.md). It records the legacy Synaptics driver replacement, enrollment workflow, power-management fix, troubleshooting, and rollback steps.

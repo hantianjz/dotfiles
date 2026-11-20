@@ -70,41 +70,6 @@ assert(contains(arch.packages, "typos"))
 assert(contains(arch.packages, "wl-clipboard"))
 assert(not contains(arch.packages, "typos-cli"))
 
-local mac_links = platform.desktop_links("macos", "/repo", "/home/test")
-assert_equal(#mac_links, 1)
-assert(mac_links[1].dest:match("aerospace"))
-
-local ubuntu_links = platform.desktop_links("ubuntu", "/repo", "/home/test")
-assert_equal(#ubuntu_links, 0)
-
-local arch_links = platform.desktop_links("arch", root, "/home/test")
-local expected_destinations = {}
-for _, filename in ipairs({
-  "autostart.lua", "bindings.lua", "hyprland.lua", "hyprsunset.conf",
-  "input.lua", "looknfeel.lua", "monitors.lua", "xdph.conf",
-}) do
-  expected_destinations["/home/test/.config/hypr/" .. filename] = true
-end
-expected_destinations["/home/test/.config/omarchy/shell.json"] = true
-local seen = {}
-for _, link in ipairs(arch_links) do
-  assert(expected_destinations[link.dest], "unexpected managed destination: " .. link.dest)
-  assert(not seen[link.dest], "duplicate managed destination: " .. link.dest)
-  seen[link.dest] = true
-  local source = assert(io.open(link.source, "r"), "missing managed source: " .. link.source)
-  source:close()
-end
-for dest in pairs(expected_destinations) do
-  assert(seen[dest], "missing managed destination: " .. dest)
-end
-for _, basename in ipairs({
-  "autostart", "bindings", "envs", "hypridle", "hyprland",
-  "hyprlock", "input", "looknfeel", "monitors",
-}) do
-  assert(not seen["/home/test/.config/hypr/" .. basename .. ".conf"],
-    "retired destination must not be managed: " .. basename)
-end
-
 local ok = pcall(function()
   platform.detect("linux", command_set({}))
 end)

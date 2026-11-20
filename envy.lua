@@ -121,7 +121,10 @@ if PROFILE == "macos" or envy.run("test \"$(readlink \"$HOME/.bash_profile\" 2>/
   table.insert(SYMLINKS, { source = ROOT .. "/config/shellrc/bashrc", dest = HOME .. "/.bash_profile" })
 end
 
-envy.extend(SYMLINKS, platform.desktop_links(PROFILE, ROOT, HOME))
+if PROFILE == "macos" then
+  table.insert(SYMLINKS, { source = ROOT .. "/config/aerospace.toml", dest = HOME .. "/.aerospace.toml" })
+end
+
 for _, package in ipairs(tmux.PACKAGES) do
   local name = package.options.dest
   table.insert(SYMLINKS, {

@@ -3,14 +3,10 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 
-CONFIG_ONLY=false
 REQUESTED_PROFILE="${DOTFILES_PROFILE:-}"
 ENVY_ARGS=()
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --omarchy-config)
-      CONFIG_ONLY=true
-      ;;
     --profile)
       shift
       if [[ $# -eq 0 ]]; then
@@ -85,9 +81,6 @@ select_dotfiles_profile() {
 }
 
 profile_selection_required() {
-  if $CONFIG_ONLY; then
-    return 1
-  fi
   for arg in "$@"; do
     case "$arg" in
       -h|--help|help|--version|version) return 1 ;;
@@ -97,43 +90,9 @@ profile_selection_required() {
 }
 
 OS="$(uname -s)"
-OMARCHY=false
-if [[ $OS == Linux ]] && command -v pacman >/dev/null 2>&1; then
-  OMARCHY=true
-  if [[ $EUID -eq 0 ]]; then
-    echo "ERROR: run setup as the Omarchy desktop user, not root" >&2
-    exit 1
-  fi
-  if ! command -v omarchy >/dev/null 2>&1; then
-    echo "ERROR: Arch desktop setup requires Omarchy 4.0+ with Lua Hyprland configuration" >&2
-    exit 1
-  fi
-  VERSION="$(omarchy version)"
-  if [[ ! $VERSION =~ ^v?([0-9]+)\.[0-9]+ ]] || (( BASH_REMATCH[1] < 4 )); then
-    echo "ERROR: Omarchy 4.0+ is required (found $VERSION); back up/detach old links before the supported upgrade" >&2
-    exit 1
-  fi
-  if [[ ! -r ${OMARCHY_PATH:-/usr/share/omarchy}/default/hypr/bootstrap.lua ]]; then
-    echo "ERROR: Omarchy's Lua bootstrap is missing; finish the supported upgrade first" >&2
-    exit 1
-  fi
-  if ! command -v hyprctl >/dev/null 2>&1 || ! hyprctl version >/dev/null 2>&1; then
-    echo "ERROR: run setup inside the upgraded Hyprland session as its desktop user" >&2
-    exit 1
-  fi
-elif $CONFIG_ONLY; then
-  echo "ERROR: --omarchy-config requires an Arch/Omarchy desktop" >&2
-  exit 1
-fi
-
 if profile_selection_required "$@"; then
   export DOTFILES_PROFILE
   DOTFILES_PROFILE="$(select_dotfiles_profile)"
-fi
-
-# Config-only mode must not bootstrap packages or fetch dependencies.
-if $CONFIG_ONLY; then
-  exec "$SCRIPT_DIR/bin/envy" lua "$SCRIPT_DIR/envy/omarchy_setup.lua"
 fi
 
 bootstrap_linux_curl() {
@@ -184,10 +143,5 @@ for command in curl tar git; do
     exit 1
   fi
 done
-
-# Explicit Envy arguments retain their original semantics (help, package queries).
-if $OMARCHY && [[ $# -eq 0 ]]; then
-  "$SCRIPT_DIR/bin/envy" lua "$SCRIPT_DIR/envy/omarchy_setup.lua"
-fi
 
 exec "$SCRIPT_DIR/bin/envy" sync "$@"

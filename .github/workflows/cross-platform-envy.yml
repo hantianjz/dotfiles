@@ -60,8 +60,6 @@ jobs:
         run: ./bin/envy lua tests/profile_setup_test.lua
       - name: Safe symlink tests
         run: ./bin/envy lua tests/symlink_test.lua
-      - name: Omarchy deployment safety
-        run: ./bin/envy lua tests/omarchy_setup_test.lua
       - name: Tmux dependency vendoring
         run: ./bin/envy lua tests/tmux_setup_test.lua
       - name: Native package metadata
@@ -99,8 +97,6 @@ jobs:
         run: ./bin/envy lua tests/profile_setup_test.lua
       - name: Safe symlink tests
         run: ./bin/envy lua tests/symlink_test.lua
-      - name: Omarchy deployment safety
-        run: ./bin/envy lua tests/omarchy_setup_test.lua
       - name: Tmux dependency vendoring
         run: ./bin/envy lua tests/tmux_setup_test.lua
       - name: Native package metadata

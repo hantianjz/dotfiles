@@ -61,14 +61,9 @@ case "$PACKAGE_MANAGER" in
     update_direct_herdr
     ;;
   pacman)
-    if command -v omarchy >/dev/null 2>&1; then
-      section "Updating Omarchy and system packages"
-      run omarchy update -y
-    else
-      section "Updating Pacman packages"
-      run sudo pacman -Syu --noconfirm
-      update_direct_herdr
-    fi
+    section "Updating Pacman packages"
+    run sudo pacman -Syu --noconfirm
+    update_direct_herdr
     ;;
   *)
     section "System packages"
