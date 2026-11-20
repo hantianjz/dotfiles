@@ -87,7 +87,9 @@ Explicit Envy arguments, such as `./setup --strict`, are forwarded without the a
 
 Envy preserves differing real files and directories at symlink destinations: it warns and continues with other links. A regular file identical to its source can be adopted as a managed symlink. Correct links are left alone, while stale or broken symlinks are replaced.
 
-Setup links `config/rex/init.lua` to `~/.config/rex/init.lua`. Edit the repository file, then run `rex config reload`. Rex keeps its native pane and tab shortcuts, with `Ctrl+a` sequences for tmux-style navigation, splits, and tab switching. Plain `Ctrl+h/j/k/l` reaches the terminal, and `Ctrl+a Ctrl+a` sends one `Ctrl+a` to nested tmux. Other Rex files remain local; Rex installation is separate.
+Setup links `config/rex/init.lua` to `~/.config/rex/init.lua`. Edit the repository file, then run `rex config reload`. The file unbinds the documented Rex for Mac shortcuts outside copy mode, then sets `Ctrl+a` sequences for pane and tab management. `Cmd+w` closes the pane; `Cmd+Option+w` closes the tab.
+
+Plain `Ctrl+h/j/k/l` reaches the terminal. Press `Ctrl+a Ctrl+a` to send one `Ctrl+a` to nested tmux. macOS shortcuts and shortcuts set through Rex's Change Shortcut command are separate. Rex installation is separate.
 
 If an older setup accidentally created a link inside an existing destination directory, the warning identifies the possible nested link. Remove or relocate that content manually before running `./setup` again.
 
