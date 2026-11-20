@@ -85,6 +85,8 @@ Explicit Envy arguments, such as `./setup --strict`, are forwarded without the a
 
 Envy preserves differing real files and directories at symlink destinations: it warns and continues with other links. A regular file identical to its source can be adopted as a managed symlink. Correct links are left alone, while stale or broken symlinks are replaced.
 
+Setup links `config/rex/init.lua` to `~/.config/rex/init.lua`. Edit the repository file to track Rex bindings. Other Rex files remain local; Rex installation is separate.
+
 If an older setup accidentally created a link inside an existing destination directory, the warning identifies the possible nested link. Remove or relocate that content manually before running `./setup` again.
 
 All eight tmux repositories are commit-pinned in `envy/tmux.lua`, using the first-party GitHub helper with Envy 0.5.1. Envy vendors them into `.envy/tmux/<name>/<name>`; managed links expose them at `tmux/plugins/<name>`. TPM only loads installed plugins; Envy owns acquisition and updates.
