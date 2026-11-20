@@ -18,7 +18,7 @@ Ubuntu retains `build-essential` and Rustup's stable toolchain as development to
 
 Ubuntu installs the latest stable Neovim from [official upstream releases](https://github.com/neovim/neovim/releases/latest), not APT. Setup and `update` verify the release archive's SHA-256 and expose it as `~/.local/bin/nvim`; existing APT installations remain untouched.
 
-Rustup leaves shell startup files unchanged; the shared shell environment owns Cargo's `PATH` entry.
+Rustup leaves shell startup files unchanged. Bash and Fish each add Cargo to `PATH`.
 
 Fisher owns its generated manager files and installs every plugin in `fish/fish_plugins`. Setup checks the complete installed list.
 
@@ -44,7 +44,7 @@ GitHub credentials use `gh` from `PATH`, on both macOS and Linux. Authenticate s
 
 APT and Pacman are expected to be provided by their operating systems. Setup may ask for `sudo` when it installs system packages.
 
-Setup also installs [Bun](https://bun.sh) and [Oh My Pi](https://omp.sh), then enables `github:phenome/omp-ponytail-caveman`. Existing executables are reused. On macOS, fresh omp installs use `brew install can1357/tap/omp`; Linux uses the upstream installer in `~/.local/bin`. Bun installs in `~/.bun/bin`. Both user directories are available in Fish and POSIX/Bash shells.
+Setup also installs [Bun](https://bun.sh) and [Oh My Pi](https://omp.sh), then enables `github:phenome/omp-ponytail-caveman`. Existing executables are reused. On macOS, fresh omp installs use `brew install can1357/tap/omp`; Linux uses the upstream installer in `~/.local/bin`. Bun installs in `~/.bun/bin`. Both user directories are available in Bash and Fish.
 
 Neovim runs Bash, JSON, TypeScript/JavaScript, and Pyright language servers with Bun, without Node.js or npm. Setup installs their packages globally in `~/.bun`; Mason manages the other servers. Rerun `./setup` on an existing installation, then restart Neovim. Keep TypeScript below version 7 for `typescript-language-server`.
 

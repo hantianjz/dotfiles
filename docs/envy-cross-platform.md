@@ -217,6 +217,16 @@ Manually verify Super+Return opens one terminal in the active terminal's directo
 
 Never run `omarchy refresh hyprland` as validation: v4.0.4 overwrites personal Lua files with defaults. Use `./setup --omarchy-config`, not plain `./setup`, for configuration-only deployment.
 
+## Bash startup
+
+Envy links `shellrc/bashrc` to `~/.bashrc` on all supported platforms and to `~/.bash_profile` for login Bash on macOS. On Ubuntu and Arch, the distro or user login file must source `~/.bashrc` for interactive login shells. Keep that file in place; if it is missing, restore the distro's login file from `/etc/skel`.
+
+The managed script adds existing user tool directories and, on macOS, Homebrew's `bin` and `sbin` to `PATH` without adding duplicates. It preserves existing editor settings and defines aliases only for interactive Bash. Put machine-specific exports in `~/.config/local_config.bash`; keep those commands safe to source more than once. Fish uses its own startup configuration.
+
+Ubuntu's stock `~/.profile` can add `~/bin` and `~/.local/bin` again after `~/.bashrc` runs. The managed Bash script does not add further copies when sourced again.
+
+Setup removes only obsolete `~/.profile` and `~/.config/shell/environment` symlinks pointing to their former sources in this checkout. If you have a different regular `~/.bashrc` or macOS `~/.bash_profile`, setup warns and preserves it. Move any needed settings into the local Bash config, move the conflicting file to a backup, and rerun setup to install the link.
+
 ## Validation workflow
 
 Run the non-mutating checks before a full setup:
@@ -238,7 +248,7 @@ git diff --check
 
 The updater tests execute the real script with isolated command doubles, covering propagated failures, continued later work, scoped portable-tool installs, and Envy vendoring for managed tmux configuration. Migration tests cover retained old installations on failure and ownership boundaries. These checks do not upgrade the host or access the network. Never run the live updater as a validation check. Tmux dependency checks use the real Envy helper with immutable public GitHub revisions in disposable directories.
 
-Shell startup checks keep user tool directories ahead of Homebrew in `PATH`. The profile initializes Homebrew only when its executable exists, before loading the shared environment. Arch CI installs `diffutils` for byte-exact clipboard checks with `cmp`. The Herdr inventory audit uses C-locale ordering; chord checks exclude bindings intentionally removed from the configuration.
+Arch CI installs `diffutils` for byte-exact clipboard checks with `cmp`. The Herdr inventory audit uses C-locale ordering; chord checks exclude bindings intentionally removed from the configuration.
 
 Then validate the active repository metadata without installing the packages:
 

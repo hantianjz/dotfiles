@@ -40,10 +40,10 @@ PACKAGES = {
     options = { links = { { source = %q, dest = %q } } } },
   { spec = "local.shell@r0", source = %q, setup = { "command" },
     options = { check = 'test -f "$HOME/fisher-ready"',
-      install = 'test -f "$HOME/native-ready" && test -L "$HOME/environment" && touch "$HOME/fisher-ready"' } },
+      install = 'test -f "$HOME/native-ready" && test -L "$HOME/.bashrc" && touch "$HOME/fisher-ready"' } },
 }
 ]], temp .. "/system.lua",
-    root .. "/envy/local.symlink@r0.lua", root .. "/shellrc/environment", temp .. "/environment",
+    root .. "/envy/local.symlink@r0.lua", root .. "/shellrc/bashrc", temp .. "/.bashrc",
     root .. "/envy/local.shell@r0.lua"))
   local bootstrap_cache = os.getenv("ENVY_CACHE_ROOT") or
     (assert(os.getenv("HOME")) .. (envy.PLATFORM == "darwin" and "/Library/Caches/envy" or "/.cache/envy"))

@@ -1,22 +1,43 @@
-if [ -r "$HOME/.config/shell/environment" ]; then
-  . "$HOME/.config/shell/environment"
+_dotfiles_bash_prepend_path() {
+  local directory
+  for directory in "$@"; do
+    [[ -d $directory ]] || continue
+    case ":${PATH-}:" in
+      *":$directory:"*) ;;
+      *) PATH="$directory${PATH:+:$PATH}" ;;
+    esac
+  done
+}
+
+if [[ $OSTYPE == darwin* ]]; then
+  if [[ -x /opt/homebrew/bin/brew ]]; then
+    _dotfiles_bash_prepend_path /opt/homebrew/sbin /opt/homebrew/bin
+  elif [[ -x /usr/local/bin/brew ]]; then
+    _dotfiles_bash_prepend_path /usr/local/sbin /usr/local/bin
+  fi
 fi
 
-case $- in
-  *i*) ;;
-  *) return ;;
-esac
+_dotfiles_bash_prepend_path "$HOME/.bun/bin" "$HOME/.cargo/bin" "$HOME/bin" "$HOME/.local/bin"
+export PATH
+unset -f _dotfiles_bash_prepend_path
 
-# Get the directory of this file, following its symlink when needed.
-CURR_FILE=${BASH_SOURCE[0]}
-if [ -L "$CURR_FILE" ]; then
-  CURR_FILE=$(readlink "$CURR_FILE")
+if [[ -r $HOME/.config/local_config.bash ]]; then
+  source "$HOME/.config/local_config.bash"
 fi
-CURR_FILE_DIR=$(cd "$(dirname "$CURR_FILE")" && pwd)
 
-source "$CURR_FILE_DIR/shellrc.bash"
+[[ $- == *i* ]] || return 0
 
-unset CURR_FILE CURR_FILE_DIR
+if [[ -z ${EDITOR:-} ]]; then
+  if command -v nvim >/dev/null 2>&1; then
+    EDITOR=nvim
+  else
+    EDITOR=vi
+  fi
+fi
+export EDITOR VISUAL="${VISUAL:-$EDITOR}"
 
-export STM32_PRG_PATH=/home/hjz/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin
-export QSYS_ROOTDIR="/home/hjz/intelFPGA_lite/20.1/quartus/sopc_builder/bin"
+alias ..='cd ..'
+alias ...='cd ../..'
+alias l='ls -l'
+alias ll='ls -la'
+alias g='git'

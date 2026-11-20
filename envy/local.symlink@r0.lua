@@ -3,6 +3,7 @@ IDENTITY = "local.symlink@r0"
 USER_MANAGED = true
 
 local stale_links = {}
+local retired_links = {}
 
 local function quote(path)
   return string.format("%q", path)
@@ -11,6 +12,13 @@ end
 local function run_test(expression)
   local res = envy.run(expression, { capture = true, quiet = true, check = false })
   return res.exit_code == 0
+end
+
+local function link_source(path)
+  local res = envy.run("readlink " .. quote(path), { capture = true, quiet = true, check = false })
+  if res.exit_code == 0 then
+    return res.stdout:gsub("\n$", "")
+  end
 end
 
 local function warn_conflict(link)
@@ -25,14 +33,10 @@ end
 
 local check = function(pkg_dir, opts)
   stale_links = {}
+  retired_links = {}
   for _, link in ipairs(opts.links) do
     if run_test("test -L " .. quote(link.dest)) then
-      local res = envy.run("readlink " .. quote(link.dest), {
-        capture = true,
-        quiet = true,
-        check = false,
-      })
-      if res.exit_code ~= 0 or res.stdout:gsub("%s+$", "") ~= link.source then
+      if link_source(link.dest) ~= link.source then
         table.insert(stale_links, link)
       end
     elseif run_test("test -e " .. quote(link.dest)) then
@@ -48,7 +52,12 @@ local check = function(pkg_dir, opts)
       table.insert(stale_links, link)
     end
   end
-  return #stale_links == 0
+  for _, link in ipairs(opts.retired_links or {}) do
+    if link_source(link.dest) == link.source then
+      table.insert(retired_links, link)
+    end
+  end
+  return #stale_links == 0 and #retired_links == 0
 end
 
 local install = function(pkg_dir, opts)
@@ -59,6 +68,11 @@ local install = function(pkg_dir, opts)
       table.insert(cmds, "mkdir -p " .. quote(parent))
     end
     table.insert(cmds, "ln -sfn " .. quote(link.source) .. " " .. quote(link.dest))
+  end
+  for _, link in ipairs(retired_links) do
+    local path = quote(link.dest)
+    table.insert(cmds, "if [ \"$(readlink " .. path .. " 2>/dev/null)\" = " .. quote(link.source) ..
+      " ]; then rm -f " .. path .. "; fi")
   end
   return table.concat(cmds, " && ")
 end

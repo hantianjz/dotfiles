@@ -97,9 +97,7 @@ local SYMLINKS = {
   { source = AGENT_INSTRUCTIONS,                   dest = HOME .. "/.agents/AGENTS.md" },
   { source = AGENT_INSTRUCTIONS,                   dest = HOME .. "/.omp/agent/AGENTS.md" },
   { source = ROOT .. "/fish",                      dest = HOME .. "/.config/fish" },
-  { source = ROOT .. "/shellrc/environment",       dest = HOME .. "/.config/shell/environment" },
   { source = ROOT .. "/shellrc/bashrc",            dest = HOME .. "/.bashrc" },
-  { source = ROOT .. "/shellrc/profile",           dest = HOME .. "/.profile" },
   { source = ROOT .. "/nvim",                      dest = HOME .. "/.config/nvim" },
   { source = ROOT .. "/config/gitconfig",          dest = HOME .. "/.gitconfig" },
   { source = ROOT .. "/config/gitignore",          dest = HOME .. "/.gitignore" },
@@ -113,6 +111,10 @@ local SYMLINKS = {
   { source = ROOT .. "/scripts/gprune",             dest = HOME .. "/bin/gprune" },
   { source = ROOT .. "/scripts/usb",                dest = HOME .. "/bin/usb" },
 }
+
+if PROFILE == "macos" then
+  table.insert(SYMLINKS, { source = ROOT .. "/shellrc/bashrc", dest = HOME .. "/.bash_profile" })
+end
 
 envy.extend(SYMLINKS, platform.desktop_links(PROFILE, ROOT, HOME))
 for _, package in ipairs(tmux.PACKAGES) do
@@ -142,7 +144,13 @@ envy.extend(PACKAGES, { {
   spec = "local.symlink@r0",
   source = "envy/local.symlink@r0.lua",
   setup = { "links" },
-  options = { links = SYMLINKS },
+  options = {
+    links = SYMLINKS,
+    retired_links = {
+      { source = ROOT .. "/shellrc/environment", dest = HOME .. "/.config/shell/environment" },
+      { source = ROOT .. "/shellrc/profile", dest = HOME .. "/.profile" },
+    },
+  },
 } })
 
 local HERDR_APP_HOME = os.getenv("HERDR_APP_HOME")

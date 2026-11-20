@@ -35,6 +35,17 @@ run("touch " .. quote(links[6].dest))
 run("touch " .. quote(file_source))
 run("cp " .. quote(file_source) .. " " .. quote(links[7].dest))
 
+local retired_source = temp .. "/old source"
+local retired = {
+  { source = retired_source, dest = destinations .. "/retired link" },
+  { source = retired_source, dest = destinations .. "/retired user file" },
+  { source = retired_source, dest = destinations .. "/retired foreign link" },
+}
+run("ln -s " .. quote(retired_source) .. " " .. quote(retired[1].dest))
+run("touch " .. quote(retired[2].dest))
+run("ln -s " .. quote(alternate) .. " " .. quote(retired[3].dest))
+local options = { links = links, retired_links = retired }
+
 local warnings = {}
 local original_warn = envy.warn
 envy.warn = function(message)
@@ -42,10 +53,10 @@ envy.warn = function(message)
 end
 
 dofile(root .. "/envy/local.symlink@r0.lua")
-assert(not SETUP.links.CHECK(nil, { links = links }), "actionable links should make the check fail")
+assert(not SETUP.links.CHECK(nil, options), "actionable links should make the check fail")
 assert(#warnings == 2, "real file and directory should each produce a warning")
 
-local install = SETUP.links.INSTALL(nil, { links = links })
+local install = SETUP.links.INSTALL(nil, options)
 run(install)
 
 for index = 1, 4 do
@@ -60,9 +71,12 @@ assert(run("test -d " .. quote(links[5].dest), false).exit_code == 0)
 assert(run("test -f " .. quote(links[6].dest), false).exit_code == 0)
 assert(run("test ! -e " .. quote(links[5].dest .. "/source with spaces"), false).exit_code == 0,
   "the source must not be linked inside an existing directory")
+run("test ! -L " .. quote(retired[1].dest))
+run("test -f " .. quote(retired[2].dest))
+assert(run("readlink " .. quote(retired[3].dest)).stdout == alternate .. "\n")
 
 warnings = {}
-assert(SETUP.links.CHECK(nil, { links = links }), "second check should be idempotent")
+assert(SETUP.links.CHECK(nil, options), "second check should be idempotent")
 assert(#warnings == 2, "preserved conflicts should continue to warn")
 
 envy.warn = original_warn

@@ -10,15 +10,21 @@ bash_bin=$(command -v bash)
 
 mkdir -p \
   "$test_home/.config" \
-  "$test_home/.config/shell" \
   "$test_home/.local/bin" \
   "$test_home/bin" \
   "$test_home/.cargo/bin" \
   "$test_home/.bun/bin"
 ln -s "$repo_root/fish" "$test_home/.config/fish"
-ln -s "$repo_root/shellrc/environment" "$test_home/.config/shell/environment"
-ln -s "$repo_root/shellrc/profile" "$test_home/.profile"
 ln -s "$repo_root/shellrc/bashrc" "$test_home/.bashrc"
+if [[ $(uname -s) == Darwin ]]; then
+  bash_bin=/bin/bash
+  ln -s "$repo_root/shellrc/bashrc" "$test_home/.bash_profile"
+else
+  # The distro or user's login file delegates interactive setup to .bashrc.
+  printf '. "$HOME/.bashrc"\n' > "$test_home/.profile"
+fi
+ln -s /usr/bin/true "$test_home/.local/bin/nvim"
+printf 'export BASH_LOCAL_MARKER=loaded\n' > "$test_home/.config/local_config.bash"
 printf 'set -gx SHELL_LOCAL_MARKER loaded\n' > "$test_home/.config/local_config.fish"
 
 
@@ -70,16 +76,29 @@ clean_env=(
   "PATH=/usr/bin"
 )
 
-sh_path=$("${clean_env[@]}" /bin/sh -c '. "$HOME/.profile"; printf %s "$PATH"')
-assert_path "$sh_path" '/bin/sh profile PATH'
+for mode in -ic -lic; do
+  bash_output=$("${clean_env[@]}" "$bash_bin" "$mode" '
+    set -eu
+    initial_path=$PATH
+    source "$HOME/.bashrc"
+    [[ $PATH == "$initial_path" ]]
+    [[ $(type -t cd) == builtin ]]
+    alias ll >/dev/null
+    printf "%s|%s|%s|%s" "$PATH" "$EDITOR" "$VISUAL" "$BASH_LOCAL_MARKER"
+  ' 2>"$test_home/bash.stderr") || fail "Bash $mode: $(cat "$test_home/bash.stderr")"
+  IFS='|' read -r bash_path bash_editor bash_visual bash_marker <<< "$bash_output"
+  assert_path "$bash_path" "Bash $mode PATH"
+  assert_equal nvim "$bash_editor" "Bash $mode EDITOR"
+  assert_equal nvim "$bash_visual" "Bash $mode VISUAL"
+  assert_equal loaded "$bash_marker" "Bash $mode local config"
+done
 
-bash_output=$("${clean_env[@]}" "$bash_bin" --noprofile --norc -ic \
-  '. "$HOME/.profile"; printf "%s|%s|" "$PATH" "$EDITOR"; alias ll >/dev/null; printf alias-loaded' \
-  2>"$test_home/bash.stderr")
-IFS='|' read -r bash_path bash_editor bash_alias <<< "$bash_output"
-assert_path "$bash_path" 'interactive Bash login PATH'
-assert_equal nvim "$bash_editor" 'interactive Bash login EDITOR'
-assert_equal alias-loaded "$bash_alias" 'interactive Bash configuration'
+bash_path=$("${clean_env[@]}" "$bash_bin" -euc '
+  source "$HOME/.bashrc"
+  if [[ -n ${EDITOR-} ]] || alias ll >/dev/null 2>&1; then exit 1; fi
+  printf %s "$PATH"
+')
+assert_path "$bash_path" 'non-interactive Bash PATH'
 
 fish_stderr="$test_home/fish.stderr"
 fish_output=$("${clean_env[@]}" "$fish_bin" -c \
