@@ -77,7 +77,7 @@ Press `Cmd+k` to open the session picker. Use `Ctrl+a` then `-` or `=` for the p
 
 Press `Ctrl+a` then `[` to enter copy mode. Press `v` to start selection and `y` to copy and exit.
 
-Rex uses `Ctrl+h/j/k/l` to focus panes, so these keys do not reach Neovim. macOS shortcuts and shortcuts set through Rex's Change Shortcut command are separate. Rex installation is separate.
+In Rex, `Ctrl+h/j/k/l` moves left/down/up/right. From a shell it focuses a Rex pane. With Neovim in the foreground, it moves between Neovim windows in normal or terminal mode first, then focuses a Rex pane at the edge. Focus does not wrap. This uses local Lua, not a Neovim plugin. After updating these files, run `rex config reload` and restart Neovim. macOS shortcuts and Rex's Change Shortcut overrides are separate. Rex installation is separate.
 
 If an older setup accidentally created a link inside an existing destination directory, the warning identifies the possible nested link. Remove or relocate that content manually before running `./setup` again.
 

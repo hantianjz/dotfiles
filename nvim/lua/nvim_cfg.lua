@@ -90,9 +90,25 @@ vim.keymap.set('n', '˚', function() vim.cmd("silent! cprev") end) -- ALT-k
 
 vim.keymap.set('t', '<Esc>', '<C-\\><C-n>', { noremap = true, silent = true })
 
-for _, direction in ipairs({ 'h', 'j', 'k', 'l' }) do
-  vim.keymap.set('n', '<C-' .. direction .. '>', '<C-w>' .. direction, { silent = true })
-  vim.keymap.set('t', '<C-' .. direction .. '>', '<C-\\><C-n><C-w>' .. direction, { silent = true })
+for key, direction in pairs({ h = 'left', j = 'down', k = 'up', l = 'right' }) do
+  local chord = '<C-' .. key .. '>'
+  vim.keymap.set('n', chord, function()
+    local before = vim.api.nvim_get_current_win()
+    vim.cmd.wincmd(key)
+    if vim.api.nvim_get_current_win() ~= before or vim.env.TMUX then return end
+
+    local session, block = vim.env.REX_SESSION, vim.env.REX_BLOCK
+    if not session or not block then return end
+    vim.system({
+      'rex', '--autostart=false', 'do', 'navigate_pane', '-s', session, '-b', block,
+      'direction=' .. direction, 'from_editor=true',
+    }, {}, function(result)
+      if result.code ~= 0 then
+        vim.schedule(function() vim.notify(vim.trim(result.stderr), vim.log.levels.WARN) end)
+      end
+    end)
+  end, { silent = true, desc = 'Navigate ' .. direction .. ' (window or Rex pane)' })
+  vim.keymap.set('t', chord, '<C-\\><C-n>' .. chord, { remap = true, silent = true })
 end
 
 
