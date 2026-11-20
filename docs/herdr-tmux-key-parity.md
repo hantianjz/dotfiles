@@ -21,7 +21,8 @@ aside, then run `./bin/envy install local.herdr_app@r0` to restore the link.
 Plain `ctrl-h/j/k/l` bindings to `pane.go` intercept keys before Neovim and
 are intentionally absent. `Cmd-Shift-h/j/k/l` swaps app panes; AeroSpace
 leaves these shortcuts unbound. `Ctrl-a v` and `Ctrl-a s` split panes;
-`Ctrl-a n` and `Ctrl-a p` select agents. Changes reload automatically.
+`Ctrl-a n` and `Ctrl-a p` switch tabs. `Ctrl-a Shift-C` opens a tab and
+`Ctrl-a Shift-Z` toggles pane zoom, as in Rex. Changes reload automatically.
 Neovim window edges do not hand off to app panes; use the `Cmd` shortcuts.
 
 In Herdr app, `Ctrl-a [` starts a text selection at the terminal cursor;
