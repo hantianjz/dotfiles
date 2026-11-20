@@ -40,7 +40,6 @@ rex.bind("ctrl+a>shift+z", "pane.zoom")
 rex.bind("cmd+shift+w", "client.tab.close")
 
 -- Match tmux session navigation.
-rex.bind("ctrl+a>shift+s", "session.switch")
 rex.bind("ctrl+a>-", "session.previous")
 rex.bind("ctrl+a>=", "session.next")
 
