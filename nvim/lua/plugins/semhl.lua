@@ -1,6 +1,6 @@
 return {
-  -- dir = "~/Development/hjz/semhl.nvim", -- 👈 use local path instead of repo
-  "hantianjz/semhl.nvim",
+  dir = "~/Development/hjz/semhl.nvim", -- 👈 use local path instead of repo
+  -- "hantianjz/semhl.nvim",
   name = "semhl.nvim", -- optional but recommended
   enabled = true,
   dependencies = { "nvim-lua/plenary.nvim" },
