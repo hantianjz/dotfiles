@@ -39,6 +39,11 @@ rex.bind("ctrl+a>n", "client.tab.next")
 rex.bind("ctrl+a>shift+z", "pane.zoom")
 rex.bind("cmd+shift+w", "client.tab.close")
 
+-- Match tmux session navigation.
+rex.bind("ctrl+a>shift+s", "session.switch")
+rex.bind("ctrl+a>-", "session.previous")
+rex.bind("ctrl+a>=", "session.next")
+
 -- Copy mode already binds y to copy the selection and exit.
 rex.bind("ctrl+a>[", "pane.copy_mode.enter")
 

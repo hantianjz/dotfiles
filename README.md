@@ -89,6 +89,8 @@ Envy preserves differing real files and directories at symlink destinations: it 
 
 Setup links `config/rex/init.lua` to `~/.config/rex/init.lua`. Edit the repository file, then run `rex config reload`. Rex keeps default font controls, copy-mode keys, and the command palette (`Cmd+Shift+P`). It uses `Ctrl+a` sequences for pane and tab management. `Cmd+Shift+W` closes the tab.
 
+Press `Ctrl+a` then `Shift+s` to open the session picker. Use `Ctrl+a` then `-` or `=` for the previous or next session.
+
 Press `Ctrl+a` then `[` to enter copy mode. Press `v` to start selection and `y` to copy and exit.
 
 Rex uses `Ctrl+h/j/k/l` to focus panes, so these keys do not reach Neovim. macOS shortcuts and shortcuts set through Rex's Change Shortcut command are separate. Rex installation is separate.
