@@ -31,25 +31,6 @@ IDENTITY = "local.system_packages@r0"
 USER_MANAGED = true
 SETUP = { packages = { CHECK = "false", INSTALL = 'touch "$HOME/native-ready"' } }
 ]])
-  put(temp .. "/bin/curl", [[#!/bin/sh
-printf '%s\n' 'mkdir -p "$HOME/.local/bin"; cp "$HOME/fake-herdr" "$HOME/.local/bin/herdr"'
-]])
-  put(temp .. "/fake-herdr", [[#!/bin/sh
-set -eu
-test -f "$HOME/native-ready"
-test -L "$HOME/environment"
-test "$1 $2" = "plugin install"
-root="$HOME/.config/herdr/plugins/github-installations/${3##*/}-fixture/1/checkout"
-mkdir -p "$root"
-printf '[{"plugin_id":"%s","plugin_root":"%s","source":{"kind":"github","owner":"%s","repo":"%s"}}]\n' \
-  "${3##*/}" "$root" "${3%%/*}" "${3##*/}" > "$HOME/.config/herdr/plugins.json"
-printf 'installed\n' >> "$HOME/herdr-installs"
-]])
-  envy.run("chmod +x " .. quote(temp .. "/bin/curl") .. " " .. quote(temp .. "/fake-herdr"))
-  local jq = envy.run("command -v jq", { capture = true }).stdout:gsub("%s+$", "")
-  envy.run("ln -s " .. quote(jq) .. " " .. quote(temp .. "/bin/jq"))
-  put(temp .. "/herdr.lua", "dofile(" .. quote(root .. "/envy/local.herdr@r0.lua") ..
-    ")\nSETUP.cli.PLATFORMS = nil\n")
   put(temp .. "/envy.lua", string.format([[
 -- @envy version "0.5.1"
 -- @envy bin "bin"
@@ -60,12 +41,10 @@ PACKAGES = {
   { spec = "local.shell@r0", source = %q, setup = { "command" },
     options = { check = 'test -f "$HOME/fisher-ready"',
       install = 'test -f "$HOME/native-ready" && test -L "$HOME/environment" && touch "$HOME/fisher-ready"' } },
-  { spec = "local.herdr@r0", source = %q, setup = { "plugins" },
-    options = { plugins = { "owner/example" } } },
 }
 ]], temp .. "/system.lua",
     root .. "/envy/local.symlink@r0.lua", root .. "/shellrc/environment", temp .. "/environment",
-    root .. "/envy/local.shell@r0.lua", temp .. "/herdr.lua"))
+    root .. "/envy/local.shell@r0.lua"))
   local bootstrap_cache = os.getenv("ENVY_CACHE_ROOT") or
     (assert(os.getenv("HOME")) .. (envy.PLATFORM == "darwin" and "/Library/Caches/envy" or "/.cache/envy"))
   local command = "ENVY_CACHE_ROOT=" .. quote(bootstrap_cache) .. " HOME=" .. quote(temp) ..
@@ -73,18 +52,7 @@ PACKAGES = {
     " --cache-root " .. quote(temp .. "/cache") .. " install --manifest " .. quote(temp .. "/envy.lua")
   local result = envy.run(command, { capture = true, check = false })
   assert(result.exit_code == 0, result.stderr)
-  local function installs()
-    local file = assert(io.open(temp .. "/herdr-installs")); local value = file:read("*a"); file:close()
-    return value
-  end
-  envy.run("test -f " .. quote(temp .. "/fisher-ready") .. " && test -d " ..
-    quote(temp .. "/.config/herdr/plugins/github-installations/example-fixture/1/checkout"))
-  assert(installs() == "installed\n")
-  envy.run(command, { capture = true })
-  assert(installs() == "installed\n", "registered plugin must not reinstall")
-  os.remove(temp .. "/.config/herdr/plugins.json")
-  envy.run(command, { capture = true })
-  assert(installs() == "installed\ninstalled\n", "retained unregistered checkout must not satisfy setup")
+  envy.run("test -f " .. quote(temp .. "/fisher-ready"))
   local fish = envy.run("command -v fish", { capture = true }).stdout:gsub("%s+$", "")
   envy.run("ln -s " .. quote(fish) .. " " .. quote(temp .. "/bin/fish"))
   -- This unit check exercises Fisher, not the separate GitHub dependency graph.

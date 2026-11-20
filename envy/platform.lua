@@ -51,7 +51,7 @@ function M.packages(profile, manager, version_id)
   if profile == "macos" then
     append(packages, {
       "diskus", "eza", "git-delta", "gping", "hexyl", "lazygit",
-      "herdr", "neovim", "tree-sitter", "tuicr", "typos-cli", "yazi",
+      "neovim", "tree-sitter", "tuicr", "typos-cli", "yazi",
     })
     append(casks, { "ghostty", "aerospace" })
   elseif profile == "arch" then

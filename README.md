@@ -8,7 +8,7 @@ Declarative development environment setup using [Envy](https://github.com/envy-p
 - Ubuntu 24.04 LTS or newer, using APT
 - Arch Linux on x86_64, using Pacman
 
-Shared shell, Neovim, Git, Ghostty, tmux, Herdr, scripts, and AI-skill links are managed on every platform. Herdr independently uses the same `Ctrl-a`-prefixed pane and tab bindings as tmux where practical; `Ctrl-a Ctrl-a` sends a literal `Ctrl-a` to the active program. Aerospace is linked only on macOS. Personal Hyprland overrides target Omarchy v4.0.4 and are linked individually only on Arch; Ubuntu does not receive either desktop-specific link set. Existing Omarchy installations must follow the [bounded migration procedure](docs/envy-cross-platform.md#omarchy-v404-cutover) before deploying the Lua configuration.
+Shared shell, Neovim, Git, Ghostty, tmux, scripts, and AI-skill links are managed on every platform. Aerospace is linked only on macOS. Personal Hyprland overrides target Omarchy v4.0.4 and are linked individually only on Arch; Ubuntu does not receive either desktop-specific link set. Existing Omarchy installations must follow the [bounded migration procedure](docs/envy-cross-platform.md#omarchy-v404-cutover) before deploying the Lua configuration.
 
 Ubuntu installs portable Rust CLIs from upstream prebuilt releases with `cargo-binstall`, and Yazi from its official `.deb`. No Rust CLI source-build fallback runs during setup or updates.
 
@@ -49,6 +49,8 @@ Setup also installs [Bun](https://bun.sh) and [Oh My Pi](https://omp.sh), then e
 Neovim runs Bash, JSON, TypeScript/JavaScript, and Pyright language servers with Bun, without Node.js or npm. Setup installs their packages globally in `~/.bun`; Mason manages the other servers. Rerun `./setup` on an existing installation, then restart Neovim. Keep TypeScript below version 7 for `typescript-language-server`.
 
 Setup installs the [Herdr desktop app](https://herdr.dev/download/) separately from Herdr TUI, using the official installer on Apple Silicon macOS and Linux. Intel Macs skip the desktop app because upstream provides no Intel build. The installer places `Herdr.app` in `~/Applications` on macOS or installs into `${XDG_DATA_HOME:-~/.local/share}/herdr-app` with a desktop launcher on Linux. Both platforms get `~/.local/bin/herdr-app`. The installer also installs herdr-core when missing; the app keeps herdr-core current. Existing `herdr-app` executables are reused.
+
+Setup does not install Herdr TUI or manage its configuration and plugins. Existing TUI installations are left untouched.
 
 Setup links `config/herdr-app/keys.json` and `settings.json` into `${HERDR_APP_HOME:-~/.config/herdr-app}`. Edit these repository files to change app shortcuts and preferences; changes reload automatically. The bindings reserve `Cmd-h/j/k/l` for app panes and leave `Ctrl-h/j/k/l` for Neovim. App-managed mods, layouts, themes, sessions, and window state remain local. Identical existing files become links; differing files are preserved with a warning. Merge wanted settings into the repository, back up and move conflicting files aside, then rerun setup.
 
