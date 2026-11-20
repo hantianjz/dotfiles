@@ -218,7 +218,7 @@ Rerun `./setup` to install the CLI and compiler dependencies. To repair only Ubu
 tree-sitter --version
 ```
 
-Restart Neovim and allow its asynchronous parser installation to finish before quitting. Use `:checkhealth nvim-treesitter` to check requirements, and `:TSUpdate` to update installed parsers. The CLI must be on Neovim's `PATH`; do not install it through npm.
+Restart Neovim and open a file with the affected filetype. Neovim installs missing supported parsers in the background and enables highlighting in open buffers when installation finishes. Use `:checkhealth nvim-treesitter` to check requirements and `:TSUpdate` to update installed parsers. The CLI must be on Neovim's `PATH`; do not install it through npm.
 
 ### Native manager reports “target/package not found”
 
