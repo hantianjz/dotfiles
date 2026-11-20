@@ -63,10 +63,10 @@ printf '%s\n' "$TEST_PLATFORM"
   local project = temp .. "/project with spaces"
   local updater = quote(project .. "/bin/update")
   run("mkdir -p " .. quote(project .. "/bin") .. " " .. quote(project .. "/scripts") .. " " ..
-    quote(project .. "/tmux") .. " " .. quote(project .. "/config/herdr") .. " " ..
+    quote(project .. "/config/tmux") .. " " .. quote(project .. "/config/herdr") .. " " ..
     quote(temp .. "/home with spaces/.config"))
   run("cp " .. quote(root .. "/bin/update") .. " " .. quote(project .. "/bin/update"))
-  run("ln -s " .. quote(project .. "/tmux") .. " " .. quote(temp .. "/home with spaces/.config/tmux"))
+  run("ln -s " .. quote(project .. "/config/tmux") .. " " .. quote(temp .. "/home with spaces/.config/tmux"))
   put(project .. "/bin/envy", [[#!/bin/sh
 set -eu
 if [ "${4:-}" = local.neovim@r0 ]; then

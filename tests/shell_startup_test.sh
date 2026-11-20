@@ -15,10 +15,10 @@ mkdir -p \
   "$test_home/.cargo/bin" \
   "$test_home/.bun/bin"
 ln -s "$repo_root/fish" "$test_home/.config/fish"
-ln -s "$repo_root/shellrc/bashrc" "$test_home/.bashrc"
+ln -s "$repo_root/config/shellrc/bashrc" "$test_home/.bashrc"
 if [[ $(uname -s) == Darwin ]]; then
   bash_bin=/bin/bash
-  ln -s "$repo_root/shellrc/bashrc" "$test_home/.bash_profile"
+  ln -s "$repo_root/config/shellrc/bashrc" "$test_home/.bash_profile"
 else
   # The distro or user's login file delegates interactive setup to .bashrc.
   printf '. "$HOME/.bashrc"\n' > "$test_home/.profile"

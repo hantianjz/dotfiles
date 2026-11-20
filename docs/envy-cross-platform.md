@@ -149,11 +149,11 @@ Regular dotfiles and generated AI-skill links go through the same recipe. A futu
 
 All shell paths must be quoted. Conflicts intentionally do not fail the entire sync because unrelated links and packages should still converge. If an older run created a nested link inside a real directory, the warning points out the possible nested path but does not remove it.
 
-`envy/tmux.lua` uses `envy.loadenv_bundle("first-party", "lib.github")` from a commit-pinned `envy.package-specs@r11` bundle. The helper requires Envy 0.4.9. Every `github.repo` entry vendors its pinned clone to `.envy/tmux/<name>/<name>`; `envy.lua` generates links at `tmux/plugins/<name>` through the existing safe symlink recipe. TPM is a runtime loader only; its install/update bindings are not registered.
+`envy/tmux.lua` uses `envy.loadenv_bundle("first-party", "lib.github")` from a commit-pinned `envy.package-specs@r11` bundle. The helper requires Envy 0.4.9. Every `github.repo` entry vendors its pinned clone to `.envy/tmux/<name>/<name>`; `envy.lua` generates links at `config/tmux/plugins/<name>` through the existing safe symlink recipe. TPM is a runtime loader only; its install/update bindings are not registered.
 
 Normal `envy sync` installs the complete graph. The updater's `envy vendor --all` restores only declared vendor entries, without running native package or portable-tool setup. All eight revisions are reviewed manifest changes, not mutable branch heads. Cached copies provide convergence and repair after a vendored file is removed or edited.
 
-For existing checkouts, inspect and move old real plugin directories out of `tmux/plugins` before adopting the new links. Modified clones must be preserved. A user-owned `~/.config/tmux` remains untouched; repository dependencies may still be downloaded into this checkout, but its configuration is not deployed until the conflict is resolved.
+Move any real plugin directories out of `config/tmux/plugins` before adopting managed links. Preserve modified clones. A user-owned `~/.config/tmux` remains untouched.
 
 Desktop link invariants:
 
@@ -219,7 +219,7 @@ Never run `omarchy refresh hyprland` as validation: v4.0.4 overwrites personal L
 
 ## Bash startup
 
-Envy links `shellrc/bashrc` to `~/.bashrc` on all supported platforms and to `~/.bash_profile` for login Bash on macOS. On Ubuntu and Arch, existing login files stay in charge and must source `~/.bashrc` for interactive login shells. When no login file is available, including after an old managed `~/.profile` is retired, setup links `~/.bash_profile` to the same Bash script.
+Envy links `config/shellrc/bashrc` to `~/.bashrc` on all supported platforms and to `~/.bash_profile` for login Bash on macOS. On Ubuntu and Arch, existing login files stay in charge and must source `~/.bashrc` for interactive login shells. When no login file is available, setup links `~/.bash_profile` to the same Bash script. Setup updates existing managed links to the current checkout paths.
 
 The managed script adds existing user tool directories and, on macOS, Homebrew's `bin` and `sbin` to `PATH` without adding duplicates. It preserves existing editor settings and defines aliases only for interactive Bash. Put machine-specific exports in `~/.config/local_config.bash`; keep those commands safe to source more than once. Fish uses its own startup configuration.
 

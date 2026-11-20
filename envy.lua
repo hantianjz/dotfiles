@@ -97,13 +97,13 @@ local SYMLINKS = {
   { source = AGENT_INSTRUCTIONS,                   dest = HOME .. "/.agents/AGENTS.md" },
   { source = AGENT_INSTRUCTIONS,                   dest = HOME .. "/.omp/agent/AGENTS.md" },
   { source = ROOT .. "/fish",                      dest = HOME .. "/.config/fish" },
-  { source = ROOT .. "/shellrc/bashrc",            dest = HOME .. "/.bashrc" },
+  { source = ROOT .. "/config/shellrc/bashrc",     dest = HOME .. "/.bashrc" },
   { source = ROOT .. "/nvim",                      dest = HOME .. "/.config/nvim" },
   { source = ROOT .. "/config/gitconfig",          dest = HOME .. "/.gitconfig" },
   { source = ROOT .. "/config/gitignore",          dest = HOME .. "/.gitignore" },
   { source = ROOT .. "/config/ghostty",            dest = HOME .. "/.config/ghostty" },
   { source = ROOT .. "/config/rex/init.lua",        dest = HOME .. "/.config/rex/init.lua" },
-  { source = ROOT .. "/tmux",                       dest = HOME .. "/.config/tmux" },
+  { source = ROOT .. "/config/tmux",                dest = HOME .. "/.config/tmux" },
   { source = ROOT .. "/config/gdbinit",             dest = HOME .. "/.gdbinit" },
   { source = ROOT .. "/scripts/batch_find_replace", dest = HOME .. "/bin/batch_find_replace" },
   { source = ROOT .. "/scripts/find_replace",       dest = HOME .. "/bin/find_replace" },
@@ -113,11 +113,12 @@ local SYMLINKS = {
 }
 
 -- A retired .profile link is already dangling when we load the manifest.
-if PROFILE == "macos" or envy.run([[
+if PROFILE == "macos" or envy.run("test \"$(readlink \"$HOME/.bash_profile\" 2>/dev/null)\" = " ..
+  quote(ROOT .. "/shellrc/bashrc"), { capture = true, quiet = true, check = false }).exit_code == 0 or envy.run([[
   test ! -e "$HOME/.bash_profile" && test ! -L "$HOME/.bash_profile" &&
   test ! -r "$HOME/.bash_login" && test ! -r "$HOME/.profile"
 ]], { capture = true, quiet = true, check = false }).exit_code == 0 then
-  table.insert(SYMLINKS, { source = ROOT .. "/shellrc/bashrc", dest = HOME .. "/.bash_profile" })
+  table.insert(SYMLINKS, { source = ROOT .. "/config/shellrc/bashrc", dest = HOME .. "/.bash_profile" })
 end
 
 envy.extend(SYMLINKS, platform.desktop_links(PROFILE, ROOT, HOME))
@@ -125,7 +126,7 @@ for _, package in ipairs(tmux.PACKAGES) do
   local name = package.options.dest
   table.insert(SYMLINKS, {
     source = ROOT .. "/" .. package.vendor .. "/" .. name,
-    dest = ROOT .. "/tmux/plugins/" .. name,
+    dest = ROOT .. "/config/tmux/plugins/" .. name,
   })
 end
 

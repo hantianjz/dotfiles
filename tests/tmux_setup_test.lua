@@ -23,14 +23,14 @@ local ok, failure = pcall(function()
     local base = temp .. "/" .. mode .. " with spaces"
     local home = base .. "/home"
     local dest = home .. "/.config/tmux"
-    run("mkdir -p " .. quote(base .. "/envy") .. " " .. quote(base .. "/tmux/plugins") ..
+    run("mkdir -p " .. quote(base .. "/envy") .. " " .. quote(base .. "/config/tmux/plugins") ..
       " " .. quote(base .. "/ai/skills") .. " " .. quote(base .. "/config/herdr") ..
       " " .. quote(home .. "/.config"))
     for _, path in ipairs({ "envy/platform.lua", "envy/tmux.lua", "envy/local.symlink@r0.lua" }) do
       run("cp " .. quote(root .. "/" .. path) .. " " .. quote(base .. "/" .. path))
     end
     run("cp " .. quote(root .. "/envy.lua") .. " " .. quote(base .. "/actual.lua"))
-    put(base .. "/tmux/tmux.conf", "# managed fixture configuration\n")
+    put(base .. "/config/tmux/tmux.conf", "# managed fixture configuration\n")
     put(home .. "/.dotfiles_profile", "personal\n")
     put(home .. "/.gitconfig", "[user]\n\tname = Fixture user\n")
     if mode == "conflict" then
@@ -60,7 +60,7 @@ for _, entry in ipairs(actual.PACKAGES) do
     assert(names[name] and not found[name], "unexpected or duplicate tmux dependency")
     found[name] = true
     local source = root .. "/" .. entry.vendor .. "/" .. name
-    local dest = root .. "/tmux/plugins/" .. name
+    local dest = root .. "/config/tmux/plugins/" .. name
     expected[dest] = source
     table.insert(assets, { name = name, source = source, dest = dest,
       vendor = root .. "/" .. entry.vendor, ref = entry.options.ref })
@@ -73,9 +73,9 @@ for _, entry in ipairs(actual.PACKAGES) do
   if entry.spec == "local.symlink@r0" then
     for _, link in ipairs(entry.options.links) do
       if link.dest == home .. "/.config/tmux" then
-        assert(link.source == root .. "/tmux", "tmux configuration must use fixture ROOT")
+        assert(link.source == root .. "/config/tmux", "tmux configuration must use fixture ROOT")
         table.insert(links, link)
-      elseif link.dest:sub(1, #(root .. "/tmux/plugins/")) == root .. "/tmux/plugins/" then
+      elseif link.dest:sub(1, #(root .. "/config/tmux/plugins/")) == root .. "/config/tmux/plugins/" then
         assert(expected[link.dest] == link.source, "plugin link must target its vendored dependency")
         expected[link.dest] = nil
         table.insert(links, link)
@@ -125,7 +125,7 @@ assert(data:write("}\n")); assert(data:close())
       run("test ! -L " .. quote(dest))
       assert((result.stderr or ""):find(dest, 1, true), "preserved configuration must be reported")
     else
-      assert(trim(run("readlink " .. quote(dest)).stdout) == base .. "/tmux")
+      assert(trim(run("readlink " .. quote(dest)).stdout) == base .. "/config/tmux")
       assert(contents(dest .. "/tmux.conf") == "# managed fixture configuration\n")
 
       run(install)

@@ -134,7 +134,7 @@ if [[ "$PACKAGE_MANAGER" == apt ]]; then
   fi
 fi
 
-if [[ -L "$HOME/.config/tmux" && "$HOME/.config/tmux" -ef "$DOTFILES_ROOT/tmux" ]]; then
+if [[ -L "$HOME/.config/tmux" && "$HOME/.config/tmux" -ef "$DOTFILES_ROOT/config/tmux" ]]; then
   section "Updating tmux plugins"
   run "$DOTFILES_ROOT/bin/envy" --project "$DOTFILES_ROOT" vendor --all
 else
