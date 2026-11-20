@@ -81,6 +81,42 @@ PACKAGES = {
   assert(not check_fisher(), "manager presence must not hide a missing declared plugin")
   put(config .. "/functions/fisher.fish", 'function fisher; printf "%s\\n" owner/one owner/two; end\n')
   assert(check_fisher(), "complete declared inventory must satisfy setup")
+
+  dofile(root .. "/envy/local.symlink@r0.lua")
+  for _, scenario in ipairs({ "fresh", "migrated", "native" }) do
+    local home = temp .. "/bash-" .. scenario
+    envy.run("mkdir -p " .. quote(home .. "/.cargo/bin"))
+    if scenario == "migrated" then
+      envy.run("ln -s " .. quote(root .. "/shellrc/profile") .. " " .. quote(home .. "/.profile"))
+    elseif scenario == "native" then
+      put(home .. "/.profile", '. "$HOME/.bashrc"\nexport NATIVE_PROFILE=loaded\n')
+    end
+    local linux_manifest = setmetatable({
+      os = setmetatable({ getenv = function(name) return name == "HOME" and home or os.getenv(name) end }, { __index = os }),
+      envy = setmetatable({
+        PLATFORM = "linux",
+        import = function() return { PACKAGES = {} } end,
+        run = function(cmd, options)
+          if cmd == "command -v pacman" then return { exit_code = 1 } end
+          if cmd == "command -v apt-get" or cmd == "command -v dpkg-query" then return { exit_code = 0 } end
+          options.env = { HOME = home }
+          return envy.run(cmd, options)
+        end,
+      }, { __index = envy }),
+    }, { __index = _G })
+    assert(loadfile(root .. "/envy.lua", "t", linux_manifest))()
+    for _, package in ipairs(linux_manifest.PACKAGES) do
+      if package.spec == "local.symlink@r0" and not SETUP.links.CHECK(nil, package.options) then
+        envy.run(SETUP.links.INSTALL(nil, package.options))
+      end
+    end
+    local login = envy.run("env -i HOME=" .. quote(home) .. [=[ PATH=/usr/bin:/bin TERM=dumb /bin/bash -lic '
+      alias ll >/dev/null && [[ :$PATH: == *":$HOME/.cargo/bin:"* ]] && printf "%s\n" "${NATIVE_PROFILE:-managed}"
+    ']=], { capture = true })
+    assert(login.exit_code == 0 and login.stdout == (scenario == "native" and "loaded\n" or "managed\n"),
+      string.format("Bash login failed (%s, exit %d): %q %q", scenario, login.exit_code, login.stdout, login.stderr))
+  end
+
   dofile(root .. "/envy/local.rustup@r0.lua")
   local startup = temp .. "/rustup-home"
   envy.run("mkdir -p " .. quote(startup))

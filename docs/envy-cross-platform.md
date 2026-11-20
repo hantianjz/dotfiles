@@ -219,7 +219,7 @@ Never run `omarchy refresh hyprland` as validation: v4.0.4 overwrites personal L
 
 ## Bash startup
 
-Envy links `shellrc/bashrc` to `~/.bashrc` on all supported platforms and to `~/.bash_profile` for login Bash on macOS. On Ubuntu and Arch, the distro or user login file must source `~/.bashrc` for interactive login shells. Keep that file in place; if it is missing, restore the distro's login file from `/etc/skel`.
+Envy links `shellrc/bashrc` to `~/.bashrc` on all supported platforms and to `~/.bash_profile` for login Bash on macOS. On Ubuntu and Arch, existing login files stay in charge and must source `~/.bashrc` for interactive login shells. When no login file is available, including after an old managed `~/.profile` is retired, setup links `~/.bash_profile` to the same Bash script.
 
 The managed script adds existing user tool directories and, on macOS, Homebrew's `bin` and `sbin` to `PATH` without adding duplicates. It preserves existing editor settings and defines aliases only for interactive Bash. Put machine-specific exports in `~/.config/local_config.bash`; keep those commands safe to source more than once. Fish uses its own startup configuration.
 

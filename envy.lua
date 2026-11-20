@@ -112,7 +112,11 @@ local SYMLINKS = {
   { source = ROOT .. "/scripts/usb",                dest = HOME .. "/bin/usb" },
 }
 
-if PROFILE == "macos" then
+-- A retired .profile link is already dangling when we load the manifest.
+if PROFILE == "macos" or envy.run([[
+  test ! -e "$HOME/.bash_profile" && test ! -L "$HOME/.bash_profile" &&
+  test ! -r "$HOME/.bash_login" && test ! -r "$HOME/.profile"
+]], { capture = true, quiet = true, check = false }).exit_code == 0 then
   table.insert(SYMLINKS, { source = ROOT .. "/shellrc/bashrc", dest = HOME .. "/.bash_profile" })
 end
 
