@@ -1,4 +1,4 @@
--- Rex has no bulk reset. Clear the documented Mac shortcuts outside copy mode.
+-- Rex has no bulk reset. Clear the documented Mac shortcuts except font controls and copy-mode keys.
 -- https://www.superlogical.com/rex/docs/reference/mac-actions
 for _, key in ipairs({
   "cmd+n", "shift+cmd+w", "ctrl+cmd+f", "cmd+w",
@@ -12,12 +12,12 @@ for _, key in ipairs({
   "alt+shift+cmd+up", "alt+shift+cmd+down", "alt+cmd+enter", "alt+cmd+m", "alt+shift+cmd+enter",
   "shift+cmd+enter", "shift+cmd+g", "cmd+p", "ctrl+cmd+i", "shift+cmd+c",
   "cmd+backspace", "cmd+left", "cmd+right", "alt+left", "alt+right", "cmd+up", "cmd+down", "cmd+y",
-  "cmd+f", "cmd+g", "shift+cmd+=", "cmd+=", "cmd+-", "cmd+/", "cmd+.", "shift+cmd+s",
+  "cmd+f", "cmd+g", "cmd+/", "cmd+.", "shift+cmd+s",
   "alt+cmd+t", "alt+shift+cmd+t",
 }) do
   rex.unbind(key)
 end
-for digit = 0, 9 do
+for digit = 1, 9 do
   rex.unbind("cmd+[Digit" .. digit .. "]")
 end
 
@@ -38,3 +38,8 @@ rex.bind("ctrl+a>n", "client.tab.next")
 rex.bind("ctrl+a>shift+z", "pane.zoom")
 rex.bind("cmd+w", "pane.close")
 rex.bind("alt+cmd+w", "client.tab.close")
+
+rex.bind("cmd+c", "pane.copy")
+rex.bind("cmd+v", "pane.paste")
+rex.bind("ctrl+insert", "pane.copy")
+rex.bind("shift+insert", "pane.paste")
