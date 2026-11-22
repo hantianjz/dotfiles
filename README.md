@@ -73,6 +73,8 @@ Envy preserves differing real files and directories at symlink destinations: it 
 
 Setup links `config/rex/init.lua` to `~/.config/rex/init.lua`. Edit the repository file, then run `rex config reload`. Rex keeps default font controls, copy-mode keys, and the command palette (`Cmd+Shift+P`). It uses `Ctrl+a` sequences for pane and tab management. `Cmd+Shift+W` closes the tab.
 
+Rex loads configuration on the server host. For remote sessions, install these dotfiles and run `rex config reload` on the remote host too; reloading only the Mac's local server does not update the remote server.
+
 Press `Cmd+k` to open the session picker. Use `Ctrl+a` then `-` or `=` for the previous or next session.
 
 Press `Ctrl+a` then `[` to enter copy mode. Press `v` to start selection and `y` to copy and exit.
