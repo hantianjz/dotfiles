@@ -103,6 +103,7 @@ local SYMLINKS = {
   { source = ROOT .. "/config/gitignore",          dest = HOME .. "/.gitignore" },
   { source = ROOT .. "/config/ghostty",            dest = HOME .. "/.config/ghostty" },
   { source = ROOT .. "/config/rex/init.lua",        dest = HOME .. "/.config/rex/init.lua" },
+  { source = ROOT .. "/config/rex/.luarc.json",     dest = HOME .. "/.config/rex/.luarc.json" },
   { source = ROOT .. "/config/tmux",                dest = HOME .. "/.config/tmux" },
   { source = ROOT .. "/config/gdbinit",             dest = HOME .. "/.gdbinit" },
   { source = ROOT .. "/scripts/batch_find_replace", dest = HOME .. "/bin/batch_find_replace" },
