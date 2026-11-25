@@ -124,7 +124,10 @@ end
 
 if PROFILE == "macos" then
   table.insert(SYMLINKS, { source = ROOT .. "/config/aerospace.toml", dest = HOME .. "/.aerospace.toml" })
-  table.insert(SYMLINKS, { source = ROOT .. "/scripts/aerospace-move", dest = HOME .. "/bin/aerospace-move" })
+  table.insert(SYMLINKS, {
+    source = ROOT .. "/config/aerospace/aerospace-move",
+    dest = HOME .. "/.config/aerospace/aerospace-move",
+  })
 end
 
 for _, package in ipairs(tmux.PACKAGES) do
@@ -159,6 +162,7 @@ envy.extend(PACKAGES, { {
     retired_links = {
       { source = ROOT .. "/shellrc/environment", dest = HOME .. "/.config/shell/environment" },
       { source = ROOT .. "/shellrc/profile",     dest = HOME .. "/.profile" },
+      { source = ROOT .. "/scripts/aerospace-move", dest = HOME .. "/bin/aerospace-move" },
     },
   },
 } })

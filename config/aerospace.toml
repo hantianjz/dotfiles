@@ -1,3 +1,16 @@
+config-version = 2
+# Workspaces 6–9 still have shortcuts, but exist only on demand.
+persistent-workspaces = ['1', '2', '3', '4', '5']
+
+# Optional experiments: uncomment one at a time, then reload AeroSpace.
+# Focus windows on hover, rather than only by click or keyboard.
+# focus-follows-mouse.enabled = true
+# Reload on save; reload manually once to activate the watcher.
+# auto-reload-config = true
+# Pin workspace 3 to the secondary display when there are two displays,
+# otherwise to the main display. Cmd+Ctrl+Tab cannot move a pinned workspace.
+# workspace-to-monitor-force-assignment.'3' = ['secondary', 'main']
+
 # You can use it to add commands that run after login to macOS user session.
 # 'start-at-login' needs to be 'true' for 'after-login-command' to work
 # Available commands: https://nikitabobko.github.io/AeroSpace/commands
@@ -92,16 +105,24 @@ cmd-m = []
 # See: https://nikitabobko.github.io/AeroSpace/commands#layout
 cmd-slash = 'layout tiles horizontal vertical'
 cmd-period = 'layout accordion horizontal vertical'
+# Experiment: change the whole workspace layout, not just the focused container.
+# Comment out the matching binding above before enabling either line.
+# cmd-slash = 'layout --root tiles horizontal vertical'
+# cmd-period = 'layout --root accordion horizontal vertical'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move
-cmd-ctrl-h = 'exec-and-forget ~/bin/aerospace-move left'
-cmd-ctrl-j = 'exec-and-forget ~/bin/aerospace-move down'
-cmd-ctrl-k = 'exec-and-forget ~/bin/aerospace-move up'
-cmd-ctrl-l = 'exec-and-forget ~/bin/aerospace-move right'
+cmd-ctrl-h = 'exec-and-forget ~/.config/aerospace/aerospace-move left'
+cmd-ctrl-j = 'exec-and-forget ~/.config/aerospace/aerospace-move down'
+cmd-ctrl-k = 'exec-and-forget ~/.config/aerospace/aerospace-move up'
+cmd-ctrl-l = 'exec-and-forget ~/.config/aerospace/aerospace-move right'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#resize
 cmd-ctrl-up = 'resize smart -50'
 cmd-ctrl-down = 'resize smart +50'
+# Experiment: cycle this workspace's windows instead of resizing.
+# Comment out the two resize bindings above before enabling these.
+# cmd-ctrl-up = 'focus --wrap-around dfs-prev'
+# cmd-ctrl-down = 'focus --wrap-around dfs-next'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#workspace
 cmd-1 = 'workspace 1'
@@ -124,6 +145,17 @@ cmd-ctrl-6 = ['move-node-to-workspace 6', 'workspace 6']
 cmd-ctrl-7 = ['move-node-to-workspace 7', 'workspace 7']
 cmd-ctrl-8 = ['move-node-to-workspace 8', 'workspace 8']
 cmd-ctrl-9 = ['move-node-to-workspace 9', 'workspace 9']
+# Experiment: follow the specific window only after a successful move.
+# Comment out each matching binding above before enabling its replacement.
+# cmd-ctrl-1 = 'move-node-to-workspace --focus-follows-window 1'
+# cmd-ctrl-2 = 'move-node-to-workspace --focus-follows-window 2'
+# cmd-ctrl-3 = 'move-node-to-workspace --focus-follows-window 3'
+# cmd-ctrl-4 = 'move-node-to-workspace --focus-follows-window 4'
+# cmd-ctrl-5 = 'move-node-to-workspace --focus-follows-window 5'
+# cmd-ctrl-6 = 'move-node-to-workspace --focus-follows-window 6'
+# cmd-ctrl-7 = 'move-node-to-workspace --focus-follows-window 7'
+# cmd-ctrl-8 = 'move-node-to-workspace --focus-follows-window 8'
+# cmd-ctrl-9 = 'move-node-to-workspace --focus-follows-window 9'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
 alt-tab = 'workspace-back-and-forth'
@@ -143,6 +175,9 @@ f = [
   'mode main',
 ] # Toggle between floating and tiling layout
 backspace = ['close-all-windows-but-current', 'mode main']
+# Experiment: reset window sizes instead of closing other windows.
+# Comment out the active backspace binding before enabling this.
+# backspace = ['balance-sizes', 'mode main']
 
 # sticky is not yet supported https://github.com/nikitabobko/AeroSpace/issues/2
 #s = ['layout sticky tiling', 'mode main']
