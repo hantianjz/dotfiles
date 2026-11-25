@@ -82,6 +82,8 @@ rex.bind("cmd+n", "session.new")
 rex.bind("ctrl+a>-", "session.previous")
 rex.bind("ctrl+a>=", "session.next")
 
+rex.bind("cmd+p", "pane.go_to")
+
 -- Copy mode already binds y to copy the selection and exit.
 rex.bind("ctrl+a>[", "pane.copy_mode.enter")
 
