@@ -159,7 +159,7 @@ Common links apply to all supported profiles. On macOS, Envy links `~/.aerospace
 
 In AeroSpace main mode, Ctrl+Cmd+h/j/k/l moves the focused Rex pane when its window is the only window on the focused monitor's presented workspace. Otherwise, the shortcut moves the focused window in AeroSpace. Windows on other monitors or hidden workspaces do not count. The Rex path requires one connected Rex app with Remote Control enabled; a Rex error does not trigger an AeroSpace move. Service mode still joins AeroSpace windows with the same keys.
 
-Ctrl+Cmd+1–5 moves the focused window to that workspace and follows the window.
+Ctrl+Cmd+1–5 moves the focused window to that workspace without switching to it.
 
 AeroSpace uses config version 2. Workspaces 1–5 persist when empty; 6–9 are available on demand. The config includes disabled experiments. Enable one at a time and replace the active line when trying an alternate binding.
 
