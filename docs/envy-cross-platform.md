@@ -161,7 +161,7 @@ In AeroSpace main mode, Ctrl+Cmd+h/j/k/l moves the focused Rex pane when its win
 
 AeroSpace uses config version 2. Workspaces 1–5 persist when empty; 6–9 are available on demand. The config includes disabled experiments. Enable one at a time and replace the active line when trying an alternate binding.
 
-New Slack and Buzz windows go to workspace 3, Rex to 2, and Reader, Safari, and Music to 5. Chrome routes only one new window per launch to workspace 1. Closing all Chrome windows does not reset the rule; quitting Chrome does. Chrome windows already open when AeroSpace starts stay where they are.
+New Slack and Buzz windows go to workspace 3, Rex to 2, and Reader, Safari, and Music to 5. Chrome routes only one new window per launch to workspace 1. Closing all Chrome windows does not reset the rule; quitting Chrome does. A Chrome launch already in progress when the helper is installed or already detected at AeroSpace startup is not rerouted.
 
 ## Bash startup
 

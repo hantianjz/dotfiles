@@ -16,6 +16,13 @@ if [ "${1:-}" != remember ]; then
     case "$id" in ''|*[!0-9]*) exit 2 ;; esac
     target=$(aerospace echo --window-id "$id" -- '%{app-pid} %{app-bundle-id}') || exit "$?"
     [ "$target" = "$pid com.google.Chrome" ] || exit 0
+
+    # Use the installed symlink's creation time, not the source file's age.
+    installed_at=$(stat -f %B "$0") || exit "$?"
+    started_at=$(LC_ALL=C TZ=UTC date -j -f '%a %b %e %T %Y' "$started" +%s) || exit "$?"
+    if [ "$started_at" -le "$installed_at" ]; then
+        id=
+    fi
 fi
 
 umask 077
