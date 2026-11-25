@@ -124,6 +124,7 @@ end
 
 if PROFILE == "macos" then
   table.insert(SYMLINKS, { source = ROOT .. "/config/aerospace.toml", dest = HOME .. "/.aerospace.toml" })
+  table.insert(SYMLINKS, { source = ROOT .. "/scripts/aerospace-move", dest = HOME .. "/bin/aerospace-move" })
 end
 
 for _, package in ipairs(tmux.PACKAGES) do

@@ -155,7 +155,9 @@ Normal `envy sync` installs the complete graph. The updater's `envy vendor --all
 
 Move any real plugin directories out of `config/tmux/plugins` before adopting managed links. Preserve modified clones. A user-owned `~/.config/tmux` remains untouched.
 
-Common links apply to all supported profiles. `config/aerospace.toml` is linked only on macOS.
+Common links apply to all supported profiles. On macOS, Envy installs `~/.aerospace.toml` and `~/bin/aerospace-move`.
+
+In AeroSpace main mode, Ctrl+Cmd+h/j/k/l moves the focused Rex pane when its window is the only window on the focused monitor's presented workspace. Otherwise, the shortcut moves the focused window in AeroSpace. Windows on other monitors or hidden workspaces do not count. The Rex path requires one connected Rex app with Remote Control enabled; a Rex error does not trigger an AeroSpace move. Service mode still joins AeroSpace windows with the same keys.
 
 ## Bash startup
 

@@ -1,0 +1,32 @@
+#!/bin/sh
+
+if [ "$#" -ne 1 ]; then
+    echo 'usage: aerospace-move left|down|up|right' >&2
+    exit 2
+fi
+case "$1" in
+    left|down|up|right) ;;
+    *) echo 'usage: aerospace-move left|down|up|right' >&2; exit 2 ;;
+esac
+
+focused=$(aerospace list-windows --focused --format '%{window-id} %{app-bundle-id}') || exit "$?"
+[ -n "$focused" ] || exit 0
+id=${focused%% *}
+
+if [ "${focused#* }" = com.superlogical.rex ]; then
+    windows=$(aerospace list-windows --workspace focused --monitor focused --format '%{window-id}') || exit "$?"
+    if [ "$windows" = "$id" ]; then
+        export PATH="$PATH:$HOME/Library/Application Support/com.superlogical.rex/RexServer/Versions/Current/Rex Server.app/Contents/MacOS"
+        exec rex do pane.move "direction=$1"
+    fi
+
+    # If focus or workspace changed, do not move the old window out of scope.
+    newline='
+'
+    case "$newline$windows$newline" in
+        *"$newline$id$newline"*) ;;
+        *) exit 0 ;;
+    esac
+fi
+
+exec aerospace move --window-id "$id" "$1"
