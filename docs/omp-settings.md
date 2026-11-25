@@ -162,6 +162,8 @@ omp plugin doctor
 
 Do not transfer macOS `node_modules` to Linux. Plannotator dependencies include native modules. Plugin installation can execute lifecycle scripts; restore only trusted backups. Ponytail's existing skill installer needs Node plus `bunx` or `npx` and network access. Third-party skills continue to come from their original installers; personal repository skills continue to use `ai/skills/` and Envy links. No skill contents or installer metadata travel in the archive.
 
+The Neovim OMP bridge also needs its companion extension. Run `omp plugin install omp.nvim` on each machine that uses the bridge. Restart Neovim and start a fresh `omp` terminal in the same working directory. Run `:checkhealth omp` from Neovim to check the connection.
+
 ## Inspection evidence
 
 The inventory used `omp --help`, `omp config path`, `omp plugin list --json`, `omp config --help`, `omp auth --help`, repository setup files, directory metadata, DB schema/counts, and installed plugin source:
