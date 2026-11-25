@@ -3,8 +3,8 @@
 for _, key in ipairs({
   "cmd+n", "shift+cmd+w", "ctrl+cmd+f",
   "shift+cmd+,", "shift+cmd+u", "alt+shift+cmd+u", "shift+cmd+.",
-  "shift+cmd+n", "alt+shift+cmd+n", "cmd+r",
-  "alt+cmd+w", "ctrl+tab", "shift+cmd+]", "ctrl+shift+tab", "shift+cmd+[", "cmd+'",
+  "shift+cmd+n", "cmd+r",
+  "alt+cmd+w", "ctrl+tab", "shift+cmd+]", "ctrl+shift+tab", "shift+cmd+[",
   "ctrl+shift+pageup", "ctrl+shift+pagedown",
   "shift+cmd+left", "cmd+d", "shift+cmd+right", "shift+cmd+up", "shift+cmd+d", "shift+cmd+down",
   "cmd+enter", "alt+cmd+left", "alt+cmd+right", "alt+cmd+up", "alt+cmd+down",
