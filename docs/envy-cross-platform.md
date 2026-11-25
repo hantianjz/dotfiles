@@ -161,6 +161,8 @@ In AeroSpace main mode, Ctrl+Cmd+h/j/k/l moves the focused Rex pane when its win
 
 AeroSpace uses config version 2. Workspaces 1–5 persist when empty; 6–9 are available on demand. The config includes disabled experiments. Enable one at a time and replace the active line when trying an alternate binding.
 
+New Slack and Buzz windows go to workspace 3, Rex to 2, and Reader, Safari, and Music to 5. Chrome routes only one new window per launch to workspace 1. Closing all Chrome windows does not reset the rule; quitting Chrome does. Chrome windows already open when AeroSpace starts stay where they are.
+
 ## Bash startup
 
 Envy links `config/shellrc/bashrc` to `~/.bashrc` on all supported platforms and to `~/.bash_profile` for login Bash on macOS. On Ubuntu and Arch, existing login files stay in charge and must source `~/.bashrc` for interactive login shells. When no login file is available, setup links `~/.bash_profile` to the same Bash script. Setup updates existing managed links to the current checkout paths.

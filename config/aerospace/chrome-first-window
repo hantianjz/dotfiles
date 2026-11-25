@@ -1,0 +1,32 @@
+#!/bin/sh
+
+# Record each Chrome process once, even if all its windows are later closed.
+pid=$(pgrep -x 'Google Chrome') || exit 0
+case "$pid" in ''|*[!0-9]*) exit 0 ;; esac
+started=$(LC_ALL=C TZ=UTC ps -p "$pid" -o lstart=) || exit 0
+[ -n "$started" ] || exit 0
+
+cache="$HOME/Library/Caches/dotfiles/aerospace-chrome"
+launch="$cache/$pid-$started"
+[ -f "$launch" ] && exit 0
+
+id=
+if [ "${1:-}" != remember ]; then
+    id=${AEROSPACE_WINDOW_ID:-}
+    case "$id" in ''|*[!0-9]*) exit 2 ;; esac
+    target=$(aerospace echo --window-id "$id" -- '%{app-pid} %{app-bundle-id}') || exit "$?"
+    [ "$target" = "$pid com.google.Chrome" ] || exit 0
+fi
+
+umask 077
+mkdir -p "$cache" || exit "$?"
+# Claim the launch atomically: window callbacks can run concurrently.
+if ! (set -C; : > "$launch") 2>/dev/null; then
+    [ -f "$launch" ] && exit 0
+    printf 'Cannot record Chrome launch: %s\n' "$launch" >&2
+    exit 1
+fi
+
+if [ -n "$id" ]; then
+    exec aerospace move-node-to-workspace --window-id "$id" 1
+fi

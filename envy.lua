@@ -128,6 +128,10 @@ if PROFILE == "macos" then
     source = ROOT .. "/config/aerospace/aerospace-move",
     dest = HOME .. "/.config/aerospace/aerospace-move",
   })
+  table.insert(SYMLINKS, {
+    source = ROOT .. "/config/aerospace/chrome-first-window",
+    dest = HOME .. "/.config/aerospace/chrome-first-window",
+  })
 end
 
 for _, package in ipairs(tmux.PACKAGES) do
