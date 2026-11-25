@@ -11,15 +11,13 @@ persistent-workspaces = ['1', '2', '3', '4', '5']
 # otherwise to the main display. Cmd+Ctrl+Tab cannot move a pinned workspace.
 # workspace-to-monitor-force-assignment.'3' = ['secondary', 'main']
 
-# You can use it to add commands that run after login to macOS user session.
-# 'start-at-login' needs to be 'true' for 'after-login-command' to work
-# Available commands: https://nikitabobko.github.io/AeroSpace/commands
-after-login-command = []
-
-# You can use it to add commands that run after AeroSpace startup.
-# 'after-startup-command' is run after 'after-login-command'
-# Available commands : https://nikitabobko.github.io/AeroSpace/commands
-after-startup-command = []
+# Launch apps when AeroSpace starts, including at macOS login.
+after-startup-command = [
+  'exec-and-forget /usr/bin/open -g -a Slack',
+  'exec-and-forget /usr/bin/open -g -a "Google Chrome"',
+  'exec-and-forget /usr/bin/open -g -a Buzz',
+  'exec-and-forget /usr/bin/open -g -a Rex',
+]
 
 # Start AeroSpace at login
 start-at-login = true
