@@ -72,12 +72,13 @@ rex.bind("ctrl+a>ctrl+s", "pane.split", { direction = "down" })
 rex.bind("ctrl+a>s", "pane.split", { direction = "down" })
 
 --
-rex.bind("ctrl+a>shift+c", "client.tab.new")
 rex.bind("ctrl+a>n", "client.tab.next")
 rex.bind("ctrl+a>shift+z", "pane.zoom")
 rex.bind("cmd+shift+w", "client.tab.close")
+rex.bind("ctrl+tab", "client.tab.next")
 
 -- Match tmux session navigation.
+rex.bind("cmd+n", "session.new")
 rex.bind("ctrl+a>-", "session.previous")
 rex.bind("ctrl+a>=", "session.next")
 

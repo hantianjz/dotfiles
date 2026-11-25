@@ -92,16 +92,16 @@ envy.extend(PACKAGES, { {
 local AGENT_INSTRUCTIONS = ROOT .. (MACHINE_PROFILE == "work" and "/ai/work/AGENTS.md" or "/ai/CLAUDE.md")
 
 local SYMLINKS = {
-  { source = AGENT_INSTRUCTIONS,                   dest = HOME .. "/.claude/CLAUDE.md" },
-  { source = AGENT_INSTRUCTIONS,                   dest = HOME .. "/.codex/AGENTS.md" },
-  { source = AGENT_INSTRUCTIONS,                   dest = HOME .. "/.agents/AGENTS.md" },
-  { source = AGENT_INSTRUCTIONS,                   dest = HOME .. "/.omp/agent/AGENTS.md" },
-  { source = ROOT .. "/fish",                      dest = HOME .. "/.config/fish" },
-  { source = ROOT .. "/config/shellrc/bashrc",     dest = HOME .. "/.bashrc" },
-  { source = ROOT .. "/nvim",                      dest = HOME .. "/.config/nvim" },
-  { source = ROOT .. "/config/gitconfig",          dest = HOME .. "/.gitconfig" },
-  { source = ROOT .. "/config/gitignore",          dest = HOME .. "/.gitignore" },
-  { source = ROOT .. "/config/ghostty",            dest = HOME .. "/.config/ghostty" },
+  { source = AGENT_INSTRUCTIONS,                    dest = HOME .. "/.claude/CLAUDE.md" },
+  { source = AGENT_INSTRUCTIONS,                    dest = HOME .. "/.codex/AGENTS.md" },
+  { source = AGENT_INSTRUCTIONS,                    dest = HOME .. "/.agents/AGENTS.md" },
+  { source = AGENT_INSTRUCTIONS,                    dest = HOME .. "/.omp/agent/AGENTS.md" },
+  { source = ROOT .. "/fish",                       dest = HOME .. "/.config/fish" },
+  { source = ROOT .. "/config/shellrc/bashrc",      dest = HOME .. "/.bashrc" },
+  { source = ROOT .. "/nvim",                       dest = HOME .. "/.config/nvim" },
+  { source = ROOT .. "/config/gitconfig",           dest = HOME .. "/.gitconfig" },
+  { source = ROOT .. "/config/gitignore",           dest = HOME .. "/.gitignore" },
+  { source = ROOT .. "/config/ghostty",             dest = HOME .. "/.config/ghostty" },
   { source = ROOT .. "/config/rex/init.lua",        dest = HOME .. "/.config/rex/init.lua" },
   { source = ROOT .. "/config/rex/.luarc.json",     dest = HOME .. "/.config/rex/.luarc.json" },
   { source = ROOT .. "/config/tmux",                dest = HOME .. "/.config/tmux" },
@@ -115,7 +115,7 @@ local SYMLINKS = {
 
 -- A retired .profile link is already dangling when we load the manifest.
 if PROFILE == "macos" or envy.run("test \"$(readlink \"$HOME/.bash_profile\" 2>/dev/null)\" = " ..
-  quote(ROOT .. "/shellrc/bashrc"), { capture = true, quiet = true, check = false }).exit_code == 0 or envy.run([[
+      quote(ROOT .. "/shellrc/bashrc"), { capture = true, quiet = true, check = false }).exit_code == 0 or envy.run([[
   test ! -e "$HOME/.bash_profile" && test ! -L "$HOME/.bash_profile" &&
   test ! -r "$HOME/.bash_login" && test ! -r "$HOME/.profile"
 ]], { capture = true, quiet = true, check = false }).exit_code == 0 then
@@ -157,7 +157,7 @@ envy.extend(PACKAGES, { {
     links = SYMLINKS,
     retired_links = {
       { source = ROOT .. "/shellrc/environment", dest = HOME .. "/.config/shell/environment" },
-      { source = ROOT .. "/shellrc/profile", dest = HOME .. "/.profile" },
+      { source = ROOT .. "/shellrc/profile",     dest = HOME .. "/.profile" },
     },
   },
 } })
@@ -172,7 +172,7 @@ envy.extend(PACKAGES, { {
   setup = { "links" },
   options = {
     links = {
-      { source = ROOT .. "/config/herdr-app/keys.json", dest = HERDR_APP_HOME .. "/keys.json" },
+      { source = ROOT .. "/config/herdr-app/keys.json",     dest = HERDR_APP_HOME .. "/keys.json" },
       { source = ROOT .. "/config/herdr-app/settings.json", dest = HERDR_APP_HOME .. "/settings.json" },
     },
   },
@@ -218,10 +218,10 @@ envy.extend(PACKAGES, { {
 
 if PROFILE == "ubuntu" then
   envy.extend(PACKAGES, {
-    { spec = "local.neovim@r0", source = "envy/local.neovim@r0.lua", setup = { "editor" } },
+    { spec = "local.neovim@r0",      source = "envy/local.neovim@r0.lua",      setup = { "editor" } },
     { spec = "local.tree_sitter@r0", source = "envy/local.tree_sitter@r0.lua", setup = { "tools" } },
-    { spec = "local.yazi@r0", source = "envy/local.yazi@r0.lua", setup = { "package" } },
-    { spec = "local.binstall@r0", source = "envy/local.binstall@r0.lua", setup = { "tools" } },
+    { spec = "local.yazi@r0",        source = "envy/local.yazi@r0.lua",        setup = { "package" } },
+    { spec = "local.binstall@r0",    source = "envy/local.binstall@r0.lua",    setup = { "tools" } },
     {
       spec = "local.binstall_tools@r0",
       source = "envy/local.binstall_tools@r0.lua",
@@ -277,4 +277,3 @@ if HERDR_APP_SUPPORTED then
     },
   } })
 end
-
