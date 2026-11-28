@@ -97,10 +97,10 @@ for key, direction in pairs({ h = 'left', j = 'down', k = 'up', l = 'right' }) d
     vim.cmd.wincmd(key)
     if vim.api.nvim_get_current_win() ~= before or vim.env.TMUX then return end
 
-    local session, block = vim.env.REX_SESSION, vim.env.REX_BLOCK
-    if not session or not block then return end
+    local block = vim.env.REX_BLOCK
+    if not block then return end
     vim.system({
-      'rex', '--autostart=false', 'do', 'navigate_pane', '-s', session, '-b', block,
+      'rex', '--autostart=false', 'do', 'navigate_pane', '-b', block,
       'direction=' .. direction, 'from_editor=true',
     }, {}, function(result)
       if result.code ~= 0 then

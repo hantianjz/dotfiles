@@ -3,8 +3,6 @@ config-version = 2
 persistent-workspaces = ['1', '2', '3', '4', '5']
 
 # Optional experiments: uncomment one at a time, then reload AeroSpace.
-# Focus windows on hover, rather than only by click or keyboard.
-focus-follows-mouse.enabled = true
 # Reload on save; reload manually once to activate the watcher.
 auto-reload-config = true
 # Pin workspace 3 to the secondary display when there are two displays,
