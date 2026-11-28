@@ -1,8 +1,10 @@
 # Herdr app and Neovim navigation
 
-Inside Neovim, `Ctrl-h/j/k/l` uses native window navigation in normal and
-terminal modes. These keys never hand off to Herdr or tmux panes, including
-at a Neovim window edge. No multiplexer navigation plugin is loaded.
+Inside Neovim, `Ctrl-h/j/k/l` uses native window navigation in every mode,
+including Insert and Visual Line. These keys replace the usual editing
+shortcuts. They cancel pending operators and command lines before moving.
+They never hand off to Herdr or tmux panes, including at a Neovim window
+edge. No multiplexer navigation plugin is loaded.
 
 Herdr app uses `Cmd-h/j/k/l` for app pane navigation, leaving
 `Ctrl-h/j/k/l` available to Neovim. Dotfiles setup links

@@ -92,7 +92,7 @@ vim.keymap.set('t', '<Esc>', '<C-\\><C-n>', { noremap = true, silent = true })
 
 for key, direction in pairs({ h = 'left', j = 'down', k = 'up', l = 'right' }) do
   local chord = '<C-' .. key .. '>'
-  vim.keymap.set('n', chord, function()
+  vim.keymap.set({ 'n', 'i', 'x', 's' }, chord, function()
     local before = vim.api.nvim_get_current_win()
     vim.cmd.wincmd(key)
     if vim.api.nvim_get_current_win() ~= before or vim.env.TMUX then return end
@@ -108,6 +108,8 @@ for key, direction in pairs({ h = 'left', j = 'down', k = 'up', l = 'right' }) d
       end
     end)
   end, { silent = true, desc = 'Navigate ' .. direction .. ' (window or Rex pane)' })
+  vim.keymap.set('o', chord, '<Esc>' .. chord, { remap = true, silent = true })
+  vim.keymap.set('c', chord, '<C-c>' .. chord, { remap = true, silent = true })
   vim.keymap.set('t', chord, '<C-\\><C-n>' .. chord, { remap = true, silent = true })
 end
 
